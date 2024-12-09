@@ -8,5 +8,3 @@ cd frontend
 npm install --loglevel info
 
 echo 'source <(ng completion script)' >> ~/.bashrc
-
-chmod u+x ./start.sh
