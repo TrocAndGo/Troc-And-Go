@@ -9,3 +9,20 @@
   color="secondary"
   [items]="['Option 1', 'Option 2', 'Option 3']">
 </app-dropdown-button>
+<app-service-card
+   user= "Jean Charles"
+   localisation="Clichy sous bois"
+   [date]= "date"
+   search="Quelqu'un pour faire le ménage chez moi tous les jours"
+   propose="Je peux aider vos enfants à faire leurs devoirs"
+   (clicked)="handleClick()">
+</app-service-card>
+
+<app-service-card
+   user= "Geraldine"
+   localisation="Gonesse"
+   [date]= "date"
+   search="Un esclave"
+   propose="Rien"
+   (clicked)="handleClick()">
+</app-service-card>

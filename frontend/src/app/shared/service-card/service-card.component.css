@@ -1,0 +1,24 @@
+.card {
+	display: flex;
+	background-color: aqua;
+	border-radius: 50px;
+	min-width: 20%;
+	max-width: 50%;
+
+}
+
+img {
+	width: 6rem;
+	height: 6rem;
+	border-radius: 50%;
+	border: solid;
+	border-color: #3CB371;
+}
+
+span {
+	border-bottom: 0.1px solid #C0C0C0;
+	width: 100%; /* Garde la largeur au max de son conteneur */
+	margin: 8px 0; /* Ajoute un espacement vertical */
+	display: block; /* Force le span à agir comme un élément de bloc */
+  }
+

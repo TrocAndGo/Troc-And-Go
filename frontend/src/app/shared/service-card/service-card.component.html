@@ -1,0 +1,20 @@
+<div class="card">
+	<img [src]= "cheminImage">
+	<div class="text-container">
+		<p> {{ user }} </p>
+		<p> {{ localisation }} </p>
+		<p>Posté le : {{ formattedDate }}</p>
+		<span></span>
+		<div class="card-body">
+			<p>Je recherche: {{ search }}</p>
+			<p>Je propose: {{ propose }}</p>
+		</div>
+	</div>
+	<div class="button">
+		<app-button
+		text="Voir le profil"
+		color="primary"
+		(clicked)="onClick()">
+	  </app-button>
+	</div>
+</div>
