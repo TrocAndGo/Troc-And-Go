@@ -18,12 +18,14 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@ToString
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,11 +50,10 @@ public class Users {
     @Column(length = 20)
     private String phoneNumber;
 
-    @NonNull
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Adresses address;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<Roles> roles = new HashSet<>();
 
     @ManyToMany
