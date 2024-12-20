@@ -1,4 +1,4 @@
-package com.trocandgo.trocandgo.services;
+package com.trocandgo.trocandgo.dto.auth;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,13 +11,13 @@ import com.trocandgo.trocandgo.model.Account;
 
 import lombok.Getter;
 
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsAuth implements UserDetails {
 
     @Getter
     private final Account account;
     private final List<SimpleGrantedAuthority> authorities;
 
-    public UserDetailsImpl(Account account) {
+    public UserDetailsAuth(Account account) {
         this.account = account;
         this.authorities = account.getRoles().stream()
             .map(role -> new SimpleGrantedAuthority(role.name())).toList();
