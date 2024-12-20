@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trocandgo.trocandgo.dto.auth.UserDetailsAuth;
 import com.trocandgo.trocandgo.dto.request.LoginRequest;
 import com.trocandgo.trocandgo.dto.request.SignupRequest;
 import com.trocandgo.trocandgo.model.Role;
 import com.trocandgo.trocandgo.model.Account;
 import com.trocandgo.trocandgo.repository.AccountRepository;
-import com.trocandgo.trocandgo.services.UserDetailsImpl;
 
 import jakarta.validation.Valid;
 
@@ -44,7 +44,7 @@ public class AuthControllerV1 {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        UserDetailsAuth userDetails = (UserDetailsAuth) authentication.getPrincipal();
 
         return ResponseEntity.ok("Login Success: " + userDetails.getAccount().toString());
     }
