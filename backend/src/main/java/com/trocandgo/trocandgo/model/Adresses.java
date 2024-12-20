@@ -1,5 +1,7 @@
 package com.trocandgo.trocandgo.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,14 +25,14 @@ public class Adresses {
 
     @NonNull
     @Column(length = 255)
-    private String address;
+    private String adress;
 
     @NonNull
     @Column(length = 100)
     private String city;
 
     @NonNull
-    @Column(length = 20)
+    @Column(length = 10)
     private String zipCode;
 
     @NonNull
@@ -44,4 +46,10 @@ public class Adresses {
     @NonNull
     @Column(length = 100)
     private String country;
+
+    @Column(precision = 9, scale = 6)
+    private BigDecimal latitude;
+
+    @Column(precision = 9, scale = 6)
+    private BigDecimal longitude;
 }

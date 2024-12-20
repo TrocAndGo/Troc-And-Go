@@ -3,11 +3,13 @@ package com.trocandgo.trocandgo.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
@@ -47,9 +49,13 @@ public class Users {
     private String phoneNumber;
 
     @NonNull
-    @OneToOne
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
     private Adresses address;
 
     @ManyToMany
     private Set<Roles> roles = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "favorites") //TODO: Change Service FK name
+    private Set<Services> favorites = new HashSet<>();
 }
