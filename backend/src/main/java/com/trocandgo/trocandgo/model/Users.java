@@ -9,7 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
@@ -55,8 +54,4 @@ public class Users {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Roles> roles = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(name = "favorites") //TODO: Change Service FK name
-    private Set<Services> favorites = new HashSet<>();
 }
