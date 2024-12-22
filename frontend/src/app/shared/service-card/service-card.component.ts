@@ -9,7 +9,7 @@ import { ButtonComponent } from '../button/button.component';
   styleUrl: './service-card.component.css'
 })
 export class ServiceCardComponent {
-  cheminImage:any = '/quote.png';
+  @Input() cheminImage:any = '/quote.png';
   @Input() user: string = 'User';
   @Input() localisation: string = 'Localisation';
   @Input() date: Date = new Date();

@@ -9,6 +9,9 @@
   color="secondary"
   [items]="['Option 1', 'Option 2', 'Option 3']">
 </app-dropdown-button>
+
+<div class = cards-container>
+
 <app-service-card
    user= "Jean Charles"
    localisation="Clichy sous bois"
@@ -19,10 +22,23 @@
 </app-service-card>
 
 <app-service-card
-   user= "Geraldine"
+  cheminImage="./avatar3.png"
+   user= "Haricover"
    localisation="Gonesse"
    [date]= "date"
    search="Un esclave"
    propose="Rien"
    (clicked)="handleClick()">
 </app-service-card>
+
+<app-service-card
+  cheminImage="./avatar2.png"
+   user= "Geraldine"
+   localisation="Gonesse"
+   [date]= "date"
+   search="Je ne sais pas Je ne sais pas Je ne sais pas Je ne sais pas"
+   propose="Je ne sais pas Je ne sais pas Je ne sais pas "
+   (clicked)="handleClick()">
+</app-service-card>
+
+</div>

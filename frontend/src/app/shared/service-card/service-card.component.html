@@ -1,14 +1,11 @@
 <div class="card">
+	<div class="card-header">
 	<img [src]= "cheminImage">
 	<div class="text-container">
-		<p> {{ user }} </p>
+		<p class=" user"> {{ user }} </p>
 		<p> {{ localisation }} </p>
 		<p>Posté le : {{ formattedDate }}</p>
 		<span></span>
-		<div class="card-body">
-			<p>Je recherche: {{ search }}</p>
-			<p>Je propose: {{ propose }}</p>
-		</div>
 	</div>
 	<div class="button">
 		<app-button
@@ -18,3 +15,9 @@
 	  </app-button>
 	</div>
 </div>
+<div class="card-body">
+	<p class="search"><strong>Je recherche:</strong> {{ search }}</p>
+	<p class="propose"><strong>Je propose:</strong> {{ propose }}</p>
+</div>
+</div>
+
