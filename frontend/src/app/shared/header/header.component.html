@@ -1,0 +1,26 @@
+<div class="header">
+	<div class="logo-links-container">
+	  <img src="logo.png" alt="logo">
+
+	  <a routerLink="/">Home</a>
+	  <a routerLink="about">About</a>
+	  <a routerLink="contact">Contact</a>
+	</div>
+
+	<div class="buttons-container">
+	  <div class="button">
+		<app-button
+		  text="LOG IN"
+		  color="primary"
+		  (clicked)="onClick()">
+		</app-button>
+	  </div>
+	  <div class="button">
+		<app-button
+		  text="SIGN UP"
+		  color="primary"
+		  (clicked)="onClick()">
+		</app-button>
+	  </div>
+	</div>
+  </div>
