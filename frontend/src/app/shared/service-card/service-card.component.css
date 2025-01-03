@@ -1,0 +1,86 @@
+.card-header {
+	display: flex;
+	margin-bottom: 18px;
+}
+
+.card {
+	padding: 1rem;
+	border-radius: 50px;
+	background-color: white;
+	height: 30vh;
+	overflow: hidden;
+	box-sizing: border-box;
+	flex-grow: 1;
+	flex-basis: 30%;
+	width: 30vw;
+	box-shadow: 0px 4px 8px rgba(46,89,79, 0.2); /* Ombre douce */
+	transition: box-shadow 0.3s ease; /* Transition douce */
+	margin: 5px;
+}
+
+@media (max-width : 1024px) {
+	.card {
+	height: 35vh;
+	width: 60vw;
+
+	}
+	}
+
+@media (max-width : 768px) {
+	.card {
+	height: 40vh;
+	}
+	}
+
+.card:hover {
+	box-shadow: 0px 8px 16px rgba(46,89,79, 0.4); /* Effet hover */
+	cursor: pointer;
+  }
+
+img {
+	width: 6rem;
+  	height: 6rem;
+  	border-radius: 50%; /* Rend l'image circulaire */
+  	border: 2px solid #2E594F; /* Bordure verte */
+  	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+img:hover{
+	transform: scale(1.1); /* Zoom léger au survol */
+  	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+}
+
+span {
+	border-bottom: 0.1px solid #C0C0C0;
+	width: 100%; /* Garde la largeur au max de son conteneur */
+	margin: 10px 0; /* Ajoute un espacement vertical */
+	display: block; /* Force le span à agir comme un élément de bloc */
+  }
+
+  .text-container {
+	margin-left: 20px;
+  }
+
+button {
+	margin-right: 5px;
+}
+
+.card-body {
+	width: 100%
+}
+
+p {
+	margin: 2px;
+	font-size: 16px;
+	font-family: 'Montserrat', sans-serif;
+}
+
+.user {
+	color: #2E594F;
+	font-weight: bold;
+}
+
+.search, .propose {
+	margin-top: 8px;
+}

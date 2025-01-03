@@ -1,0 +1,40 @@
+.header {
+	background-color: #2E594F;
+	height: 88px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 60px; /* Pour donner un peu d'espace autour du contenu */
+  }
+
+  .logo-links-container {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 40px;
+  }
+
+  img {
+	height: 75px;
+	width: 118px;
+  }
+
+  a {
+	text-decoration: none;
+	font-size: 16px;
+	font-family: 'Montserrat', sans-serif;
+	color: #F7F4E1;
+  }
+
+  .buttons-container {
+	display: flex;
+	justify-content: flex-end;
+	gap: 40px; /* Pour espacer les boutons */
+  }
+
+  .button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
+  

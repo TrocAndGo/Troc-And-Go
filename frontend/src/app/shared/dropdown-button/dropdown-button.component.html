@@ -1,0 +1,11 @@
+<div class="dropdown">
+<button
+[ngClass]="['btn', color]"
+[disabled]="disabled"
+(click)="toggleDropdown()">
+{{ text }} <span class="dropdown-arrow">&#x25BC;</span>
+  </button>
+  <ul *ngIf="dropdownOpen" class="dropdown-menu">
+	<li *ngFor="let item of items" (click)="selectItem(item)">{{ item }}</li>
+  </ul>
+</div>

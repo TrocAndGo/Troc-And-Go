@@ -1,0 +1,16 @@
+<div class="card" (click)="onClick()">
+	<div class="card-header">
+	<img [src]= "cheminImage" (click)="onClick()">
+	<div class="text-container">
+		<p class=" user"> {{ user }} </p>
+		<p> {{ localisation }} </p>
+		<p>Posté le : {{ formattedDate }}</p>
+		<span></span>
+	</div>
+</div>
+<div class="card-body">
+	<p class="search"><strong>Je recherche:</strong> {{ search }}</p>
+	<p class="propose"><strong>Je propose:</strong> {{ propose }}</p>
+</div>
+</div>
+

@@ -1,13 +1,23 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ButtonComponent } from './shared/button/button.component';
+import { DropdownButtonComponent } from './shared/dropdown-button/dropdown-button.component';
+import { ServiceCardComponent } from './shared/service-card/service-card.component';
+import { HeaderComponent } from './shared/header/header.component'
+import { FooterComponent } from './shared/footer/footer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ButtonComponent, DropdownButtonComponent, ServiceCardComponent, HeaderComponent, FooterComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'frontend';
+  date = new Date();
+
+  handleClick() {
+    alert('Button clicked!');
+  }
 }

@@ -1,0 +1,26 @@
+<div class="header">
+	<div class="logo-links-container">
+	  <img src="logo.png" alt="logo">
+
+	  <a routerLink="/">Accueil</a>
+	  <a routerLink="about">A propos</a>
+	  <a routerLink="contact">Contact</a>
+	</div>
+
+	<div class="buttons-container">
+	  <div class="button">
+		<app-button
+		  text="Se connecter"
+		  color="primary"
+		  (clicked)="handleClick()">
+		</app-button>
+	  </div>
+	  <div class="button">
+		<app-button
+		  text="Créer un compte"
+		  color="primary"
+		  (clicked)="handleClick()">
+		</app-button>
+	  </div>
+	</div>
+  </div>
