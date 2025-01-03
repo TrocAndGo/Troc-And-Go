@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.trocandgo.trocandgo.dto.request.LoginRequest;
 import com.trocandgo.trocandgo.dto.request.SignupRequest;
-import com.trocandgo.trocandgo.model.Role;
-import com.trocandgo.trocandgo.model.Account;
-import com.trocandgo.trocandgo.repository.AccountRepository;
+import com.trocandgo.trocandgo.model.Roles;
+import com.trocandgo.trocandgo.model.Users;
+import com.trocandgo.trocandgo.model.enums.RoleName;
+import com.trocandgo.trocandgo.repository.UserRepository;
 import com.trocandgo.trocandgo.services.JwtService;
 import com.trocandgo.trocandgo.services.UserDetailsImpl;
 
@@ -29,7 +30,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/v1/auth")
 public class AuthControllerV1 {
     @Autowired
-    AccountRepository accountRepository;
+    UserRepository userRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -55,17 +56,17 @@ public class AuthControllerV1 {
         return ResponseEntity.ok().body(Map.of(
             "message", "Login Success",
             "token", jwtToken,
-            "user", userDetails.getAccount()
+            "user", userDetails.getUsername()
         ));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest signupRequest) {
-        if (accountRepository.existsByUsername(signupRequest.getUsername())) {
+        if (userRepository.existsByName(signupRequest.getUsername())) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
         }
 
-        if (accountRepository.existsByEmail(signupRequest.getEmail())) {
+        if (userRepository.existsByEmail(signupRequest.getEmail())) {
             return ResponseEntity.badRequest().body("Error: Email is already in use!");
         }
 
@@ -74,20 +75,20 @@ public class AuthControllerV1 {
             return ResponseEntity.badRequest().body("Missing user role");
         }
 
-        Set<Role> roles = new HashSet<>();
+        Set<Roles> roles = new HashSet<>();
 
         strRoles.forEach(strRole -> {
             try {
-                Role role = Role.valueOf(strRole);
-                roles.add(role);
+                RoleName name = RoleName.valueOf(strRole);
+                roles.add(new Roles(name));
             } catch (Exception e) {
                 throw new RuntimeException("Unknown role: " + strRole);
             }
         });
 
-        Account user = new Account(signupRequest.getUsername(),signupRequest.getEmail(),
-            passwordEncoder.encode(signupRequest.getPassword()), roles);
-        accountRepository.save(user);
+        Users user = new Users(signupRequest.getUsername(),signupRequest.getEmail(), passwordEncoder.encode(signupRequest.getPassword()));
+        user.setRoles(roles);
+        userRepository.save(user);
 
         return ResponseEntity.ok("User registered succesfully");
     }

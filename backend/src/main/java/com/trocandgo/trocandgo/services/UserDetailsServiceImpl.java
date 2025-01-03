@@ -6,19 +6,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.trocandgo.trocandgo.model.Account;
-import com.trocandgo.trocandgo.repository.AccountRepository;
+import com.trocandgo.trocandgo.model.Users;
+import com.trocandgo.trocandgo.repository.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    AccountRepository userRepository;
+    UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = userRepository.findByUsername(username)
+        Users user = userRepository.findByName(username)
             .orElseThrow(() -> new UsernameNotFoundException("No user found with username: " + username));
 
-        return new UserDetailsImpl(account);
+        return new UserDetailsImpl(user);
     }
 }
