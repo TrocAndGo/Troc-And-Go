@@ -1,18 +1,11 @@
-<div class="card">
+<div class="card" (click)="onClick()">
 	<div class="card-header">
-	<img [src]= "cheminImage">
+	<img [src]= "cheminImage" (click)="onClick()">
 	<div class="text-container">
 		<p class=" user"> {{ user }} </p>
 		<p> {{ localisation }} </p>
 		<p>Posté le : {{ formattedDate }}</p>
 		<span></span>
-	</div>
-	<div class="button">
-		<app-button
-		text="Voir le profil"
-		color="primary"
-		(clicked)="onClick()">
-	  </app-button>
 	</div>
 </div>
 <div class="card-body">

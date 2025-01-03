@@ -9,6 +9,7 @@ img {
 	position: relative; /* Nécessaire pour positionner le texte par rapport à cette div */
 	width: 100%; /* Assure que la div prend toute la largeur de l'image */
 	height: 400px; /* Ajuste la hauteur selon l'image */
+	margin-bottom: 0;
   }
 
   .image-container img {
@@ -32,9 +33,25 @@ img {
   h2 {
 	font-family: 'Montserrat', sans-serif;
 	text-align: center;
+	margin-bottom: 50px;
+	margin-top: 0;
   }
 
   .cards-container {
 	display: flex;
-	gap: 5px;
+	justify-content: space-around;
   }
+
+  .annonces {
+	background-color: rgba(51, 51, 51, 0.1);
+	margin-top: 0;
+	padding: 5vh;
+
+  }
+
+  @media (max-width : 1024px) {
+	.cards-container {
+	flex-direction: column;
+	align-items: center;
+	}
+	}

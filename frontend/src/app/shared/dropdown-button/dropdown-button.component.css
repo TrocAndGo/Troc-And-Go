@@ -1,6 +1,6 @@
 /* Style pour le bouton */
 .btn {
-	background-color: #4CAF50;
+	background-color: white;
 	color: black;
 	padding: 12px 20px;
 	font-size: 16px;
@@ -9,10 +9,12 @@
 	border-radius: 60px;
 	transition: background-color 0.3s ease;
 	font-family: 'Montserrat', sans-serif;
+	width: 262px;
+	height: 65px;
   }
 
   .btn:hover {
-	background-color: #45a049;
+	background-color: rgba(60, 179, 113);
   }
 
   /* Conteneur pour le bouton et le menu */

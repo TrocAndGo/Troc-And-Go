@@ -18,4 +18,8 @@ export class HeaderComponent {
   onClick() {
     this.clicked.emit();
   }
+
+  handleClick() {
+    alert('Button clicked!');
+  }
 }

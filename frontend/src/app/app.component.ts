@@ -4,11 +4,12 @@ import { ButtonComponent } from './shared/button/button.component';
 import { DropdownButtonComponent } from './shared/dropdown-button/dropdown-button.component';
 import { ServiceCardComponent } from './shared/service-card/service-card.component';
 import { HeaderComponent } from './shared/header/header.component'
+import { FooterComponent } from './shared/footer/footer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ButtonComponent, DropdownButtonComponent, ServiceCardComponent, HeaderComponent],
+  imports: [RouterOutlet, ButtonComponent, DropdownButtonComponent, ServiceCardComponent, HeaderComponent, FooterComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
