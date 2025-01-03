@@ -1,31 +1,35 @@
 package com.trocandgo.trocandgo.model;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@ToString
 public class Services {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @NonNull
     @Column(length = 255)
@@ -38,22 +42,22 @@ public class Services {
     private Date creationDate;
 
     @NonNull
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private Users createdBy;
 
     @NonNull
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private ServiceTypes type;
 
     @NonNull
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private ServiceStatuses status;
 
     @NonNull
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private ServiceCategories category;
 
     @NonNull
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private Adresses adress;
 }
