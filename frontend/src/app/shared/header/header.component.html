@@ -19,8 +19,12 @@
 		<app-button
 		  text="Créer un compte"
 		  color="primary"
-		  (clicked)="handleClick()">
+		  (clicked)="openPopup()">
 		</app-button>
+		<app-login
+		[isVisible]="isPopupVisible"
+		(closed)="closePopup()">
+		</app-login>
 	  </div>
 	</div>
   </div>
