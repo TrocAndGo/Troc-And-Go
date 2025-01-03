@@ -1,6 +1,6 @@
 package com.trocandgo.trocandgo.controller;
-
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import com.trocandgo.trocandgo.dto.request.SignupRequest;
 import com.trocandgo.trocandgo.model.Role;
 import com.trocandgo.trocandgo.model.Account;
 import com.trocandgo.trocandgo.repository.AccountRepository;
+import com.trocandgo.trocandgo.services.JwtService;
 import com.trocandgo.trocandgo.services.UserDetailsImpl;
 
 import jakarta.validation.Valid;
@@ -36,6 +37,9 @@ public class AuthControllerV1 {
     @Autowired
     AuthenticationProvider authenticationProvider;
 
+    @Autowired
+    JwtService jwtService;
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -46,7 +50,13 @@ public class AuthControllerV1 {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return ResponseEntity.ok("Login Success: " + userDetails.getAccount().toString());
+        String jwtToken = jwtService.generateToken(userDetails.getUsername());
+
+        return ResponseEntity.ok().body(Map.of(
+            "message", "Login Success",
+            "token", jwtToken,
+            "user", userDetails.getAccount()
+        ));
     }
 
     @PostMapping("/signup")
