@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trocandgo.trocandgo.dto.request.SearchRequest;
 import com.trocandgo.trocandgo.model.Services;
 import com.trocandgo.trocandgo.repository.ServiceRepository;
+import com.trocandgo.trocandgo.specification.ServiceSpecification;
 
 @RestController
 @RequestMapping("/api/v1/public")
@@ -26,6 +28,13 @@ public class PublicController {
 
     @GetMapping("services")
     public List<Services> latestServices(@RequestParam(name = "limit", defaultValue = "25") int limit) {
+        limit = Math.clamp(limit, 1, 25);
         return serviceRepository.findAllByOrderByCreationDateDesc(Pageable.ofSize(limit)).getContent();
+    }
+
+    @GetMapping("search")
+    public List<Services> search(SearchRequest params) {
+        var specification = ServiceSpecification.searchService(params);
+        return serviceRepository.findAll(specification);
     }
 }
