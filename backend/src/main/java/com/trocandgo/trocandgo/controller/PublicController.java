@@ -1,6 +1,8 @@
 package com.trocandgo.trocandgo.controller;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,7 +13,9 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,5 +49,17 @@ public class PublicController {
             @SortDefault(sort = "creationDate", direction = Direction.DESC) @PageableDefault(size = 20) Pageable pageable) {
         var specification = ServiceSpecification.searchService(params);
         return serviceRepository.findAll(specification, pageable);
+    }
+
+    @GetMapping("services/{id}")
+    public ResponseEntity<?> getService(@PathVariable(value = "id") String serviceId) {
+        Optional<Services> service = Optional.empty();
+        if (StringUtils.hasText(serviceId))
+            service = serviceRepository.findById(UUID.fromString(serviceId));
+
+        if (service.isPresent())
+            return ResponseEntity.ok(service.get());
+
+        return ResponseEntity.badRequest().body("Service not found");
     }
 }
