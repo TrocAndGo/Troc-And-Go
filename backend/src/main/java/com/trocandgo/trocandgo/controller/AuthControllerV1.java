@@ -1,6 +1,8 @@
 package com.trocandgo.trocandgo.controller;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,13 +43,17 @@ public class AuthControllerV1 {
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationProvider
-            .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                        loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return ResponseEntity.ok("Login Success: " + userDetails.getUser().toString());
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User logged in successfully" + userDetails.getUser().toString());
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/signup")
@@ -76,10 +82,15 @@ public class AuthControllerV1 {
             }
         });
 
-        Users user = new Users(signupRequest.getUsername(),signupRequest.getEmail(), passwordEncoder.encode(signupRequest.getPassword()));
+        Users user = new Users(signupRequest.getUsername(), signupRequest.getEmail(),
+                passwordEncoder.encode(signupRequest.getPassword()));
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok("User registered succesfully");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User registered successfully");
+
+        return ResponseEntity.ok(response);
+
     }
 }

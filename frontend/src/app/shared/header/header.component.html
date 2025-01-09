@@ -12,8 +12,12 @@
 		<app-button
 		  text="Se connecter"
 		  color="primary"
-		  (clicked)="handleClick()">
+		  (clicked)="openLoginPopup()">
 		</app-button>
+		<app-login
+		[isVisible]="isLoginPopupVisible"
+		(closed)="closeLoginPopup()">
+		</app-login>
 	  </div>
 	  <div class="button">
 		<app-button
@@ -21,10 +25,11 @@
 		  color="primary"
 		  (clicked)="openPopup()">
 		</app-button>
-		<app-login
+		<app-signup
 		[isVisible]="isPopupVisible"
-		(closed)="closePopup()">
-		</app-login>
+		(closed)="closePopup()"
+		(signupSuccess)="onSignupSuccess()">
+		</app-signup>
 	  </div>
 	</div>
   </div>
