@@ -12,15 +12,24 @@
 		<app-button
 		  text="Se connecter"
 		  color="primary"
-		  (clicked)="handleClick()">
+		  (clicked)="openLoginPopup()">
 		</app-button>
+		<app-login
+		[isVisible]="isLoginPopupVisible"
+		(closed)="closeLoginPopup()">
+		</app-login>
 	  </div>
 	  <div class="button">
 		<app-button
 		  text="Créer un compte"
 		  color="primary"
-		  (clicked)="handleClick()">
+		  (clicked)="openPopup()">
 		</app-button>
+		<app-signup
+		[isVisible]="isPopupVisible"
+		(closed)="closePopup()"
+		(signupSuccess)="onSignupSuccess()">
+		</app-signup>
 	  </div>
 	</div>
   </div>

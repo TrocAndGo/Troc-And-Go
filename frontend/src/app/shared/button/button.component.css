@@ -8,13 +8,14 @@
 	font-family: 'Montserrat', sans-serif;
   }
 
-  .btn:hover {
-	opacity: 0.8;
+  .btn.primary:hover {
+	background-color: #308F5B;
   }
 
   .btn.primary {
 	background-color: #3CB371;
 	color: #333333;
+	color: white;
   }
 
   .btn.secondary {

@@ -1,0 +1,30 @@
+<div class="popup-backdrop" *ngIf="isVisible" (click)="close()"></div>
+<div class="popup" *ngIf="isVisible">
+	<form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
+
+		 <!-- Username -->
+		<input type="text" id="username" name="username" ngModel required placeholder="Enter your username"
+			#username="ngModel">
+		<div *ngIf="username.invalid && username.touched" class="error-message">
+			<small *ngIf="username.errors?.['required']">Username is required.</small>
+		</div>
+
+		 <!-- Password -->
+		 <input
+		 type="password"
+		 id="password"
+		 name="password"
+		 ngModel
+		 required
+		 placeholder="Enter your password"
+		 #password="ngModel">
+		 <div *ngIf="password.invalid && password.touched" class="error-message">
+			<small *ngIf="password.errors?.['required']">Password is required.</small>
+		  </div>
+
+		 <!-- Submit Button -->
+		 <button type="submit" [disabled]="!signupForm.valid">Se connecter</button>
+	</form>
+	<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+	<button (click)="close()">Fermer</button>
+</div>

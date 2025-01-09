@@ -1,0 +1,59 @@
+<div class="popup-backdrop" *ngIf="isVisible" (click)="close()"></div>
+<div class="popup" *ngIf="isVisible">
+	<form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
+
+		 <!-- Username -->
+		<input type="text" id="username" name="username" ngModel required placeholder="Enter your username"
+			#username="ngModel">
+		<div *ngIf="username.invalid && username.touched" class="error-message">
+			<small *ngIf="username.errors?.['required']">Username is required.</small>
+		</div>
+
+		  <!-- Email -->
+		<input type="email" id="email" name="email" ngModel required
+			pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" placeholder="Enter your email" #email="ngModel">
+		<div *ngIf="email.invalid && email.touched" class="error-message">
+			<small *ngIf="email.errors?.['required']">Email is required.</small>
+			<small *ngIf="email.errors?.['email']">Please enter a valid email address.</small>
+			<small *ngIf="!email.errors?.['required'] && !email.errors?.['email']">Invalid email format.</small>
+		</div>
+
+		 <!-- Password -->
+		 <input
+		 type="password"
+		 id="password"
+		 name="password"
+		 ngModel
+		 required
+		 placeholder="Enter your password"
+		 (ngModelChange)="onPasswordChange(signupForm.value.password, signupForm.value.confirmPassword)"
+		 #password="ngModel">
+		 <div *ngIf="password.invalid && password.touched" class="error-message">
+			<small *ngIf="password.errors?.['required']">Password is required.</small>
+		  </div>
+
+		  <!-- Confirm Password -->
+		  <input
+		  type="password"
+		  id="confirmPassword"
+		  name="confirmPassword"
+		  ngModel
+		  required
+		  placeholder="Confirm your password"
+		  (ngModelChange)="onPasswordChange(signupForm.value.password, signupForm.value.confirmPassword)"
+		  #confirmPassword="ngModel">
+		  <div *ngIf="confirmPassword.invalid && confirmPassword.touched" class="error-message">
+			<small *ngIf="confirmPassword.errors?.['required']">Password confirmation is required.</small>
+			<small *ngIf="!passwordsMatch && confirmPassword.touched">Passwords do not match.</small>
+		  </div>
+
+		 <!-- Submit Button -->
+		 <button type="submit" [disabled]="!signupForm.valid || !passwordsMatch">Créer un compte</button>
+	</form>
+	<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+	<button (click)="close()">Fermer</button>
+</div>
+<app-login
+		[isVisible]="isLoginPopupVisible"
+		(closed)="closeLoginPopup()">
+</app-login>
