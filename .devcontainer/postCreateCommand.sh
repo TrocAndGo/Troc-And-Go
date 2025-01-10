@@ -12,3 +12,4 @@ echo == Initialising Angular Frontend ==
 echo == Installing Git Flow ==
 sudo apt-get update
 sudo apt-get install git-flow
+sudo apt-get install redis-tools
