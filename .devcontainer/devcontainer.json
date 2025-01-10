@@ -20,6 +20,9 @@
 		},
 		"ghcr.io/itsmechlark/features/postgresql:1": {
 			"version": "16"
+		},
+		"ghcr.io/itsmechlark/features/redis-server:1": {
+		"version": "latest"
 		}
 	},
 
@@ -30,7 +33,8 @@
 		"vscode": {
 			"extensions": [
 				"cweijan.vscode-mysql-client2",
-				"-ms-ossdata.vscode-postgresql"
+				"-ms-ossdata.vscode-postgresql",
+				"-cweijan.vscode-redis-client"
 			]
 		}
 	}
