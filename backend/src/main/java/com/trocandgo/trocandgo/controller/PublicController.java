@@ -1,24 +1,21 @@
 package com.trocandgo.trocandgo.controller;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.trocandgo.trocandgo.dto.request.SearchRequest;
 import com.trocandgo.trocandgo.model.Services;
@@ -37,29 +34,25 @@ public class PublicController {
     }
 
     @GetMapping("services")
-    public List<Services> latestServices(@RequestParam(name = "size", defaultValue = "25") int size) {
-        size = Math.clamp(size, 1, 25);
-        var sort = Sort.by("creationDate").descending();
-
-        return serviceRepository.findAll(PageRequest.of(0, size, sort)).getContent();
-    }
-
-    @GetMapping("search")
-    public Page<Services> search(SearchRequest params,
+    public Page<Services> search(SearchRequest request,
             @SortDefault(sort = "creationDate", direction = Direction.DESC) @PageableDefault(size = 20) Pageable pageable) {
-        var specification = ServiceSpecification.searchService(params);
+        var specification = ServiceSpecification.buildSearchSpecificationFromRequest(request);
         return serviceRepository.findAll(specification, pageable);
     }
 
     @GetMapping("services/{id}")
-    public ResponseEntity<?> getService(@PathVariable(value = "id") String serviceId) {
+    public ResponseEntity<?> getService(@PathVariable(value = "id") String serviceId) throws ResponseStatusException {
         Optional<Services> service = Optional.empty();
-        if (StringUtils.hasText(serviceId))
+
+        try {
             service = serviceRepository.findById(UUID.fromString(serviceId));
+        } catch(IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id is null or not a valid UUID");
+        }
 
         if (service.isPresent())
             return ResponseEntity.ok(service.get());
 
-        return ResponseEntity.badRequest().body("Service not found");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found");
     }
 }

@@ -15,7 +15,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 
 public class ServiceSpecification {
-    public static Specification<Services> searchService(SearchRequest filter) {
+    public static Specification<Services> buildSearchSpecificationFromRequest(SearchRequest filter) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             Join<Services, Adresses> adressJoin = root.join("adress");
