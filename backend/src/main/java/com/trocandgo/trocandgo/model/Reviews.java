@@ -9,6 +9,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
@@ -25,17 +26,20 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@IdClass(ReviewsPK.class)
 public class Reviews {
     @Id
     @OneToOne(cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn
+    @NonNull
     private Users user;
 
     @Id
     @OneToOne(cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn
+    @NonNull
     private Services service;
 
     @NonNull
@@ -45,7 +49,8 @@ public class Reviews {
     @CreationTimestamp(source = SourceType.DB)
     private Date createdAt;
 
+    @NonNull
     @DecimalMin("0")
     @DecimalMax("5")
-    private int rating;
+    private Integer rating;
 }

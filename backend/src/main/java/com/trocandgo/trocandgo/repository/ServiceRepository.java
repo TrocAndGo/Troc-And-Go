@@ -1,14 +1,12 @@
 package com.trocandgo.trocandgo.repository;
 
-import java.util.List;
-
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import com.trocandgo.trocandgo.model.Adresses;
 import com.trocandgo.trocandgo.model.Services;
 
-public interface ServiceRepository extends JpaRepository<Services, Long> {
+public interface ServiceRepository extends JpaRepository<Services, UUID>, JpaSpecificationExecutor<Services> {
     boolean existsByAdress(Adresses adress);
-
-    List<Services> findFirst25ByOrderByCreationDateDesc();
 }

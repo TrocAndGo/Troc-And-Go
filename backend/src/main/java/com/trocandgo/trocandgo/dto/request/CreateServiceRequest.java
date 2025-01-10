@@ -1,0 +1,19 @@
+package com.trocandgo.trocandgo.dto.request;
+
+import com.trocandgo.trocandgo.model.enums.ServiceStatusTitle;
+import com.trocandgo.trocandgo.model.enums.ServiceTypeTitle;
+
+import jakarta.validation.constraints.NotEmpty;
+import lombok.Value;
+
+@Value
+public class CreateServiceRequest {
+    private long userId; //TODO: Only for debugging purposes until login is implemented
+    @NotEmpty
+    private String title;
+    private String description;
+    private ServiceTypeTitle type;
+    private ServiceStatusTitle status = ServiceStatusTitle.OPENED;
+    private long categoryId;
+    private boolean useCreatorAdress = true;
+}

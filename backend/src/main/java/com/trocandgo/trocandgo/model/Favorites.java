@@ -2,6 +2,7 @@ package com.trocandgo.trocandgo.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@IdClass(FavoritesPK.class)
 public class Favorites {
     @Id
     @NonNull
