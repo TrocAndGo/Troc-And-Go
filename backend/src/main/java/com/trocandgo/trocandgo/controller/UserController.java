@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.trocandgo.trocandgo.dto.request.AddFavoriteRequest;
+import com.trocandgo.trocandgo.dto.request.CreateReviewRequest;
 import com.trocandgo.trocandgo.dto.request.CreateServiceRequest;
 import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
 import com.trocandgo.trocandgo.model.Adresses;
 import com.trocandgo.trocandgo.model.Favorites;
 import com.trocandgo.trocandgo.model.FavoritesPK;
+import com.trocandgo.trocandgo.model.Reviews;
+import com.trocandgo.trocandgo.model.ReviewsPK;
 import com.trocandgo.trocandgo.model.ServiceCategories;
 import com.trocandgo.trocandgo.model.ServiceStatuses;
 import com.trocandgo.trocandgo.model.ServiceTypes;
@@ -29,6 +32,7 @@ import com.trocandgo.trocandgo.model.Services;
 import com.trocandgo.trocandgo.model.Users;
 import com.trocandgo.trocandgo.repository.AddressRepository;
 import com.trocandgo.trocandgo.repository.FavoriteRepository;
+import com.trocandgo.trocandgo.repository.ReviewRepository;
 import com.trocandgo.trocandgo.repository.ServiceCategoryRepository;
 import com.trocandgo.trocandgo.repository.ServiceRepository;
 import com.trocandgo.trocandgo.repository.ServiceStatusRepository;
@@ -60,6 +64,9 @@ public class UserController {
 
     @Autowired
     private FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @GetMapping("hello")
     public ResponseEntity<?> hello() {
@@ -145,5 +152,30 @@ public class UserController {
         favoriteRepository.deleteById(favoritesId);
 
         return ResponseEntity.ok("service successfully removed from favorites");
+    }
+
+
+    @PostMapping("services/{id}/reviews")
+    public ResponseEntity<?> createReview(@PathVariable(value = "id") UUID serviceId, @Valid @RequestBody CreateReviewRequest request) {
+        Optional<Users> user = userRepository.findById(request.getUserId()); //TODO: Replace by current logged in user
+        if (!user.isPresent())
+            return ResponseEntity.badRequest().body("User not logged in.");
+
+        Optional<Services> service = serviceRepository.findById(serviceId);
+
+        if (!service.isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Service does not exists.");
+
+        if (service.get().getCreatedBy() == user.get())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A user cannot review its own service");
+
+        ReviewsPK reviewId = new ReviewsPK(user.get(), service.get());
+        if (reviewRepository.existsById(reviewId))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "A comment from this user already exists on this service.");
+
+        Reviews review = new Reviews(reviewId.getUser(), reviewId.getService(), request.getComment(), request.getRating());
+        reviewRepository.save(review);
+
+        return ResponseEntity.ok("Review successfully submitted");
     }
 }

@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.trocandgo.trocandgo.dto.request.SearchRequest;
+import com.trocandgo.trocandgo.model.Reviews;
 import com.trocandgo.trocandgo.model.Services;
+import com.trocandgo.trocandgo.repository.ReviewRepository;
 import com.trocandgo.trocandgo.repository.ServiceRepository;
 import com.trocandgo.trocandgo.specification.ServiceSpecification;
 
@@ -27,6 +28,9 @@ import com.trocandgo.trocandgo.specification.ServiceSpecification;
 public class PublicController {
     @Autowired
     private ServiceRepository serviceRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @GetMapping("hello")
     public ResponseEntity<?> hello() {
@@ -48,5 +52,16 @@ public class PublicController {
             return ResponseEntity.ok(service.get());
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found");
+    }
+
+    @GetMapping("services/{id}/reviews")
+    public Page<Reviews> getReviews(@PathVariable(value = "id") UUID serviceId,
+            @SortDefault(sort = "createdAt", direction = Direction.DESC) @PageableDefault(size = 20) Pageable pageable) throws ResponseStatusException {
+        Optional<Services> service = serviceRepository.findById(serviceId);
+
+        if (!service.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found");
+
+        return reviewRepository.findAllByService(service.get(), pageable);
     }
 }
