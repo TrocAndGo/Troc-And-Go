@@ -41,14 +41,8 @@ public class PublicController {
     }
 
     @GetMapping("services/{id}")
-    public ResponseEntity<?> getService(@PathVariable(value = "id") String serviceId) throws ResponseStatusException {
-        Optional<Services> service = Optional.empty();
-
-        try {
-            service = serviceRepository.findById(UUID.fromString(serviceId));
-        } catch(IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id is null or not a valid UUID");
-        }
+    public ResponseEntity<?> getService(@PathVariable(value = "id") UUID serviceId) throws ResponseStatusException {
+        Optional<Services> service = serviceRepository.findById(serviceId);
 
         if (service.isPresent())
             return ResponseEntity.ok(service.get());
