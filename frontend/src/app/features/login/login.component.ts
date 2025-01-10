@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgForm, FormsModule } from '@angular/forms';
 import { LoginService, LoginRequest } from '../../services/login.service';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -18,7 +19,8 @@ export class LoginComponent {
 
   errorMessage: string | null = null;
 
-  constructor(private LoginService: LoginService) {}
+  constructor(private LoginService: LoginService,
+              private authService: AuthService) {}
 
   close() {
     this.isVisible = false;
@@ -43,9 +45,12 @@ export class LoginComponent {
     this.LoginService.login(LoginRequest).subscribe({
       next: (response) => {
         console.log('User logged in successfully:', response);
+
+        this.authService.setLoggedIn(true);
+
         this.errorMessage = null; // Réinitialiser les erreurs
         form.reset(); // Réinitialiser le formulaire
-        this.openLoginPopup();
+        this.close();
 
       },
       error: (err) => {
@@ -74,6 +79,11 @@ export class LoginComponent {
         }
       },
     });
+  }
+
+  isLoggedIn(): boolean {
+    // Vérifier si l'utilisateur est connecté
+    return this.authService.isLoggedIn();
   }
 
   openLoginPopup() {

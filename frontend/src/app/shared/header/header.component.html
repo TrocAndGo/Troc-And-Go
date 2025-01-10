@@ -7,6 +7,7 @@
 	  <a routerLink="contact">Contact</a>
 	</div>
 
+	<div *ngIf="!isLoggedIn">
 	<div class="buttons-container">
 	  <div class="button">
 		<app-button
@@ -32,4 +33,18 @@
 		</app-signup>
 	  </div>
 	</div>
-  </div>
+	</div>
+
+	<div *ngIf="isLoggedIn" class="loggedin-container">
+		<div class="loggedin">
+		<app-button
+		  text="Créer une annonce"
+		  color="primary"
+		  (clicked)="openCreateAd()">
+		</app-button>
+		<a routerLink="profil">Profil</a>
+		<a href="#" (click)="logout()">Se déconnecter</a>
+	</div>
+	</div>
+
+</div>
