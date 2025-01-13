@@ -1,4 +1,4 @@
-package com.trocandgo.trocandgo.model.enums;
+package com.trocandgo.trocandgo.entity.enums;
 
 public enum ServiceTypeTitle {
     OFFER,

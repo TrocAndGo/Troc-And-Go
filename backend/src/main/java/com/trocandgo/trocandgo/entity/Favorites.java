@@ -1,4 +1,4 @@
-package com.trocandgo.trocandgo.model;
+package com.trocandgo.trocandgo.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

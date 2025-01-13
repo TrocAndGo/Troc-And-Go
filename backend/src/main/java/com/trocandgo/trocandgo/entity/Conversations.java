@@ -1,11 +1,10 @@
-package com.trocandgo.trocandgo.model;
+package com.trocandgo.trocandgo.entity;
 
 import java.util.Date;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,22 +19,18 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class Messages {
+public class Conversations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NonNull
     @OneToOne
-    private Conversations conversation;
+    private Users user1;
 
     @NonNull
     @OneToOne
-    private Users sender;
-
-    @NonNull
-    @Column(columnDefinition = "TEXT")
-    private String content;
+    private Users user2;
 
     @CreationTimestamp(source = SourceType.DB)
     private Date createdAt;

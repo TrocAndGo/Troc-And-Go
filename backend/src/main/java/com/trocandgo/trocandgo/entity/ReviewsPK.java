@@ -1,4 +1,4 @@
-package com.trocandgo.trocandgo.model;
+package com.trocandgo.trocandgo.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class FavoritesPK {
+public class ReviewsPK {
     private Users user;
     private Services service;
 }

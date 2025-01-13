@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
+import com.trocandgo.trocandgo.entity.Adresses;
+import com.trocandgo.trocandgo.entity.Favorites;
+import com.trocandgo.trocandgo.entity.FavoritesPK;
 import com.trocandgo.trocandgo.exception.FavoriteAlreadyExistsException;
 import com.trocandgo.trocandgo.exception.FavoriteDoesntExistException;
 import com.trocandgo.trocandgo.exception.FavoriteOwnServiceException;
 import com.trocandgo.trocandgo.exception.NotAuthenticatedException;
-import com.trocandgo.trocandgo.model.Adresses;
-import com.trocandgo.trocandgo.model.Favorites;
-import com.trocandgo.trocandgo.model.FavoritesPK;
 import com.trocandgo.trocandgo.repository.AddressRepository;
 import com.trocandgo.trocandgo.repository.FavoriteRepository;
 import com.trocandgo.trocandgo.repository.UserRepository;

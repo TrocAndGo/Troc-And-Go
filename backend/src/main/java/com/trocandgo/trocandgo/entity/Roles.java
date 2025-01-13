@@ -1,6 +1,6 @@
-package com.trocandgo.trocandgo.model;
+package com.trocandgo.trocandgo.entity;
 
-import com.trocandgo.trocandgo.model.enums.ServiceTypeTitle;
+import com.trocandgo.trocandgo.entity.enums.RoleName;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,17 +12,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class ServiceTypes {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@ToString
+public class Roles {
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private long id;
 
-    @NonNull
-    @Enumerated(EnumType.STRING)
-    private ServiceTypeTitle title;
+   @NonNull
+   @Enumerated(EnumType.STRING)
+   private RoleName name;
 }

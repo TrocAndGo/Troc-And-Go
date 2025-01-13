@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
-import com.trocandgo.trocandgo.model.Adresses;
+import com.trocandgo.trocandgo.entity.Adresses;
 import com.trocandgo.trocandgo.service.AuthService;
 import com.trocandgo.trocandgo.service.UserService;
 

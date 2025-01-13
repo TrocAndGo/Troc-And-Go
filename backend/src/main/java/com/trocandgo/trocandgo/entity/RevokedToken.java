@@ -1,4 +1,4 @@
-package com.trocandgo.trocandgo.model;
+package com.trocandgo.trocandgo.entity;
 
 import org.springframework.data.redis.core.RedisHash;
 

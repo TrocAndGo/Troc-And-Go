@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.trocandgo.trocandgo.entity.Users;
 import com.trocandgo.trocandgo.exception.NotAuthenticatedException;
-import com.trocandgo.trocandgo.model.Users;
 
 @Service
 public class AuthService {

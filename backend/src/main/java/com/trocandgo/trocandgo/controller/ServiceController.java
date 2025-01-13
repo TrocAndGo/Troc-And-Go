@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.trocandgo.trocandgo.dto.request.CreateReviewRequest;
 import com.trocandgo.trocandgo.dto.request.CreateServiceRequest;
 import com.trocandgo.trocandgo.dto.request.SearchRequest;
-import com.trocandgo.trocandgo.model.Reviews;
-import com.trocandgo.trocandgo.model.Services;
+import com.trocandgo.trocandgo.entity.Reviews;
+import com.trocandgo.trocandgo.entity.Services;
 import com.trocandgo.trocandgo.service.ServiceService;
 
 import jakarta.validation.Valid;
