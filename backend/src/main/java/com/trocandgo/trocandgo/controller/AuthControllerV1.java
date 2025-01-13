@@ -24,8 +24,8 @@ import com.trocandgo.trocandgo.model.Roles;
 import com.trocandgo.trocandgo.model.Users;
 import com.trocandgo.trocandgo.model.enums.RoleName;
 import com.trocandgo.trocandgo.repository.UserRepository;
-import com.trocandgo.trocandgo.services.JwtService;
-import com.trocandgo.trocandgo.services.UserDetailsImpl;
+import com.trocandgo.trocandgo.service.JwtService;
+import com.trocandgo.trocandgo.service.UserDetailsImpl;
 
 import jakarta.validation.Valid;
 

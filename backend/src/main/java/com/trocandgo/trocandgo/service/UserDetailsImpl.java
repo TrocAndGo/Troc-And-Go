@@ -1,4 +1,4 @@
-package com.trocandgo.trocandgo.services;
+package com.trocandgo.trocandgo.service;
 
 import java.util.Collection;
 import java.util.List;

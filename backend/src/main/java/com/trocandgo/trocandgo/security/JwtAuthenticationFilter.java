@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.trocandgo.trocandgo.services.JwtService;
+import com.trocandgo.trocandgo.service.JwtService;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,11 +1,9 @@
 package com.trocandgo.trocandgo.config;
 
-import com.trocandgo.trocandgo.services.JwtService;
-
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-
+import com.trocandgo.trocandgo.service.JwtService;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
