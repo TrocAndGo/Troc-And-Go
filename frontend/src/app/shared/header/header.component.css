@@ -1,6 +1,6 @@
 .header {
 	background-color: #2E594F;
-	height: 88px;
+	height: 100px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -46,6 +46,7 @@
 	max-width: 100%; /* Empêche de dépasser */
 	overflow-x: auto; /* Ajoute un scroll horizontal si nécessaire */
 	white-space: nowrap; /* Empêche les éléments de passer à la ligne */
+	overflow: hidden;
   }
 
   /* Boutons et liens */
@@ -66,5 +67,15 @@
 	  gap: 10px; /* Réduit l'espace entre les éléments */
 	}
   }
+
+  .profile-picture {
+	width: 60px; /* Taille de l'avatar (ajustable) */
+  height: 60px;
+  border-radius: 50%; /* Rond */
+  object-fit: cover; /* Ajuste l'image pour remplir le conteneur sans déformation */
+  border: 2px solid #fff; /* Bordure blanche fine */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Légère ombre pour un effet élégant */
+  transition: transform 0.3s, box-shadow 0.3s; /* Animation au survol */
+}
 
 

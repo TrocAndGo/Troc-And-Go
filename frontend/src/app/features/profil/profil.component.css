@@ -1,0 +1,35 @@
+img {
+	width: 10vw;
+	height: 10vw;
+	margin-bottom: 2vw;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+}
+
+h1 {
+	font-family: 'Montserrat', sans-serif;
+}
+
+p {
+	font-family: 'Montserrat', sans-serif;
+}
+
+.profile {
+	margin-left: 5vh;
+}
+
+input[type="file"] {
+  padding: 10px 2px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+  color: black;
+  margin-bottom: 2vh;
+}
+
+

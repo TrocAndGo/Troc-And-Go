@@ -1,1 +1,20 @@
-<p>profil works!</p>
+<div class="profile">
+<h1>Profil</h1>
+
+<!-- Picture -->
+<form (submit)="onSubmitImg()">
+	<div class="container">
+	<p>Choisir une image de profil</p>
+	<img
+	[src]="imagePreview || avatarUrl || 'icone.jpg'"
+      alt="Avatar de l'utilisateur"
+      class="profile-picture"
+    />
+	<input type="file" (change)="onFileSelected($event)" accept="image/*" />
+	<app-button text="Uploader" color="primary" type="submit"></app-button>
+	</div>
+  </form>
+
+</div>
+
+
