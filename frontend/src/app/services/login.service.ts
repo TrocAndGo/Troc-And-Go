@@ -39,4 +39,5 @@ export interface LoginRequest {
 // Typage de la réponse pour mieux gérer les données
 export interface LoginResponse {
   message: string;
+  token: string;
 }

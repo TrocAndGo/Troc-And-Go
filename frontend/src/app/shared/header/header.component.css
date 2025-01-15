@@ -38,12 +38,33 @@
 	align-items: center;
   }
 
-  .loggedin {
-	display: flex;
-	align-items: center;
-	justify-content: space-around;
+  /* Conteneur principal pour les boutons */
+.loggedin-container {
+	display: flex; /* Active Flexbox */
+	justify-content: flex-end; /* Place les éléments à droite */
+	width: 100%; /* Prend toute la largeur du header */
+	max-width: 100%; /* Empêche de dépasser */
+	overflow-x: auto; /* Ajoute un scroll horizontal si nécessaire */
+	white-space: nowrap; /* Empêche les éléments de passer à la ligne */
   }
 
-  .loggedin-container {
-	width: 30%;
+  /* Boutons et liens */
+  .loggedin {
+	display: flex; /* Aligne les éléments horizontalement */
+	gap: 15px; /* Espace entre les éléments */
+	align-items: center; /* Aligne verticalement au centre */
   }
+
+  /* Boutons adaptés */
+  .loggedin a, .loggedin app-button {
+	flex-shrink: 0; /* Empêche les éléments de se réduire */
+  }
+
+  /* Styles spécifiques aux petits écrans */
+  @media screen and (max-width: 768px) {
+	.loggedin-container {
+	  gap: 10px; /* Réduit l'espace entre les éléments */
+	}
+  }
+
+

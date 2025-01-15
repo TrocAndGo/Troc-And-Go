@@ -7,9 +7,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 import com.trocandgo.trocandgo.dto.request.SearchRequest;
-import com.trocandgo.trocandgo.model.Adresses;
-import com.trocandgo.trocandgo.model.ServiceCategories;
-import com.trocandgo.trocandgo.model.Services;
+import com.trocandgo.trocandgo.entity.Adresses;
+import com.trocandgo.trocandgo.entity.ServiceCategories;
+import com.trocandgo.trocandgo.entity.Services;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;

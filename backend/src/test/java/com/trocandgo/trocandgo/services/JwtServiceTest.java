@@ -18,6 +18,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 
+import com.trocandgo.trocandgo.service.JwtService;
+
 @ExtendWith(MockitoExtension.class)
 class JwtServiceTest {
 

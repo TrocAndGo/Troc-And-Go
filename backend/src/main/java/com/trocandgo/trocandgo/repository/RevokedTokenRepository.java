@@ -1,8 +1,9 @@
 package com.trocandgo.trocandgo.repository;
 
-import com.trocandgo.trocandgo.model.RevokedToken;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+
+import com.trocandgo.trocandgo.entity.RevokedToken;
 
 @Repository
 public interface RevokedTokenRepository extends CrudRepository<RevokedToken, String> {

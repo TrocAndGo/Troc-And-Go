@@ -1,7 +1,7 @@
 package com.trocandgo.trocandgo.config;
 
 import com.trocandgo.trocandgo.security.JwtAuthenticationFilter;
-import com.trocandgo.trocandgo.services.UserDetailsServiceImpl;
+import com.trocandgo.trocandgo.service.UserDetailsServiceImpl;
 
 import java.util.Arrays;
 
@@ -63,9 +63,6 @@ public class SecurityConfig {
                         "/swagger-ui/**",
                         "/swagger-ui.html"
                     ).permitAll()
-                    .requestMatchers("/api/v1/user/**").hasRole("USER")
-                    .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
