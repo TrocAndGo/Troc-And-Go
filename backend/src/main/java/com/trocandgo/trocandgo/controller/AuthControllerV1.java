@@ -1,16 +1,8 @@
 package com.trocandgo.trocandgo.controller;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,13 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.trocandgo.trocandgo.dto.request.LoginRequest;
 import com.trocandgo.trocandgo.dto.request.SignupRequest;
-import com.trocandgo.trocandgo.entity.Roles;
-import com.trocandgo.trocandgo.entity.Users;
-import com.trocandgo.trocandgo.entity.enums.RoleName;
+import com.trocandgo.trocandgo.dto.response.AuthLoginResponse;
+import com.trocandgo.trocandgo.dto.response.GenericMessageResponse;
+import com.trocandgo.trocandgo.dto.response.RestApiExceptionResponse;
 import com.trocandgo.trocandgo.repository.UserRepository;
+import com.trocandgo.trocandgo.service.AuthService;
 import com.trocandgo.trocandgo.service.JwtService;
-import com.trocandgo.trocandgo.service.UserDetailsImpl;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -44,113 +41,93 @@ public class AuthControllerV1 {
     @Autowired
     JwtService jwtService;
 
+    @Autowired
+    private AuthService authService;
+
+    @Operation(summary = "Authenticate user")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Login successful.",
+            content = { @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = AuthLoginResponse.class)
+            )}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid username or password.",
+            content = { @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = RestApiExceptionResponse.class)
+            )}
+        )
+    })
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        try {
-            Authentication authentication = authenticationProvider.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginRequest.getUsername(),
-                    loginRequest.getPassword()
-                )
-            );
+    public ResponseEntity<AuthLoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        var token = authService.login(request);
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-            List<String> roles = userDetails.getAuthorities()
-                                    .stream()
-                                    .map(grantedAuthority -> grantedAuthority.getAuthority())
-                                    .toList();
-
-            String jwtToken = jwtService.generateToken(userDetails.getUsername(), roles);
-
-            return ResponseEntity.ok(Map.of(
-                "message", "Login successful",
-                "token", jwtToken
-            ));
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "error", "Invalid username or password"
-            ));
-        }
+        return ResponseEntity.ok(new AuthLoginResponse(token, "Login successful"));
     }
 
+    @Operation(summary = "Register user")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "User registered successfully.",
+            content = { @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = GenericMessageResponse.class)
+            )}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Username is already taken.\n\nEmail is already in use.",
+            content = { @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = RestApiExceptionResponse.class)
+            )}
+        ),
+    })
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest signupRequest) {
-        if (signupRequest.getUsername() == null || signupRequest.getEmail() == null) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "error", "Username and Email are required"
-            ));
-        }
+    public ResponseEntity<GenericMessageResponse> signup(@Valid @RequestBody SignupRequest signupRequest) {
+        authService.createUser(signupRequest);
 
-        if (userRepository.existsByName(signupRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "error", "Username is already taken"
-            ));
-        }
-
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "error", "Email is already in use"
-            ));
-        }
-
-        Set<String> strRoles = signupRequest.getRoles();
-        if (strRoles == null || strRoles.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "error", "Missing user role"
-            ));
-        }
-
-        Set<Roles> roles = new HashSet<>();
-        for (String strRole : strRoles) {
-            try {
-                RoleName name = RoleName.valueOf(strRole);
-                roles.add(new Roles(name));
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().body(Map.of(
-                    "error", "Unknown role: " + strRole
-                ));
-            }
-        }
-
-        Users user = new Users(
-            signupRequest.getUsername(),
-            signupRequest.getEmail(),
-            passwordEncoder.encode(signupRequest.getPassword())
-        );
-        user.setRoles(roles);
-        userRepository.save(user);
-
-        return ResponseEntity.ok(Map.of(
-            "message", "User registered successfully"
-        ));
+        return ResponseEntity.ok(new GenericMessageResponse("User registered successfully"));
     }
 
+    @Operation(summary = "Logout user")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Successfully logged out.",
+            content = { @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = GenericMessageResponse.class)
+            )}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid token.",
+            content = { @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = RestApiExceptionResponse.class)
+            )}
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Token revocation failed.",
+            content = { @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = RestApiExceptionResponse.class)
+            )}
+        )
+    })
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader) {
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7); // Extraire le token
+    public ResponseEntity<GenericMessageResponse> logout(@RequestHeader("Authorization") String authorizationHeader) {
+        authService.logout(authorizationHeader);
 
-            try {
-                // Révoquer le token JWT en l'ajoutant à Redis (ou un autre store)
-                jwtService.revokeToken(token);
-
-                // Effacer l'authentification dans le contexte de sécurité
-                SecurityContextHolder.clearContext();
-                System.out.println("Authentication cleared");
-
-                return ResponseEntity.ok("Successfully logged out");
-            } catch (Exception e) {
-                // En cas d'erreur, retour d'une réponse interne avec message d'erreur
-                System.err.println("Erreur lors de la révocation du token : " + e.getMessage());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                    .body("Token revocation failed: " + e.getMessage());
-            }
-        }
-
-        // Si le token est absent ou mal formaté, retour d'une mauvaise requête
-        return ResponseEntity.badRequest().body("Invalid token");
+        return ResponseEntity.ok(new GenericMessageResponse("Successfully logged out"));
     }
 
 }
