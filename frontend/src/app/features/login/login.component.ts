@@ -46,6 +46,10 @@ export class LoginComponent {
       next: (response) => {
         console.log('User logged in successfully:', response);
 
+        const token = response.token; // Récupère le token de la réponse
+        localStorage.setItem('authToken', token); // Sauvegarde le token dans le localStorage
+        console.log(token);
+
         this.authService.setLoggedIn(true);
 
         this.errorMessage = null; // Réinitialiser les erreurs
