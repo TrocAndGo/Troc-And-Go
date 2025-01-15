@@ -8,8 +8,6 @@ import lombok.Value;
 
 @Value
 public class CreateReviewRequest {
-    private long userId; //TODO: Only for debugging purposes until login is implemented
-
     @NotEmpty
     private String comment;
 
