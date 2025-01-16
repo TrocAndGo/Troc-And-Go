@@ -27,10 +27,16 @@ public class ImageService {
 
     private final UserRepository userRepository;
     private final Path uploadDirectory = Paths.get("src/main/resources/static/uploads/profile-pictures");
+    private Tika tika = new Tika();
 
     public ImageService(UserRepository userRepository, EncryptionUtil encryptionUtil) {
         this.userRepository = userRepository;
         this.encryptionUtil = encryptionUtil;
+    }
+
+    // Setter pour Tika (pour l'injecter dans les tests)
+    public void setTika(Tika tika) {
+        this.tika = tika;
     }
 
     public String uploadProfilePicture(MultipartFile image, String username) throws Exception {
@@ -73,7 +79,7 @@ public class ImageService {
     // === Méthodes Privées Utilitaires ===
 
     private void validateImageMimeType(MultipartFile image) throws Exception {
-        Tika tika = new Tika();
+        //Tika tika = new Tika();
         String mimeType = tika.detect(image.getInputStream());
         if (mimeType == null || (!mimeType.equals("image/jpeg") && !mimeType.equals("image/png"))) {
             throw new IllegalArgumentException("Invalid image format. Only .jpg, .jpeg, and .png are allowed.");
