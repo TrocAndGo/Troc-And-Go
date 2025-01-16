@@ -1,37 +1,45 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImageManagementService {
   private apiUrl = 'http://localhost:8080/api/v1/user/';
+  private avatarUrlSubject = new BehaviorSubject<string>('icone.jpg'); // URL par défaut
+  avatarUrl$ = this.avatarUrlSubject.asObservable();
 
   constructor(private http: HttpClient) {}
+
+  getProfilePicture(): void {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      this.http
+        .get(this.apiUrl + 'profile-picture', { headers, responseType: 'blob' })
+        .pipe(
+          tap((blob) => {
+            const url = URL.createObjectURL(blob);
+            this.avatarUrlSubject.next(url); // Met à jour le BehaviorSubject
+          })
+        )
+        .subscribe();
+    }
+  }
 
   uploadImage(file: File, authToken: string): Observable<any> {
     const formData = new FormData();
     formData.append('image', file);
 
-    // Ajout des headers avec le token d'authentification
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${authToken}`
+      Authorization: `Bearer ${authToken}`,
     });
 
-    return this.http.post(this.apiUrl + 'upload', formData, { headers });
-  }
-
-  getProfilePicture(): Observable<Blob> {
-    const token = localStorage.getItem('authToken'); // Récupérer le token d'authentification
-    if (token) {
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // Ajouter le token dans les en-têtes
-
-      console.log('URL de l\'API:', this.apiUrl + 'profile-picture');
-
-      return this.http.get(this.apiUrl + 'profile-picture', { headers, responseType: 'blob' });
-    } else {
-      throw new Error('Token d\'authentification non trouvé');
-    }
+    return this.http.post(this.apiUrl + 'upload', formData, { headers }).pipe(
+      tap(() => {
+        this.getProfilePicture(); // Recharge automatiquement l'avatar après téléversement
+      })
+    );
   }
 }

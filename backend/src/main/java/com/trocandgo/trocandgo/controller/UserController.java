@@ -266,10 +266,6 @@ public class UserController {
     String fileName = user.getPicture() != null ? user.getPicture() : "avatar1.jpg";
 Path filePath = Paths.get("src/main/resources/static").resolve(fileName.substring(1));
 
-    System.out.println("Path in database: " + user.getPicture());
-System.out.println("Resolved file path: " + filePath);
-System.out.println("File exists: " + Files.exists(filePath));
-
     // Vérifier si le fichier existe
     if (!Files.exists(filePath)) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

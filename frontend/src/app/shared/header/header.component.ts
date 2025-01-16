@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonComponent } from '../button/button.component';
 import { SignupComponent } from '../../features/signup/signup.component';
@@ -21,46 +21,29 @@ import { ImageManagementService } from '../../services/image-management.service'
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
 
   selectedFile: File | null = null;
   imagePreview: string | null = null;
   avatarUrl: string | null = null;
   isLoggedIn = false;
 
-  constructor(public authService: AuthService, private router: Router, private imageManagementService: ImageManagementService) {}
+  constructor(public authService: AuthService, private router: Router, private imageService: ImageManagementService) {}
 
   ngOnInit() {
     // S'abonner à l'état de connexion
     this.authService.loggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
     });
-    this.loadAvatar();
+    this.imageService.avatarUrl$.subscribe((url) => {
+      this.avatarUrl = url;
+    });
+    this.imageService.getProfilePicture(); // Charger l'avatar au démarrage
   }
 
   @Output() clicked = new EventEmitter<void>();
   isPopupVisible = false;
   isLoginPopupVisible = false;
-
-  loadAvatar(): void {
-    this.imageManagementService.getProfilePicture().subscribe({
-      next: (blob) => {
-        // Convertir le Blob en URL d'objet
-        this.avatarUrl = URL.createObjectURL(blob);
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement de l\'avatar:', err);
-        if (err.status) {
-          console.log(`Statut HTTP: ${err.status}`);
-        }
-        if (err.message) {
-          console.log(`Message d'erreur: ${err.message}`);
-        }
-        this.avatarUrl = 'icone.jpg'; // Avatar par défaut en cas d'erreur
-      },
-
-    });
-  }
 
   onClick() {
     this.clicked.emit();

@@ -18,8 +18,14 @@ p {
 }
 
 .profile {
-	margin-left: 5vh;
-}
+	margin: 20px auto; /* Centre horizontalement et ajoute des marges */
+	max-width: 90%; /* Empêche l'écrasement sur des écrans étroits */
+	width: 600px; /* Largeur par défaut pour les écrans plus grands */
+	padding: 20px; /* Ajoute un espace intérieur */
+	box-sizing: border-box; /* Inclut le padding dans la largeur */
+	background-color:rgba(51, 51, 51, 0.1);
+	border-radius: 8px; /* Arrondi des coins */
+  }
 
 input[type="file"] {
   padding: 10px 2px;
@@ -32,4 +38,66 @@ input[type="file"] {
   margin-bottom: 2vh;
 }
 
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+  }
+
+  input {
+
+	padding: 0.75rem;
+	font-size: 1rem;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  input:focus {
+	border-color: #3CB371;
+	box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+	outline: none;
+  }
+
+  button {
+	padding: 0.75rem;
+	font-size: 1rem;
+	color: #ffffff;
+	background-color: #3CB371;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	margin-top: 1rem;
+	margin-bottom: 5rem;
+	width: 50%;
+
+  }
+
+  button:hover {
+	background-color: #3CB371;
+  }
+
+  button:disabled {
+	background-color: #cccccc;
+	cursor: not-allowed;
+  }
+
+  .error-message {
+	color: red;
+	font-size: 0.875rem;
+  }
+
+  input.ng-invalid.ng-touched {
+	border-color: red;
+  }
+
+  input.ng-valid.ng-touched {
+	border-color: green;
+  }
+
+  .upload-button {
+	margin-bottom: 30px;
+  }
 

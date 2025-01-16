@@ -4,19 +4,23 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 0 60px; /* Pour donner un peu d'espace autour du contenu */
+	padding: 0 30px; /* Réduit l'espace pour les petits écrans */
+	box-sizing: border-box; /* Inclut la largeur du padding dans le calcul de la largeur */
   }
 
   .logo-links-container {
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	gap: 40px;
+	gap: 20px; /* Réduit l'espace entre les éléments */
+	flex-wrap: wrap; /* Permet aux éléments de s'ajuster */
+	width: 60%;
   }
 
   img {
 	height: 75px;
 	width: 118px;
+	object-fit: contain; /* Garde la proportion de l'image */
   }
 
   a {
@@ -29,7 +33,8 @@
   .buttons-container {
 	display: flex;
 	justify-content: flex-end;
-	gap: 40px; /* Pour espacer les boutons */
+	gap: 20px; /* Réduit l'espace entre les boutons */
+	flex-wrap: wrap; /* Permet aux boutons de s'ajuster sur plusieurs lignes */
   }
 
   .button {
@@ -39,43 +44,95 @@
   }
 
   /* Conteneur principal pour les boutons */
-.loggedin-container {
+  .loggedin-container {
 	display: flex; /* Active Flexbox */
 	justify-content: flex-end; /* Place les éléments à droite */
 	width: 100%; /* Prend toute la largeur du header */
 	max-width: 100%; /* Empêche de dépasser */
 	overflow-x: auto; /* Ajoute un scroll horizontal si nécessaire */
-	white-space: nowrap; /* Empêche les éléments de passer à la ligne */
 	overflow: hidden;
   }
 
-  /* Boutons et liens */
   .loggedin {
 	display: flex; /* Aligne les éléments horizontalement */
 	gap: 15px; /* Espace entre les éléments */
 	align-items: center; /* Aligne verticalement au centre */
   }
 
-  /* Boutons adaptés */
-  .loggedin a, .loggedin app-button {
+  .loggedin a,
+  .loggedin app-button {
 	flex-shrink: 0; /* Empêche les éléments de se réduire */
   }
 
+  .profile-picture {
+	width: 60px;
+	height: 60px;
+	border-radius: 50%; /* Rond */
+	object-fit: cover; /* Ajuste l'image pour remplir le conteneur sans déformation */
+	border: 2px solid #fff; /* Bordure blanche fine */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Légère ombre pour un effet élégant */
+	transition: transform 0.3s, box-shadow 0.3s; /* Animation au survol */
+  }
+
   /* Styles spécifiques aux petits écrans */
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
+	.logo-links-container {
+	  gap: 10px; /* Espacement plus petit */
+	}
+
+	.buttons-container {
+	  gap: 10px; /* Réduit l'espace entre les boutons */
+	}
+
 	.loggedin-container {
-	  gap: 10px; /* Réduit l'espace entre les éléments */
+	  gap: 10px; /* Espacement réduit entre les éléments du menu utilisateur */
 	}
   }
 
-  .profile-picture {
-	width: 60px; /* Taille de l'avatar (ajustable) */
-  height: 60px;
-  border-radius: 50%; /* Rond */
-  object-fit: cover; /* Ajuste l'image pour remplir le conteneur sans déformation */
-  border: 2px solid #fff; /* Bordure blanche fine */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Légère ombre pour un effet élégant */
-  transition: transform 0.3s, box-shadow 0.3s; /* Animation au survol */
-}
+  @media screen and (max-width: 768px) {
+	.header {
+	  height: auto; /* Permet d'ajuster la hauteur pour les petits écrans */
+	  flex-direction: column; /* Organise les éléments du header verticalement */
+	  justify-content: flex-start;
+	  padding: 10px 20px; /* Réduit les marges internes */
+	}
+
+	.logo-links-container {
+	  gap: 15px; /* Espacement entre les éléments du logo et des liens */
+	  flex-direction: column; /* Empile les éléments du logo et des liens */
+	  align-items: center; /* Centre les éléments */
+	}
+
+	.buttons-container {
+	  gap: 15px; /* Espacement plus petit entre les boutons */
+	  flex-direction: column; /* Les boutons seront alignés verticalement */
+	  align-items: center; /* Centre les boutons */
+	}
+
+	.loggedin-container {
+	  gap: 15px; /* Espacement réduit */
+	  flex-direction: column; /* Empile les éléments */
+	  align-items: center; /* Centre les éléments */
+	}
+
+	.profile-picture {
+	  width: 50px; /* Réduit la taille de l'avatar pour les petits écrans */
+	  height: 50px;
+	}
+  }
+
+  @media screen and (max-width: 480px) {
+	.logo-links-container {
+	  gap: 5px; /* Réduit encore l'espacement */
+	}
+
+	.buttons-container {
+	  gap: 5px; /* Réduit l'espace entre les boutons */
+	}
+
+	.loggedin-container {
+	  gap: 5px; /* Espacement réduit encore */
+	}
+  }
 
 
