@@ -9,22 +9,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +29,8 @@ import com.trocandgo.trocandgo.dto.request.AddFavoriteRequest;
 import com.trocandgo.trocandgo.dto.request.CreateReviewRequest;
 import com.trocandgo.trocandgo.dto.request.CreateServiceRequest;
 import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
+import com.trocandgo.trocandgo.dto.request.UploadProfilePictureRequest;
+import com.trocandgo.trocandgo.dto.response.UploadProfilePictureResponse;
 import com.trocandgo.trocandgo.model.Adresses;
 import com.trocandgo.trocandgo.model.Favorites;
 import com.trocandgo.trocandgo.model.FavoritesPK;
@@ -96,43 +94,24 @@ public class UserController {
     @Transactional
     @PostMapping("/profile/upload-picture")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> uploadProfilePicture(@RequestParam("image") MultipartFile image,
-                                                Authentication authentication) {
-        if (image.isEmpty()) {
-            return ResponseEntity.badRequest().body("Image file is required.");
-        }
+    public ResponseEntity<UploadProfilePictureResponse> uploadProfilePicture(
+        @Valid @ModelAttribute UploadProfilePictureRequest request,
+        Authentication authentication) {
 
         try {
-            // Récupérer l'utilisateur actuel
-            String username = authentication.getName();
-            Users user = userRepository.findByName(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            // Appeler le service ImageService pour gérer l'image
+            imageService.uploadProfilePicture(request.getImage(), authentication.getName());
 
-            // Définir le répertoire de stockage des images
-            Path uploadDirectory = Paths.get("src/main/resources/static/uploads/profile-pictures");
+            return ResponseEntity.ok(new UploadProfilePictureResponse(
+                "success",
+                "Profile picture uploaded successfully."));
 
-            // Vérifier si l'utilisateur a déjà une image et la supprimer
-            if (user.getPicture() != null && !user.getPicture().isEmpty()) {
-                String oldFilePath = user.getPicture().replace("/uploads/profile-pictures/", "");
-                Path oldFile = uploadDirectory.resolve(oldFilePath);
-                if (Files.exists(oldFile)) Files.delete(oldFile);
-            }
-
-            // Utiliser le service pour traiter et crypter l'image
-            String imagePath = imageService.processAndEncryptImage(image, username, uploadDirectory);
-
-            // Mettre à jour le chemin de l'image dans la base de données
-            user.setPicture(imagePath);
-            userRepository.save(user);
-
-            return ResponseEntity.ok("Profile picture uploaded successfully.");
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             logger.error("Failed to upload profile picture: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to upload profile picture.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                new UploadProfilePictureResponse(
+                    "error", "Failed to upload profile picture.")
+            );
         }
     }
 
@@ -140,30 +119,8 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> downloadProfilePicture(Authentication authentication) {
         try {
-            // Récupérer l'utilisateur actuel
-            String username = authentication.getName();
-            Users user = userRepository.findByName(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            // Vérifier si l'utilisateur a une image
-            if (user.getPicture() == null || user.getPicture().isEmpty()) {
-                return ResponseEntity.badRequest().body("No profile picture found.");
-            }
-
-            // Définir le répertoire de stockage des images
-            Path uploadDirectory = Paths.get("src/main/resources/static/uploads/profile-pictures");
-
-            // Obtenir le chemin complet du fichier
-            String fileName = user.getPicture().replace("/uploads/profile-pictures/", "");
-            Path filePath = uploadDirectory.resolve(fileName);
-
-            // Vérifier si le fichier existe
-            if (!Files.exists(filePath)) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profile picture not found.");
-            }
-
-            // Utiliser le service pour décrypter l'image
-            byte[] decryptedImage = imageService.decryptImage(filePath);
+            // Appeler le service pour gérer le téléchargement et la décryption
+            byte[] decryptedImage = imageService.downloadProfilePicture(authentication.getName());
 
             // Retourner l'image décryptée avec le bon type MIME
             return ResponseEntity.ok()
@@ -171,12 +128,13 @@ public class UserController {
                     .body(decryptedImage);
 
         } catch (Exception e) {
-            logger.error("Error downloading profile picture: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to download profile picture.");
+            logger.error("Failed to download profile picture: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "status", "error",
+                "message", "An error occurred while processing your request. Please try again later."
+            ));
         }
     }
-
 
     @PutMapping("adress")
     public ResponseEntity<?> setAdress(@Valid @RequestBody SetAdressRequest request) {
