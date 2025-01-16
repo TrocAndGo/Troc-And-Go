@@ -1,13 +1,21 @@
-.header {
+.footer {
 	background-color: #2E594F;
-	height: 88px;
+	height: 100px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	padding: 0 60px; /* Pour donner un peu d'espace autour du contenu */
+	bottom: 0;
   }
 
   .logo-links-container {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 40px;
+  }
+
+  .islogged {
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
