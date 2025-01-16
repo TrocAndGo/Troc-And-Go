@@ -2,10 +2,12 @@ package com.trocandgo.trocandgo.config;
 
 import com.trocandgo.trocandgo.security.JwtAuthenticationFilter;
 import com.trocandgo.trocandgo.services.UserDetailsServiceImpl;
+import com.trocandgo.trocandgo.util.EncryptionUtil;
 
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -102,5 +104,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public EncryptionUtil encryptionUtil(@Value("${security.encryption.key}") String encryptionKey) {
+        System.err.println("encryptionKey in SecurityConfig: " + encryptionKey);
+        return new EncryptionUtil(encryptionKey);
     }
 }
