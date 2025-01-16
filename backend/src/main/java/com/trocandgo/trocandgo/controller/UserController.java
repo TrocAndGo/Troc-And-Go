@@ -1,14 +1,11 @@
 package com.trocandgo.trocandgo.controller;
 
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import java.util.Optional;
-import java.util.UUID;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +14,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.trocandgo.trocandgo.dto.request.AddFavoriteRequest;
 import com.trocandgo.trocandgo.dto.request.CreateReviewRequest;
@@ -42,12 +51,16 @@ import com.trocandgo.trocandgo.repository.ServiceRepository;
 import com.trocandgo.trocandgo.repository.ServiceStatusRepository;
 import com.trocandgo.trocandgo.repository.ServiceTypeRepository;
 import com.trocandgo.trocandgo.repository.UserRepository;
+import com.trocandgo.trocandgo.services.ImageService;
 
 import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private AddressRepository addressRepository;
 
@@ -72,27 +85,98 @@ public class UserController {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private ImageService imageService;
+
     @GetMapping("hello")
     public ResponseEntity<?> hello() {
         return ResponseEntity.ok("Hello");
     }
 
-    @GetMapping("/profile")
+    @Transactional
+    @PostMapping("/profile/upload-picture")
     @PreAuthorize("hasRole('USER')")
-        public ResponseEntity<Map<String, String>> getUserProfile() {
-
-        // Récupérer l'authentification depuis le SecurityContextHolder
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "User is not authenticated"));
+    public ResponseEntity<?> uploadProfilePicture(@RequestParam("image") MultipartFile image,
+                                                Authentication authentication) {
+        if (image.isEmpty()) {
+            return ResponseEntity.badRequest().body("Image file is required.");
         }
 
-        // Récupérer le nom d'utilisateur à partir de l'authentification
-        String username = authentication.getName();
+        try {
+            // Récupérer l'utilisateur actuel
+            String username = authentication.getName();
+            Users user = userRepository.findByName(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return ResponseEntity.ok(Map.of("message", "User Profile Data for: " + username));
+            // Définir le répertoire de stockage des images
+            Path uploadDirectory = Paths.get("src/main/resources/static/uploads/profile-pictures");
+
+            // Vérifier si l'utilisateur a déjà une image et la supprimer
+            if (user.getPicture() != null && !user.getPicture().isEmpty()) {
+                String oldFilePath = user.getPicture().replace("/uploads/profile-pictures/", "");
+                Path oldFile = uploadDirectory.resolve(oldFilePath);
+                if (Files.exists(oldFile)) Files.delete(oldFile);
+            }
+
+            // Utiliser le service pour traiter et crypter l'image
+            String imagePath = imageService.processAndEncryptImage(image, username, uploadDirectory);
+
+            // Mettre à jour le chemin de l'image dans la base de données
+            user.setPicture(imagePath);
+            userRepository.save(user);
+
+            return ResponseEntity.ok("Profile picture uploaded successfully.");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Failed to upload profile picture: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to upload profile picture.");
+        }
     }
+
+    @GetMapping("/profile/download-picture")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> downloadProfilePicture(Authentication authentication) {
+        try {
+            // Récupérer l'utilisateur actuel
+            String username = authentication.getName();
+            Users user = userRepository.findByName(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Vérifier si l'utilisateur a une image
+            if (user.getPicture() == null || user.getPicture().isEmpty()) {
+                return ResponseEntity.badRequest().body("No profile picture found.");
+            }
+
+            // Définir le répertoire de stockage des images
+            Path uploadDirectory = Paths.get("src/main/resources/static/uploads/profile-pictures");
+
+            // Obtenir le chemin complet du fichier
+            String fileName = user.getPicture().replace("/uploads/profile-pictures/", "");
+            Path filePath = uploadDirectory.resolve(fileName);
+
+            // Vérifier si le fichier existe
+            if (!Files.exists(filePath)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profile picture not found.");
+            }
+
+            // Utiliser le service pour décrypter l'image
+            byte[] decryptedImage = imageService.decryptImage(filePath);
+
+            // Retourner l'image décryptée avec le bon type MIME
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(decryptedImage);
+
+        } catch (Exception e) {
+            logger.error("Error downloading profile picture: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to download profile picture.");
+        }
+    }
+
 
     @PutMapping("adress")
     public ResponseEntity<?> setAdress(@Valid @RequestBody SetAdressRequest request) {
