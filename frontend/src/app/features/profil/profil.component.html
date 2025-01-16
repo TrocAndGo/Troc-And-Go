@@ -1,1 +1,105 @@
-<p>profil works!</p>
+<div class="profile">
+<h1>Profil</h1>
+
+<!-- Picture -->
+<form (submit)="onSubmitImg()">
+	<div class="container">
+	<p>Choisir une image de profil</p>
+	<img
+	[src]="imagePreview || avatarUrl || 'icone.jpg'"
+	  alt="Avatar de l'utilisateur"
+	  class="profile-picture"
+	/>
+	<input type="file" (change)="onFileSelected($event)" accept="image/*" />
+	<app-button text="Uploader" color="primary" type="submit" class="upload-button"></app-button>
+	</div>
+  </form>
+
+  <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
+
+	<!-- Adress -->
+	<input type="text"
+	id="address"
+	name="address"
+	[(ngModel)]="address"
+	placeholder="Entrez une adresse"
+	#address="ngModel"
+       minlength="5"
+       maxlength="100"
+       pattern="[a-zA-Z0-9\s,.-]*">
+	   <div *ngIf="address.invalid && address.touched" class="error-message">
+		<small *ngIf="address.errors?.['minlength']">Address must be at least 5 characters.</small>
+		<small *ngIf="address.errors?.['maxlength']">Address cannot exceed 100 characters.</small>
+		<small *ngIf="address.errors?.['pattern']">Address can only contain letters, numbers, spaces, commas, periods, and hyphens.</small>
+	  </div>
+
+	 <!-- Phone number -->
+	 <input type="text"
+	 id="phone_number"
+	 name="phone_number"
+	 [(ngModel)]="phone_number"
+	 placeholder="Enter your phone number"
+	 #phone_number="ngModel"
+	 [pattern]="phonePattern">
+	 <div *ngIf="phone_number.invalid && phone_number.touched" class="error-message">
+		<small *ngIf="phone_number.errors?.['pattern']">Invalid phone number format.</small>
+	  </div>
+
+	  <!-- Username -->
+	    <input type="text"
+		id="username"
+		name="username"
+		[(ngModel)]="username"
+		required placeholder="Enter your username"
+	    #username="ngModel">
+	  <div *ngIf="username.invalid && username.touched" class="error-message">
+	    <small *ngIf="username.errors?.['required']">Username is required.</small>
+	  </div>
+
+	  <!-- Password -->
+	  <input
+	  type="password"
+	  id="password"
+	  name="password"
+	  [(ngModel)]="password"
+	  required
+	  placeholder="Enter your password"
+	  (ngModelChange)="onPasswordChange(signupForm.value.password, signupForm.value.confirmPassword)"
+	  #password="ngModel">
+	  <div *ngIf="password.invalid && password.touched" class="error-message">
+	   <small *ngIf="password.errors?.['required']">Password is required.</small>
+	  </div>
+
+	  <!-- Confirm Password -->
+	  <input
+	  type="password"
+	  id="confirmPassword"
+	  name="confirmPassword"
+	  [(ngModel)]="password"
+	  required
+	  placeholder="Confirm your password"
+	  (ngModelChange)="onPasswordChange(signupForm.value.password, signupForm.value.confirmPassword)"
+	  #confirmPassword="ngModel">
+	  <div *ngIf="confirmPassword.invalid && confirmPassword.touched" class="error-message">
+	   <small *ngIf="confirmPassword.errors?.['required']">Password confirmation is required.</small>
+	   <small *ngIf="!passwordsMatch && confirmPassword.touched">Passwords do not match.</small>
+	  </div>
+
+	  <!-- Email -->
+	  <input type="email"
+	  id="email"
+	  name="email"
+	  [(ngModel)]="email"
+	  required
+	  pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" placeholder="Enter your email" #email="ngModel">
+	<div *ngIf="email.invalid && email.touched" class="error-message">
+	  <small *ngIf="email.errors?.['required']">Email is required.</small>
+	  <small *ngIf="email.errors?.['email']">Please enter a valid email address.</small>
+	  <small *ngIf="!email.errors?.['required'] && !email.errors?.['email']">Invalid email format.</small>
+	</div>
+
+	<button type="submit" [disabled]="!signupForm.valid || !passwordsMatch">Mettre à jour le profil</button>
+
+</form>
+
+</div>

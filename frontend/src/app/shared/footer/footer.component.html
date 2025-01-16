@@ -1,9 +1,11 @@
-<div class="header">
+<div class="footer">
 	<div class="logo-links-container">
-	  <a routerLink="/">Accueil</a>
-	  <a routerLink="about">A propos</a>
-	  <a routerLink="contact">Contact</a>
-	  <a routerLink="profil">Profil</a>
-	  <a routerLink="annonce">Créer une annonce</a>
+		<a routerLink="/">Accueil</a>
+		<a routerLink="about">A propos</a>
+		<a routerLink="contact">Contact</a>
+		<div *ngIf="isLoggedIn" class="islogged">
+			<a routerLink="profil">Profil</a>
+			<a routerLink="annonce">Créer une annonce</a>
+		</div>
 	</div>
-  </div>
+</div>

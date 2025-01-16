@@ -1,50 +1,38 @@
 <div class="header">
 	<div class="logo-links-container">
-	  <img src="logo.png" alt="logo">
+		<img src="logo.png" alt="logo">
 
-	  <a routerLink="/">Accueil</a>
-	  <a routerLink="about">A propos</a>
-	  <a routerLink="contact">Contact</a>
+		<a routerLink="/">Accueil</a>
+		<a routerLink="about">A propos</a>
+		<a routerLink="contact">Contact</a>
 	</div>
 
 	<div *ngIf="!isLoggedIn">
-	<div class="buttons-container">
-	  <div class="button">
-		<app-button
-		  text="Se connecter"
-		  color="primary"
-		  (clicked)="openLoginPopup()">
-		</app-button>
-		<app-login
-		[isVisible]="isLoginPopupVisible"
-		(closed)="closeLoginPopup()">
-		</app-login>
-	  </div>
-	  <div class="button">
-		<app-button
-		  text="Créer un compte"
-		  color="primary"
-		  (clicked)="openPopup()">
-		</app-button>
-		<app-signup
-		[isVisible]="isPopupVisible"
-		(closed)="closePopup()"
-		(signupSuccess)="onSignupSuccess()">
-		</app-signup>
-	  </div>
-	</div>
+		<div class="buttons-container">
+			<div class="button">
+				<app-button text="Se connecter" color="primary" (clicked)="openLoginPopup()">
+				</app-button>
+				<app-login [isVisible]="isLoginPopupVisible" (closed)="closeLoginPopup()">
+				</app-login>
+			</div>
+			<div class="button">
+				<app-button text="Créer un compte" color="primary" (clicked)="openPopup()">
+				</app-button>
+				<app-signup [isVisible]="isPopupVisible" (closed)="closePopup()" (signupSuccess)="onSignupSuccess()">
+				</app-signup>
+			</div>
+		</div>
 	</div>
 
 	<div *ngIf="isLoggedIn" class="loggedin-container">
 		<div class="loggedin">
-		<app-button
-		  text="Créer une annonce"
-		  color="primary"
-		  (clicked)="openCreateAd()">
-		</app-button>
-		<a routerLink="profil">Profil</a>
-		<a href="#" (click)="logout()">Se déconnecter</a>
-	</div>
+			<app-button text="Créer une annonce" color="primary" (clicked)="openCreateAd()">
+			</app-button>
+			<a routerLink="profil">Profil</a>
+			<a href="#" (click)="logout()">Se déconnecter</a>
+			<img [src]="imagePreview || avatarUrl || 'icone.jpg'" alt="Avatar de l'utilisateur"
+				class="profile-picture" />
+		</div>
 	</div>
 
 </div>
