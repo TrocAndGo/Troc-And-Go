@@ -1,7 +1,7 @@
 package com.trocandgo.trocandgo.config;
 
 import com.trocandgo.trocandgo.security.JwtAuthenticationFilter;
-import com.trocandgo.trocandgo.services.UserDetailsServiceImpl;
+import com.trocandgo.trocandgo.service.UserDetailsServiceImpl;
 
 import java.util.Arrays;
 
@@ -56,10 +56,7 @@ public class SecurityConfig {
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth ->
-                auth.requestMatchers("/api/v1/auth/**", "/api/v1/public/**").permitAll()
-                    .requestMatchers("/api/v1/user/**").hasRole("USER")
-                    .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated()
+                auth.requestMatchers("/api/v1/**").permitAll()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
