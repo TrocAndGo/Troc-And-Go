@@ -1,26 +1,28 @@
 package com.trocandgo.trocandgo.controller;
 
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.security.core.context.SecurityContextHolder;
-import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,6 +34,39 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.trocandgo.trocandgo.dto.request.AddFavoriteRequest;
+import com.trocandgo.trocandgo.dto.request.CreateReviewRequest;
+import com.trocandgo.trocandgo.dto.request.CreateServiceRequest;
+import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
+import com.trocandgo.trocandgo.dto.request.UploadProfilePictureRequest;
+import com.trocandgo.trocandgo.dto.response.UploadProfilePictureResponse;
+import com.trocandgo.trocandgo.model.Adresses;
+import com.trocandgo.trocandgo.model.Favorites;
+import com.trocandgo.trocandgo.model.FavoritesPK;
+import com.trocandgo.trocandgo.model.Reviews;
+import com.trocandgo.trocandgo.model.ReviewsPK;
+import com.trocandgo.trocandgo.model.ServiceCategories;
+import com.trocandgo.trocandgo.model.ServiceStatuses;
+import com.trocandgo.trocandgo.model.ServiceTypes;
+import com.trocandgo.trocandgo.model.Services;
+import com.trocandgo.trocandgo.model.Users;
+import com.trocandgo.trocandgo.repository.AddressRepository;
+import com.trocandgo.trocandgo.repository.FavoriteRepository;
+import com.trocandgo.trocandgo.repository.ReviewRepository;
+import com.trocandgo.trocandgo.repository.ServiceCategoryRepository;
+import com.trocandgo.trocandgo.repository.ServiceRepository;
+import com.trocandgo.trocandgo.repository.ServiceStatusRepository;
+import com.trocandgo.trocandgo.repository.ServiceTypeRepository;
+import com.trocandgo.trocandgo.repository.UserRepository;
+import com.trocandgo.trocandgo.service.ImageService;
+
 
 import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
 import com.trocandgo.trocandgo.entity.Adresses;
@@ -40,26 +75,69 @@ import com.trocandgo.trocandgo.service.UserService;
 
 import jakarta.validation.Valid;
 
+
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserService userService;
 
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private ImageService imageService;
+
     @GetMapping("hello")
     public ResponseEntity<?> hello() {
         return ResponseEntity.ok("Hello");
     }
 
-    @GetMapping("/profile")
+    @Transactional
+    @PostMapping("/profile/upload-picture")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Map<String, String>> getUserProfile() {
-        var user = authService.getLoggedInUser();
+    public ResponseEntity<UploadProfilePictureResponse> uploadProfilePicture(
+        @Valid @ModelAttribute UploadProfilePictureRequest request,
+        Authentication authentication) {
 
-        return ResponseEntity.ok(Map.of("message", "User Profile Data for: " + user.getName()));
+        try {
+            // Appeler le service ImageService pour gérer l'image
+            imageService.uploadProfilePicture(request.getImage(), authentication.getName());
+
+            return ResponseEntity.ok(new UploadProfilePictureResponse(
+                "success",
+                "Profile picture uploaded successfully."));
+
+        } catch (Exception e) {
+            logger.error("Failed to upload profile picture: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                new UploadProfilePictureResponse(
+                    "error", "Failed to upload profile picture.")
+            );
+        }
+    }
+
+    @GetMapping("/profile/download-picture")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> downloadProfilePicture(Authentication authentication) {
+        try {
+            // Appeler le service pour gérer le téléchargement et la décryption
+            byte[] decryptedImage = imageService.downloadProfilePicture(authentication.getName());
+
+            // Retourner l'image décryptée avec le bon type MIME
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(decryptedImage);
+
+        } catch (Exception e) {
+            logger.error("Failed to download profile picture: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "status", "error",
+                "message", "An error occurred while processing your request. Please try again later."
+            ));
+        }
     }
 
     @PutMapping("adress")
