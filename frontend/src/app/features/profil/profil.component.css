@@ -52,6 +52,7 @@ form {
 	border-radius: 4px;
 	box-sizing: border-box;
 	transition: border-color 0.3s, box-shadow 0.3s;
+	font-family: 'Montserrat', sans-serif;
   }
 
   input:focus {
@@ -72,6 +73,7 @@ form {
 	margin-top: 1rem;
 	margin-bottom: 5rem;
 	width: 50%;
+	font-family: 'Montserrat', sans-serif;
 
   }
 
@@ -87,6 +89,7 @@ form {
   .error-message {
 	color: red;
 	font-size: 0.875rem;
+	font-family: 'Montserrat', sans-serif;
   }
 
   input.ng-invalid.ng-touched {
