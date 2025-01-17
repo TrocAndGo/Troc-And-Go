@@ -1,0 +1,102 @@
+.content {
+	display: flex;
+	flex-direction: column;
+}
+
+input, textarea {
+
+	padding: 0.75rem;
+	font-size: 1rem;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	transition: border-color 0.3s, box-shadow 0.3s;
+	font-family: 'Montserrat', sans-serif;
+	margin-top: 30px;
+  }
+
+  input:focus {
+	border-color: #3CB371;
+	box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+	outline: none;
+  }
+
+  .error-message {
+	color: red;
+	font-size: 0.875rem;
+	font-family: 'Montserrat', sans-serif;
+  }
+
+  input.ng-invalid.ng-touched {
+	border-color: red;
+  }
+
+  input.ng-valid.ng-touched {
+	border-color: green;
+  }
+
+  h1 {
+	font-family: 'Montserrat', sans-serif;
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+.create-ad{
+	margin: 20px auto; /* Centre horizontalement et ajoute des marges */
+	max-width: 90%; /* Empêche l'écrasement sur des écrans étroits */
+	width: 600px; /* Largeur par défaut pour les écrans plus grands */
+	padding: 20px; /* Ajoute un espace intérieur */
+	box-sizing: border-box; /* Inclut le padding dans la largeur */
+	background-color:rgba(51, 51, 51, 0.1);
+	border-radius: 8px; /* Arrondi des coins */
+  }
+
+  .dropdown-menus {
+	margin-bottom: 20px;
+	display: flex;
+	gap: 10px;
+  }
+
+  @media screen and (max-width: 768px) {
+	.dropdown-menus {
+	  height: auto; /* Permet d'ajuster la hauteur pour les petits écrans */
+	  flex-direction: column; /* Organise les éléments du header verticalement */
+	  justify-content: flex-start;
+	  padding: 10px 20px; /* Réduit les marges internes */
+	  align-items: center;
+	}
+}
+
+button {
+	padding: 0.75rem;
+	font-size: 1rem;
+	color: #ffffff;
+	background-color: #3CB371;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	margin-top: 1rem;
+	margin-bottom: 5rem;
+	width: 50%;
+	font-family: 'Montserrat', sans-serif;
+
+  }
+
+  button:hover {
+	background-color: #3CB371;
+  }
+
+  button:disabled {
+	background-color: #cccccc;
+	cursor: not-allowed;
+  }
+
+  .button-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin-top: 40px;
+	margin-bottom: 0;
+  }

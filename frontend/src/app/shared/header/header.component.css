@@ -101,6 +101,7 @@
 	  gap: 15px; /* Espacement entre les éléments du logo et des liens */
 	  flex-direction: column; /* Empile les éléments du logo et des liens */
 	  align-items: center; /* Centre les éléments */
+	  margin-bottom: 10px;
 	}
 
 	.buttons-container {
