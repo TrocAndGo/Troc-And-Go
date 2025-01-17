@@ -1,4 +1,4 @@
-package com.trocandgo.trocandgo.services;
+package com.trocandgo.trocandgo.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -11,8 +11,9 @@ import org.mockito.*;
 import org.springframework.mock.web.MockMultipartFile;
 
 import com.trocandgo.trocandgo.util.EncryptionUtil;
-import com.trocandgo.trocandgo.model.Users;
+import com.trocandgo.trocandgo.entity.Users;
 import com.trocandgo.trocandgo.repository.UserRepository;
+//import com.trocandgo.trocandgo.service.ImageService;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

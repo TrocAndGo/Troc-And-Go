@@ -1,7 +1,7 @@
 package com.trocandgo.trocandgo.config;
 
 import com.trocandgo.trocandgo.security.JwtAuthenticationFilter;
-import com.trocandgo.trocandgo.services.UserDetailsServiceImpl;
+import com.trocandgo.trocandgo.service.UserDetailsServiceImpl;
 import com.trocandgo.trocandgo.util.EncryptionUtil;
 
 

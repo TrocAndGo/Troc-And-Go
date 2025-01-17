@@ -17,7 +17,7 @@ export class ImageManagementService {
     if (token) {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.http
-        .get(this.apiUrl + 'profile-picture', { headers, responseType: 'blob' })
+        .get(this.apiUrl + 'profile/download-picture', { headers, responseType: 'blob' })
         .pipe(
           tap((blob) => {
             const url = URL.createObjectURL(blob);
@@ -36,7 +36,7 @@ export class ImageManagementService {
       Authorization: `Bearer ${authToken}`,
     });
 
-    return this.http.post(this.apiUrl + 'upload', formData, { headers }).pipe(
+    return this.http.post(this.apiUrl + 'profile/upload-picture', formData, { headers }).pipe(
       tap(() => {
         this.getProfilePicture(); // Recharge automatiquement l'avatar après téléversement
       })

@@ -1,11 +1,11 @@
 
-package com.trocandgo.trocandgo.services;
+package com.trocandgo.trocandgo.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.trocandgo.trocandgo.model.Users;
+import com.trocandgo.trocandgo.entity.Users;
 import com.trocandgo.trocandgo.repository.UserRepository;
 import com.trocandgo.trocandgo.util.EncryptionUtil;
 import net.coobird.thumbnailator.Thumbnails;

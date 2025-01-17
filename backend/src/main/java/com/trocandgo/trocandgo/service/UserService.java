@@ -7,6 +7,7 @@ import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
 import com.trocandgo.trocandgo.entity.Adresses;
 import com.trocandgo.trocandgo.entity.Favorites;
 import com.trocandgo.trocandgo.entity.FavoritesPK;
+import com.trocandgo.trocandgo.entity.Users;
 import com.trocandgo.trocandgo.exception.FavoriteAlreadyExistsException;
 import com.trocandgo.trocandgo.exception.FavoriteDoesntExistException;
 import com.trocandgo.trocandgo.exception.FavoriteOwnServiceException;
@@ -31,6 +32,18 @@ public class UserService {
 
     @Autowired
     private FavoriteRepository favoriteRepository;
+
+    // Méthode pour récupérer un utilisateur par son nom
+    public Users getUserByUsername(String username) {
+        return userRepository.findByName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    // Méthode pour mettre à jour l'image de profil
+    public void updateProfilePicture(Users user, String imagePath) {
+        user.setPicture(imagePath);
+        userRepository.save(user);
+    }
 
     /**
      * Sets the address for the currently logged-in user.

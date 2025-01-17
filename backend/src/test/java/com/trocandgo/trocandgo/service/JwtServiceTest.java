@@ -1,4 +1,4 @@
-package com.trocandgo.trocandgo.services;
+package com.trocandgo.trocandgo.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -17,8 +17,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-
-import com.trocandgo.trocandgo.service.JwtService;
 
 @ExtendWith(MockitoExtension.class)
 class JwtServiceTest {
