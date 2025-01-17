@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { ImageManagementService } from './image-management.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,15 +12,16 @@ export class LoginService {
 
   private apiUrl = 'http://localhost:8080/api/v1/auth';
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient, private authService: AuthService, private imageService: ImageManagementService) {}
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, loginRequest, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     }).pipe(
-      tap(() => {
-        // Met à jour l'état de connexion après un login réussi
+      tap((response: LoginResponse) => {
+        localStorage.setItem('authToken', response.token);
         this.authService.setLoggedIn(true);
+        this.imageService.getProfilePicture();
       }),
       catchError(this.handleError)  // Ajout de la gestion des erreurs
     );

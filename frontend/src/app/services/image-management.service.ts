@@ -20,10 +20,14 @@ export class ImageManagementService {
         .get(this.apiUrl + 'profile/download-picture', { headers, responseType: 'blob' })
         .pipe(
           tap((blob) => {
-            const url = URL.createObjectURL(blob);
-            this.avatarUrlSubject.next(url); // Met à jour le BehaviorSubject
-          })
-        )
+            const oldUrl = this.avatarUrlSubject.value;
+          if (oldUrl && oldUrl !== 'icone.jpg') {
+            URL.revokeObjectURL(oldUrl);
+          }
+          const newUrl = URL.createObjectURL(blob);
+          this.avatarUrlSubject.next(newUrl);
+        })
+      )
         .subscribe();
     }
   }
@@ -41,5 +45,9 @@ export class ImageManagementService {
         this.getProfilePicture(); // Recharge automatiquement l'avatar après téléversement
       })
     );
+  }
+
+  resetProfilePicture(): void {
+    this.avatarUrlSubject.next('icone.jpg'); // Remet l'avatar par défaut
   }
 }
