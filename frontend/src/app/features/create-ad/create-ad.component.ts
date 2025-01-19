@@ -54,6 +54,7 @@ export class CreateAdComponent implements OnInit{
               categorie: form.value.categorie,
               titre: form.value.titre,
               description: form.value.description,
+              address: form.value.address,
 
             };
 
