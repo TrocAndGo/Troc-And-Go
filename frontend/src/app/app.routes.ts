@@ -4,6 +4,7 @@ import { AboutComponent } from './features/about/about.component';
 import { ContactComponent } from './features/contact/contact.component';
 import { ProfilComponent } from './features/profil/profil.component';
 import { CreateAdComponent } from './features/create-ad/create-ad.component';
+import { MyAdsComponent } from './features/my-ads/my-ads.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent }, // Page d'accueil
@@ -11,5 +12,6 @@ export const routes: Routes = [
   { path: 'contact', component: ContactComponent },
   { path: 'profil', component: ProfilComponent },
   { path: 'annonce', component: CreateAdComponent},
+  { path: 'my-ads', component: MyAdsComponent},
   { path: '**', redirectTo: '' },         // Redirection vers l'accueil pour les URLs invalides
 ];

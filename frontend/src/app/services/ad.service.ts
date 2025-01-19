@@ -23,5 +23,6 @@ export class AdService {
     categorie: string;
     titre: string;
     description: string;
+    address: string;
   }
 
