@@ -1,9 +1,13 @@
 package com.trocandgo.trocandgo.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
+import com.trocandgo.trocandgo.dto.request.UpdateProfileRequest;
+import com.trocandgo.trocandgo.dto.response.ProfileResponse;
 import com.trocandgo.trocandgo.entity.Adresses;
 import com.trocandgo.trocandgo.entity.Favorites;
 import com.trocandgo.trocandgo.entity.FavoritesPK;
@@ -15,6 +19,8 @@ import com.trocandgo.trocandgo.exception.NotAuthenticatedException;
 import com.trocandgo.trocandgo.repository.AddressRepository;
 import com.trocandgo.trocandgo.repository.FavoriteRepository;
 import com.trocandgo.trocandgo.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -32,6 +38,8 @@ public class UserService {
 
     @Autowired
     private FavoriteRepository favoriteRepository;
+
+
 
     // Méthode pour récupérer un utilisateur par son nom
     public Users getUserByUsername(String username) {
@@ -53,13 +61,31 @@ public class UserService {
      * @throws NotAuthenticatedException if there is no authenticated user or the user is not logged in.
      */
     public Adresses setAdress(SetAdressRequest request) {
+        // Récupérer l'utilisateur connecté
         var user = authService.getLoggedInUser();
 
-        Adresses adress = new Adresses(request.getAdress(), request.getCity(), request.getZipCode(), request.getDepartment(), request.getRegion(), request.getCountry());
+        // Vérifier si l'utilisateur a déjà une adresse
+        Adresses adress = user.getAddress();
+
+        if (adress == null) {
+            // Si aucune adresse n'existe, en créer une nouvelle
+            adress = new Adresses();
+        }
+
+        // Mettre à jour les champs de l'adresse
+        adress.setAdress(request.getAdress());
+        adress.setCity(request.getCity());
+        adress.setZipCode(request.getZipCode());
+        adress.setDepartment(request.getDepartment());
+        adress.setRegion(request.getRegion());
+        adress.setCountry(request.getCountry());
         adress.setLatitude(request.getLatitude());
         adress.setLongitude(request.getLongitude());
+
+        // Sauvegarder ou mettre à jour l'adresse
         adress = addressRepository.save(adress);
 
+        // Associer l'adresse à l'utilisateur
         user.setAddress(adress);
         userRepository.save(user);
 
@@ -107,5 +133,70 @@ public class UserService {
             throw new FavoriteDoesntExistException();
 
         favoriteRepository.deleteById(favoritesId);
+    }
+
+    // Récupérer les informations du profil utilisateur
+    public ProfileResponse getUserProfile(Users user) {
+        Adresses address = user.getAddress();
+
+        return new ProfileResponse(
+            user.getName(),
+            user.getEmail(),
+            user.getPhoneNumber(),
+            address != null ? address.getAdress() : null,
+            address != null ? address.getCity() : null,
+            address != null ? address.getZipCode() : null
+        );
+    }
+
+    // Mettre à jour le profil utilisateur
+    @Transactional
+    public void updateUserProfile(UpdateProfileRequest request, Users user) {
+        // Mise à jour des informations personnelles
+        if (request.getUsername() != null) {
+            user.setName(request.getUsername());
+        }
+        if (request.getEmail() != null) {
+            user.setEmail(request.getEmail());
+        }
+        if (request.getPhoneNumber() != null) {
+            user.setPhoneNumber(request.getPhoneNumber());
+        }
+
+        // Mise à jour de l'adresse
+        Adresses address = user.getAddress();
+        if (address == null) {
+            address = new Adresses();
+        }
+
+        if (request.getAddress() != null) {
+            address.setAdress(request.getAddress());
+        }
+        if (request.getCity() != null) {
+            address.setCity(request.getCity());
+        }
+        if (request.getZipCode() != null) {
+            address.setZipCode(request.getZipCode());
+        }
+        if (request.getCountry() != null) {
+            address.setCountry(request.getCountry());
+        }
+        if (request.getDepartment() != null) {
+            address.setDepartment(request.getDepartment());
+        }
+        if (request.getRegion() != null) {
+            address.setRegion(request.getRegion());
+        }
+        if (request.getLatitude() != null) {
+            address.setLatitude(BigDecimal.valueOf(request.getLatitude()));
+        }
+        if (request.getLongitude() != null) {
+            address.setLongitude(BigDecimal.valueOf(request.getLongitude()));
+        }
+
+        address = addressRepository.save(address);
+        user.setAddress(address);
+
+        userRepository.save(user);
     }
 }

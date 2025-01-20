@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
@@ -50,6 +51,7 @@ public class Users {
     private String phoneNumber;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
     private Adresses address;
 
     @ManyToMany(cascade = CascadeType.ALL)
