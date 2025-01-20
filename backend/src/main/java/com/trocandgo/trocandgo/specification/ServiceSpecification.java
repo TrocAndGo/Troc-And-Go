@@ -45,6 +45,9 @@ public class ServiceSpecification {
                 predicates.add(criteriaBuilder.equal(adressJoin.get("country"), filter.getCountry()));
             }
 
+            System.out.println(filter);
+            System.out.println(predicates);
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
