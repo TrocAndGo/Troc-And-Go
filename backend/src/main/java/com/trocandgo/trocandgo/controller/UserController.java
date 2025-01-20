@@ -5,7 +5,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -27,11 +25,16 @@ import org.slf4j.LoggerFactory;
 
 import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
 import com.trocandgo.trocandgo.dto.request.UploadProfilePictureRequest;
+import com.trocandgo.trocandgo.dto.response.ProfileResponse;
 import com.trocandgo.trocandgo.dto.response.UploadProfilePictureResponse;
 import com.trocandgo.trocandgo.entity.Adresses;
+import com.trocandgo.trocandgo.entity.Users;
+import com.trocandgo.trocandgo.service.AuthService;
 import com.trocandgo.trocandgo.service.ImageService;
 
 import com.trocandgo.trocandgo.service.UserService;
+import com.trocandgo.trocandgo.dto.request.UpdateProfileRequest;
+
 
 import jakarta.validation.Valid;
 
@@ -47,10 +50,48 @@ public class UserController {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private AuthService authService;
+
     @GetMapping("hello")
     public ResponseEntity<?> hello() {
         return ResponseEntity.ok("Hello");
     }
+
+    // Envoyer les informations du profil
+    @GetMapping("/profile")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getUserProfile() {
+        try {
+            Users currentUser = authService.getLoggedInUser();
+            ProfileResponse profileResponse = userService.getUserProfile(currentUser);
+            return ResponseEntity.ok(profileResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "status", "error",
+                "message", "Failed to get profile."
+            ));
+        }
+    }
+
+
+    // Mettre à jour le profil de l'utilisateur et l'adresse
+    @PutMapping("/profile/update")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> updateUserProfile(@Valid @RequestBody UpdateProfileRequest request) {
+        try {
+            Users currentUser = authService.getLoggedInUser();
+            userService.updateUserProfile(request, currentUser);
+            return ResponseEntity.ok(Map.of("result", "Profile updated successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "status", "error",
+                "message", "Failed to update profile."));
+
+        }
+
+    }
+
 
     @Transactional
     @PostMapping("/profile/upload-picture")
@@ -92,12 +133,12 @@ public class UserController {
             logger.error("Failed to download profile picture: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                 "status", "error",
-                "message", "An error occurred while processing your request. Please try again later."
+                "message", "Failed to download profile picture."
             ));
         }
     }
 
-    @PutMapping("adress")
+    @PutMapping("/profile/address")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Adresses> setAdress(@Valid @RequestBody SetAdressRequest request) {
         var adress = userService.setAdress(request);
