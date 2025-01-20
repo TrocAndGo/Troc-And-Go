@@ -119,7 +119,8 @@ public class UserController {
 
     @GetMapping("/profile/download-picture")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> downloadProfilePicture(Authentication authentication) {
+    public ResponseEntity<?> downloadProfilePicture(Authentication authentication)
+    {
         try {
             // Appeler le service pour gérer le téléchargement et la décryption
             byte[] decryptedImage = imageService.downloadProfilePicture(authentication.getName());
