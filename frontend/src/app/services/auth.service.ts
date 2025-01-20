@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { ImageManagementService } from './image-management.service';
 
 @Injectable({
   providedIn: 'root',
@@ -7,6 +8,8 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService {
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   public loggedIn$ = this.loggedInSubject.asObservable();
+
+  constructor(private imageService: ImageManagementService) {}
 
   // Met à jour l'état de connexion
   setLoggedIn(isLoggedIn: boolean): void {
@@ -22,6 +25,7 @@ export class AuthService {
     // Réinitialisation de l'état de connexion
     this.setLoggedIn(false); // Met à jour l'état de connexion
     localStorage.removeItem('authToken'); // Supprime le token ou autre méthode
+    this.imageService.resetProfilePicture();
   }
 
 }

@@ -27,6 +27,7 @@ export class HeaderComponent implements OnInit {
   imagePreview: string | null = null;
   avatarUrl: string | null = null;
   isLoggedIn = false;
+  showDropdown = false;
 
   constructor(public authService: AuthService, private router: Router, private imageService: ImageManagementService) {}
 
@@ -44,6 +45,10 @@ export class HeaderComponent implements OnInit {
   @Output() clicked = new EventEmitter<void>();
   isPopupVisible = false;
   isLoginPopupVisible = false;
+
+  toggleDropdown(): void {
+    this.showDropdown = !this.showDropdown;
+  }
 
   onClick() {
     this.clicked.emit();

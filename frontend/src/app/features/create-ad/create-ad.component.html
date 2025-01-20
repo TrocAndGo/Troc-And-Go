@@ -1,1 +1,47 @@
-<p>create-ad works!</p>
+<div class="create-ad">
+	<h1>Créer une annonce</h1>
+
+	<form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
+
+		<div class="dropdown-menus">
+
+			<app-dropdown-button text="Type" color="secondary" [items]="types">></app-dropdown-button>
+
+			<app-dropdown-button text="Catégorie" color="secondary" [items]="categories">></app-dropdown-button>
+
+		</div>
+		<div class="content">
+
+			<!-- Title -->
+			<input type="text" id="title" name="title" ngModel required placeholder="Titre de l'annonce"
+				#title="ngModel">
+			<div *ngIf="title.invalid && title.touched" class="error-message">
+				<small *ngIf="title.errors?.['required']">Title is required.</small>
+			</div>
+
+			<!-- Description -->
+			<textarea id="description" name="description" rows="6" cols="40" ngModel required
+				placeholder="Description de l'annonce" #description="ngModel"></textarea>
+			<div *ngIf="description.invalid && description.touched" class="error-message">
+				<small *ngIf="description.errors?.['required']">Description is required.</small>
+			</div>
+
+			<p>Utilisez votre adresse actuelle ou entrez une autre adresse pour ce service:</p>
+
+			<!-- Adress -->
+			<input type="text" id="address" name="address" [(ngModel)]="address" placeholder="Entrez une adresse"
+				#address="ngModel" minlength="5" maxlength="100" pattern="[a-zA-Z0-9\s,.-]*">
+			<div *ngIf="address.invalid && address.touched" class="error-message">
+				<small *ngIf="address.errors?.['minlength']">Address must be at least 5 characters.</small>
+				<small *ngIf="address.errors?.['maxlength']">Address cannot exceed 100 characters.</small>
+				<small *ngIf="address.errors?.['pattern']">Address can only contain letters, numbers, spaces, commas,
+					periods, and hyphens.</small>
+			</div>
+
+			<div class="button-container">
+				<button type="submit" [disabled]="!signupForm.valid">Publier l'annonce</button>
+			</div>
+
+		</div>
+	</form>
+</div>
