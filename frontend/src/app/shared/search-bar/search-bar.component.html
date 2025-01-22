@@ -1,0 +1,30 @@
+<div class="container">
+	<h1>Recherche - {{serviceCount}} service{{getPluralSuffix()}} disponible{{getPluralSuffix()}}</h1>
+	<form [formGroup]="form" (ngSubmit)="onSubmit()" class="background">
+		<ng-container *ngIf="showAdressFilters">
+			<app-dropdown-button
+				text="Région"
+				color="secondary"
+				[items]="['Bretagne', 'Pays de la Loire', 'Normandie']"
+				formControlName="region"/>
+			<app-dropdown-button
+				text="Département"
+				color="secondary"
+				[items]="['Mayenne', 'Vendée', 'Sarthe']"
+				formControlName="departement" />
+			<app-dropdown-button
+				text="Ville"
+				color="secondary"
+				[items]="['Château-Gontier', 'Laval', 'Le Mans']"
+				formControlName="ville" />
+		</ng-container>
+		<app-dropdown-button
+			text="Catégorie"
+			color="secondary"
+			[items]="['Jardinage', 'Outillage', 'Garagiste']"
+			formControlName="category"/>
+		<button type="submit">
+			Rechercher
+		</button>
+	</form>
+</div>

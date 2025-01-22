@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trocandgo.trocandgo.dto.mapper.ServiceMapper;
 import com.trocandgo.trocandgo.dto.request.CreateReviewRequest;
 import com.trocandgo.trocandgo.dto.request.CreateServiceRequest;
 import com.trocandgo.trocandgo.dto.request.SearchRequest;
+import com.trocandgo.trocandgo.dto.response.SearchResultEntryResponse;
 import com.trocandgo.trocandgo.entity.Reviews;
 import com.trocandgo.trocandgo.entity.Services;
 import com.trocandgo.trocandgo.service.ServiceService;
@@ -36,11 +38,11 @@ public class ServiceController {
     }
 
     @GetMapping("")
-    public Page<Services> search(SearchRequest request,
+    public Page<SearchResultEntryResponse> search(SearchRequest request,
             @SortDefault(sort = "creationDate", direction = Direction.DESC) @PageableDefault(size = 20) Pageable pageable) {
         var servicePage = serviceService.findServicesPaginated(request, pageable);
 
-        return servicePage;
+        return servicePage.map(ServiceMapper::toSearchResponse);
     }
 
     @PostMapping("")

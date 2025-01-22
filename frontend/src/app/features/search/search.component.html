@@ -1,0 +1,21 @@
+<app-search-bar
+    [serviceCount]="resultCount"
+    [region]="region"
+    [department]="department"
+    [city]="city"
+    [category]="category"
+    (searched)="onSearch($event)" />
+
+<div class="results" *ngIf="resultCount > 0">
+    @for (result of results.content; track result.id) {
+        <div class="entry">
+            <app-service-card
+                [user]="result.createdBy"
+                [profilePicture]="result.creatorProfilePicture ?? './quote.png'"
+                [localisation]="result.city"
+                [date]="result.creationDate"
+                [search]="result.category"
+                [description]="result.description" />
+        </div>
+    }
+</div>
