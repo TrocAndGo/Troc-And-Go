@@ -22,7 +22,7 @@ public class ServiceSpecification {
 
             if (StringUtils.hasText(filter.getCategory())) {
                 Join<Services, ServiceCategories> categoryJoin = root.join("category");
-                predicates.add(criteriaBuilder.equal(categoryJoin.get("title"), filter.getCategory()));
+                predicates.add(criteriaBuilder.equal(categoryJoin.get("id"), filter.getCategory()));
             }
 
             if (StringUtils.hasText(filter.getCity())) {

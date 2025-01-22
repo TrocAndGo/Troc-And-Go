@@ -43,7 +43,7 @@ export class SearchComponent implements OnInit {
         region: form.value.region,
         departement: form.value.departement,
         ville: form.value.ville,
-        category: form.value.category
+        category: form.get('category')?.value,
       },
       queryParamsHandling: 'merge',
     });

@@ -21,8 +21,9 @@
 		<app-dropdown-button
 			text="Catégorie"
 			color="secondary"
-			[items]="['Jardinage', 'Outillage', 'Garagiste']"
-			formControlName="category"/>
+			formControlName="category"
+			[items]="categoryNames"
+			[itemValues]="categoryValues" />
 		<button type="submit">
 			Rechercher
 		</button>

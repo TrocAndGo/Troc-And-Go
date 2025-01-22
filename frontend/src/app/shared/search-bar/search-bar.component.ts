@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AdCategory, AdService } from '../../services/ad.service';
 import { DropdownButtonComponent } from '../dropdown-button/dropdown-button.component';
 
 @Component({
@@ -21,10 +22,12 @@ export class SearchBarComponent implements OnInit {
   form!: FormGroup;
 
   @Output() searched = new EventEmitter<FormGroup>();
+  categories: AdCategory[] = [];
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(private formBuilder: FormBuilder, private router: Router, private activatedRoute: ActivatedRoute, private adService: AdService) {}
 
   ngOnInit(): void {
+    this.loadCategories();
     // Ensure empty strings are converted to null
     this.region = this.region?.trim() || null;
     this.department = this.department?.trim() || null;
@@ -46,32 +49,24 @@ export class SearchBarComponent implements OnInit {
     this.form = this.formBuilder.group(controls);
   }
 
+  loadCategories() {
+    this.adService.getCategories().subscribe((categories) => {
+      this.categories = categories;
+    })
+  }
+
+  get categoryNames(): string[] {
+    return this.categories.map((category) => category.title);
+  }
+
+  get categoryValues(): string[] {
+    return this.categories.map((category) => category.id.toString());
+  }
+
   onSubmit(): void {
     if (this.form.invalid) return;
 
     this.searched.emit(this.form);
-
-    /*
-    if (this.isOnSearchPage() === false) {
-      this.router.navigate(['/recherche'], {
-        queryParams: {
-          area: this.form.value.area,
-          category: this.form.value.category
-        }
-      });
-    } else {
-      this.router.navigate([], {
-        relativeTo: this.activatedRoute,
-        queryParams: {
-          region: this.form.value.region,
-          departement: this.form.value.departement,
-          ville: this.form.value.ville,
-          category: this.form.value.category
-        },
-        queryParamsHandling: 'merge',
-      });
-    }
-      */
   }
 
   getPluralSuffix(): string {
