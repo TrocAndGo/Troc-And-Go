@@ -12,6 +12,7 @@ import com.trocandgo.trocandgo.dto.request.CreateServiceRequest;
 import com.trocandgo.trocandgo.dto.request.SearchRequest;
 import com.trocandgo.trocandgo.entity.Reviews;
 import com.trocandgo.trocandgo.entity.ReviewsPK;
+import com.trocandgo.trocandgo.entity.ServiceCategories;
 import com.trocandgo.trocandgo.entity.ServiceStatuses;
 import com.trocandgo.trocandgo.entity.ServiceTypes;
 import com.trocandgo.trocandgo.entity.Services;
@@ -166,5 +167,9 @@ public class ServiceService {
         review = reviewRepository.save(review);
 
         return review;
+    }
+
+    public ServiceCategories[] getCategoryList() {
+        return serviceCategoryRepository.findAll().toArray(new ServiceCategories[0]);
     }
 }

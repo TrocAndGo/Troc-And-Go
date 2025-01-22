@@ -4,10 +4,10 @@
 [disabled]="disabled"
 type="button"
 (click)="toggleDropdown()">
-{{ value ?? text }} <span class="dropdown-arrow">&#x25BC;</span>
+{{ valueText ?? text }} <span class="dropdown-arrow">&#x25BC;</span>
   </button>
   <ul *ngIf="dropdownOpen" class="dropdown-menu">
-    <li (click)="selectItem(null)"><small>Tous</small></li>
-	  <li *ngFor="let item of items" (click)="selectItem(item)">{{ item }}</li>
+    <li *ngIf="showDefaultItem" (click)="selectItem(null, null)"><small>Tous</small></li>
+	  <li *ngFor="let item of items; let i=index" [value]="itemValues[i]" (click)="selectItem(item, itemValues[i])">{{ item }}</li>
   </ul>
 </div>
