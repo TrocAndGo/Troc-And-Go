@@ -33,5 +33,8 @@ openssl rsa -pubout -in app.key -out app.pub
 
 ## Credits
 Alexandre Gaubert : [https://github.com/Judgy53](https://github.com/Judgy53)
+
 Marc Pourias : [https://github.com/MarcP70](https://github.com/MarcP70)
+
 Nathalie Metreau : [https://github.com/NathalieMet](https://github.com/NathalieMet)
+
