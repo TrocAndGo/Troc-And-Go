@@ -1,4 +1,10 @@
-<app-search-bar [serviceCount]="resultCount" />
+<app-search-bar
+    [serviceCount]="resultCount"
+    [region]="region"
+    [department]="department"
+    [city]="city"
+    [category]="category"
+    (searched)="onSearch($event)" />
 
 <div class="results" *ngIf="resultCount > 0">
     @for (result of results.content; track result.id) {

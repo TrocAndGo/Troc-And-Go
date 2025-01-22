@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DropdownButtonComponent } from '../../shared/dropdown-button/dropdown-button.component';
+import { DropdownButtonComponent } from '../dropdown-button/dropdown-button.component';
 
 @Component({
   selector: 'app-search-bar',
@@ -13,28 +13,45 @@ import { DropdownButtonComponent } from '../../shared/dropdown-button/dropdown-b
 })
 export class SearchBarComponent implements OnInit {
   @Input() serviceCount: number = 0;
+  @Input() showAdressFilters: boolean = true;
+  @Input() region: string | null = null;
+  @Input() department: string | null = null;
+  @Input() city: string | null = null;
+  @Input() category: string | null = null;
   form!: FormGroup;
+
+  @Output() searched = new EventEmitter<FormGroup>();
 
   constructor(private formBuilder: FormBuilder, private router: Router, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    if(this.isOnSearchPage() === false) {
-      this.form = this.formBuilder.group({
-        category: [null, Validators.required],
-      });
-    } else {
-      this.form = this.formBuilder.group({
-        region: [null],
-        departement: [null],
-        ville: [null],
-        category: [null],
+    // Ensure empty strings are converted to null
+    this.region = this.region?.trim() || null;
+    this.department = this.department?.trim() || null;
+    this.city = this.city?.trim() || null;
+    this.category = this.category?.trim() || null;
+
+    var controls = {
+      category: [this.category]
+    };
+
+    if (this.showAdressFilters) {
+      controls = Object.assign(controls, {
+        region: [this.region],
+        departement: [this.department],
+        ville: [this.city]
       });
     }
+
+    this.form = this.formBuilder.group(controls);
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.form.invalid) return;
 
+    this.searched.emit(this.form);
+
+    /*
     if (this.isOnSearchPage() === false) {
       this.router.navigate(['/recherche'], {
         queryParams: {
@@ -54,13 +71,10 @@ export class SearchBarComponent implements OnInit {
         queryParamsHandling: 'merge',
       });
     }
+      */
   }
 
   getPluralSuffix(): string {
     return this.serviceCount > 1 ? 's' : '';
-  }
-
-  isOnSearchPage(): boolean {
-    return this.activatedRoute.routeConfig?.path === 'recherche';
   }
 }

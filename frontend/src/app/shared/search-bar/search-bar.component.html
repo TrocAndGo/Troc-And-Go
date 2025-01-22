@@ -1,7 +1,7 @@
 <div class="container">
 	<h1>Recherche - {{serviceCount}} service{{getPluralSuffix()}} disponible{{getPluralSuffix()}}</h1>
 	<form [formGroup]="form" (ngSubmit)="onSubmit()" class="background">
-		<ng-container *ngIf="isOnSearchPage()">
+		<ng-container *ngIf="showAdressFilters">
 			<app-dropdown-button
 				text="Région"
 				color="secondary"

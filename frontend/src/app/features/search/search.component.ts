@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SearchResponse, SearchService } from '../../services/search.service';
+import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
 import { ServiceCardComponent } from '../../shared/service-card/service-card.component';
-import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 @Component({
   selector: 'app-search',
@@ -32,6 +33,19 @@ export class SearchComponent implements OnInit {
       this.sort = params.get('sort') || 'creationDate';
       this.sortDir = params.get('sortDir') || 'desc';
       this.loadSearchResults();
+    });
+  }
+
+  onSearch(form: FormGroup): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        region: form.value.region,
+        departement: form.value.departement,
+        ville: form.value.ville,
+        category: form.value.category
+      },
+      queryParamsHandling: 'merge',
     });
   }
 

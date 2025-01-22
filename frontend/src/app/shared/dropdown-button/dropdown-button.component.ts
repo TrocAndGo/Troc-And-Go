@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-dropdown-button',
@@ -11,6 +11,11 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: forwardRef(() => DropdownButtonComponent),
+    },
+    {
+      provide: NG_VALIDATORS,
       multi: true,
       useExisting: forwardRef(() => DropdownButtonComponent),
     },
@@ -50,5 +55,9 @@ export class DropdownButtonComponent implements ControlValueAccessor {
   }
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+  validate({value}: FormControl) {
+    const isValid = this.items.includes(value) || value === null;
+    return isValid ? null : {invalid: true};
   }
 }
