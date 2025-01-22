@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ButtonComponent } from '../button/button.component';
 import { AuthService } from '../../services/auth.service';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-service-card',
@@ -15,7 +15,6 @@ export class ServiceCardComponent {
   @Input() user: string = 'User';
   @Input() localisation: string = 'Localisation';
   @Input() date: Date = new Date();
-  @Input() description: string | null = null;
   @Input() propose: string = 'Service proposé';
   @Input() title: string = 'Title';
   @Input() categorie: string = 'Categorie';

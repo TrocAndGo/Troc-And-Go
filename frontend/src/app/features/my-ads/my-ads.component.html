@@ -1,4 +1,4 @@
-<div *ngIf="services.length > 0; else noServices">
+<div *ngIf="services.length > 0; else noServices" class="services-container">
 	<div *ngFor="let service of services" class="service-card">
 		<app-service-card
 		[profilePicture]="service.imagePath || './default-avatar.png'"
