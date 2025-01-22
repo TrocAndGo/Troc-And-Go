@@ -1,7 +1,7 @@
 <div *ngIf="services.length > 0; else noServices">
 	<div *ngFor="let service of services" class="service-card">
 		<app-service-card
-		[cheminImage]="service.imagePath || './default-avatar.png'"
+		[profilePicture]="service.imagePath || './default-avatar.png'"
 		[user]="service.userName"
 		[localisation]="service.location"
 		[date]="service.creationDate"
