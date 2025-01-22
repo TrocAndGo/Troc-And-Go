@@ -1,13 +1,24 @@
 <div class="create-ad">
 	<h1>Créer une annonce</h1>
 
-	<form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
+	<form #createAdForm="ngForm" (ngSubmit)="onSubmit(createAdForm)">
 
 		<div class="dropdown-menus">
 
-			<app-dropdown-button text="Type" color="secondary" [items]="['Je recherche', 'Je propose']"></app-dropdown-button>
+			<!-- <app-dropdown-button
+				text="Type"
+				color="secondary"
+				[items]="['Je recherche', 'Je propose']"
+				[showDefaultItem]="false"/> -->
 
-			<app-dropdown-button text="Catégorie" color="secondary" [items]="categories"></app-dropdown-button>
+			<app-dropdown-button
+				text="Catégorie"
+				color="secondary"
+				ngModel name="category" required
+				#category="ngModel"
+				[items]="categoryNames"
+				[itemValues]="categoryValues"
+				[showDefaultItem]="false"/>
 
 		</div>
 		<div class="content">
@@ -26,20 +37,12 @@
 				<small *ngIf="description.errors?.['required']">Description is required.</small>
 			</div>
 
-			<p>Utilisez votre adresse actuelle ou entrez une autre adresse pour ce service:</p>
-
 			<!-- Adress -->
-			<input type="text" id="address" name="address" [(ngModel)]="address" placeholder="Entrez une adresse"
-				#address="ngModel" minlength="5" maxlength="100" pattern="[a-zA-Z0-9\s,.-]*">
-			<div *ngIf="address.invalid && address.touched" class="error-message">
-				<small *ngIf="address.errors?.['minlength']">Address must be at least 5 characters.</small>
-				<small *ngIf="address.errors?.['maxlength']">Address cannot exceed 100 characters.</small>
-				<small *ngIf="address.errors?.['pattern']">Address can only contain letters, numbers, spaces, commas,
-					periods, and hyphens.</small>
-			</div>
+			<p>L'annonce sera lié à votre adresse actuelle :</p>
+			<input type="text" id="address" name="address" [value]="userAdress ?? ''" disabled>
 
 			<div class="button-container">
-				<button type="submit" [disabled]="!signupForm.valid">Publier l'annonce</button>
+				<button type="submit" [disabled]="!createAdForm.valid">Publier l'annonce</button>
 			</div>
 
 		</div>

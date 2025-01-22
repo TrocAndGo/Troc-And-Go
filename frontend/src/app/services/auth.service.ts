@@ -9,7 +9,12 @@ export class AuthService {
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   public loggedIn$ = this.loggedInSubject.asObservable();
 
-  constructor(private imageService: ImageManagementService) {}
+  constructor(private imageService: ImageManagementService) {
+    var authToken = localStorage.getItem('authToken');
+    if (authToken) {
+      this.setLoggedIn(true);
+    }
+  }
 
   // Met à jour l'état de connexion
   setLoggedIn(isLoggedIn: boolean): void {

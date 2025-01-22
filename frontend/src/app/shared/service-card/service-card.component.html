@@ -12,9 +12,6 @@
 	<h2>{{ title }}</h2>
 	<p class="categorie"><strong>Catégorie:</strong> {{ categorie }}</p>
 	<p class="propose"><strong>Je propose:</strong> {{ propose }}</p>
-	<p class="description" *ngIf="description !== null">
-		{{ description }}
-	</p>
 </div>
 <button type="button" [disabled]="!isLoggedIn" (click)="toggleCoordinates()">Voir les coordonnées</button>
 <div *ngIf="!isLoggedIn" class="warning">

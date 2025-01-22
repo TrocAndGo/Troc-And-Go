@@ -19,8 +19,10 @@ import com.trocandgo.trocandgo.dto.mapper.ServiceMapper;
 import com.trocandgo.trocandgo.dto.request.CreateReviewRequest;
 import com.trocandgo.trocandgo.dto.request.CreateServiceRequest;
 import com.trocandgo.trocandgo.dto.request.SearchRequest;
+import com.trocandgo.trocandgo.dto.response.AdressFiltersResponse;
 import com.trocandgo.trocandgo.dto.response.SearchResultEntryResponse;
 import com.trocandgo.trocandgo.entity.Reviews;
+import com.trocandgo.trocandgo.entity.ServiceCategories;
 import com.trocandgo.trocandgo.entity.Services;
 import com.trocandgo.trocandgo.service.ServiceService;
 
@@ -51,6 +53,22 @@ public class ServiceController {
         var service = serviceService.createService(request);
 
         return ResponseEntity.ok(service);
+    }
+
+    @GetMapping("categories")
+    public ServiceCategories[] getCategoryList() {
+        var categoryList = serviceService.getCategoryList();
+
+        return categoryList;
+    }
+
+    @GetMapping("adresses")
+    public ResponseEntity<AdressFiltersResponse> getAdressFilters() {
+        var regions = serviceService.getRegions();
+        var departments = serviceService.getDepartments();
+        var cities = serviceService.getCities();
+
+        return ResponseEntity.ok(new AdressFiltersResponse(regions, departments, cities));
     }
 
     @GetMapping("{id}")

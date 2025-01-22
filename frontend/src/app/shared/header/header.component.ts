@@ -1,12 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { ButtonComponent } from '../button/button.component';
-import { SignupComponent } from '../../features/signup/signup.component';
-import { LoginComponent } from '../../features/login/login.component';
-import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { LoginComponent } from '../../features/login/login.component';
+import { SignupComponent } from '../../features/signup/signup.component';
+import { AuthService } from '../../services/auth.service';
 import { ImageManagementService } from '../../services/image-management.service';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-header',

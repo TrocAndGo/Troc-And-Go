@@ -1,3 +1,10 @@
 p {
 	font-family: 'Montserrat', sans-serif;
 }
+
+.services-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30vw, 1fr));
+  margin-inline: auto;
+  place-items: center;
+}
