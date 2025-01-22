@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AdCategory, AdService } from '../../services/ad.service';
+import { AdCategory, AdressFilters, AdService } from '../../services/ad.service';
 import { DropdownButtonComponent } from '../dropdown-button/dropdown-button.component';
 
 @Component({
@@ -20,18 +20,18 @@ export class SearchBarComponent implements OnInit {
   @Input() city: string | null = null;
   @Input() category: string | null = null;
   form!: FormGroup;
+  regions: string[] = [];
+  departments: string[] = [];
+  cities: string[] = [];
+  categories: AdCategory[] = [];
+
 
   @Output() searched = new EventEmitter<FormGroup>();
-  categories: AdCategory[] = [];
 
   constructor(private formBuilder: FormBuilder, private router: Router, private activatedRoute: ActivatedRoute, private adService: AdService) {}
 
   ngOnInit(): void {
     this.loadCategories();
-    // Ensure empty strings are converted to null
-    this.region = this.region?.trim() || null;
-    this.department = this.department?.trim() || null;
-    this.city = this.city?.trim() || null;
     this.category = this.category?.trim() || null;
 
     var controls = {
@@ -39,6 +39,11 @@ export class SearchBarComponent implements OnInit {
     };
 
     if (this.showAdressFilters) {
+      this.loadAdressFilters();
+      this.region = this.region?.trim() || null;
+      this.department = this.department?.trim() || null;
+      this.city = this.city?.trim() || null;
+
       controls = Object.assign(controls, {
         region: [this.region],
         departement: [this.department],
@@ -50,9 +55,17 @@ export class SearchBarComponent implements OnInit {
   }
 
   loadCategories() {
-    this.adService.getCategories().subscribe((categories) => {
+    this.adService.getCategories().subscribe((categories: AdCategory[]) => {
       this.categories = categories;
     })
+  }
+
+  loadAdressFilters() {
+    this.adService.getAdressFilters().subscribe((filters: AdressFilters) => {
+      this.regions = filters.regions;
+      this.departments = filters.departments;
+      this.cities = filters.cities;
+    });
   }
 
   get categoryNames(): string[] {

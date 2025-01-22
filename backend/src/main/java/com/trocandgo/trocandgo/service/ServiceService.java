@@ -23,6 +23,7 @@ import com.trocandgo.trocandgo.exception.NotAuthenticatedException;
 import com.trocandgo.trocandgo.exception.ReviewAlreadyExistsException;
 import com.trocandgo.trocandgo.exception.SelfReviewException;
 import com.trocandgo.trocandgo.exception.ServiceNotFoundException;
+import com.trocandgo.trocandgo.repository.AddressRepository;
 import com.trocandgo.trocandgo.repository.ReviewRepository;
 import com.trocandgo.trocandgo.repository.ServiceCategoryRepository;
 import com.trocandgo.trocandgo.repository.ServiceRepository;
@@ -52,6 +53,9 @@ public class ServiceService {
 
     @Autowired
     private final ReviewRepository reviewRepository;
+
+    @Autowired
+    private final AddressRepository adressRepository;
 
     /**
      * Retrieves a service by its unique id.
@@ -171,5 +175,17 @@ public class ServiceService {
 
     public ServiceCategories[] getCategoryList() {
         return serviceCategoryRepository.findAll().toArray(new ServiceCategories[0]);
+    }
+
+    public String[] getRegions() {
+        return adressRepository.findAllDistinctRegions().toArray(new String[0]);
+    }
+
+    public String[] getDepartments() {
+        return adressRepository.findAllDistinctDepartments().toArray(new String[0]);
+    }
+
+    public String[] getCities() {
+        return adressRepository.findAllDistinctCities().toArray(new String[0]);
     }
 }

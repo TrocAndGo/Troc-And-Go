@@ -21,7 +21,7 @@ import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR } f
     },
   ],
 })
-export class DropdownButtonComponent implements OnInit, ControlValueAccessor {
+export class DropdownButtonComponent implements ControlValueAccessor {
   @Input() text: string = 'Click me';
   @Input() color: string = 'primary';
   @Input() items: string[] = [];
@@ -29,16 +29,14 @@ export class DropdownButtonComponent implements OnInit, ControlValueAccessor {
   @Input() disabled: boolean = false;
   @Input() showDefaultItem: boolean = true;
 
-  valueText: string | null = null;
+  dropdownOpen: boolean = false;
   value: string | null = null;
+  valueText: string | null = null;
   onChange: (value: string | null) => void = () => {};
   onTouched: () => void = () => {};
-  dropdownOpen: boolean = false;
 
-  ngOnInit() {
-    if (this.itemValues.length === 0) {
-      this.itemValues = this.items;
-    }
+  valueAtIndex(index: number): string {
+    return this.itemValues.length ? this.itemValues[index] : this.items[index];
   }
 
   toggleDropdown() {
@@ -46,7 +44,6 @@ export class DropdownButtonComponent implements OnInit, ControlValueAccessor {
   }
 
   selectItem(itemText: string | null, itemValue: string | null) {
-    // console.log('Item selected:', item);
     this.valueText = itemText;
     this.writeValue(itemValue);
     this.onChange(itemValue);
@@ -67,7 +64,7 @@ export class DropdownButtonComponent implements OnInit, ControlValueAccessor {
     this.disabled = isDisabled;
   }
   validate({value}: FormControl) {
-    const isValid = this.itemValues.includes(value) || value === null;
+    const isValid = this.itemValues.includes(value) || this.items.includes(value) || value === null;
     return isValid ? null : {invalid: true};
   }
 }

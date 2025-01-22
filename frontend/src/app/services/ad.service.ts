@@ -39,6 +39,10 @@ export class AdService {
   getCategories(): Observable<any> {
     return this.http.get(`${this.apiUrl}/categories`);
   }
+
+  getAdressFilters(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/adresses`);
+  }
 }
 
 export interface AdUploadRequest {
@@ -53,4 +57,10 @@ export type AdCategory = {
   id: number;
   title: string
 };
+
+export type AdressFilters = {
+  regions: string[];
+  departments: string[];
+  cities: string[];
+}
 

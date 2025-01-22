@@ -5,17 +5,17 @@
 			<app-dropdown-button
 				text="Région"
 				color="secondary"
-				[items]="['Bretagne', 'Pays de la Loire', 'Normandie']"
+				[items]="regions"
 				formControlName="region"/>
 			<app-dropdown-button
 				text="Département"
 				color="secondary"
-				[items]="['Mayenne', 'Vendée', 'Sarthe']"
+				[items]="departments"
 				formControlName="departement" />
 			<app-dropdown-button
 				text="Ville"
 				color="secondary"
-				[items]="['Château-Gontier', 'Laval', 'Le Mans']"
+				[items]="cities"
 				formControlName="ville" />
 		</ng-container>
 		<app-dropdown-button
