@@ -55,6 +55,9 @@ public class ImageService {
         // Générer le chemin du fichier et sauvegarder l'image
         String fileName = generateEncryptedFileName(username);
         Path filePath = uploadDirectory.resolve(fileName);
+        if (!Files.exists(filePath.getParent()))
+            Files.createDirectories(filePath.getParent());
+
         Files.write(filePath, encryptedImage);
 
         // Mettre à jour l'utilisateur et retourner l'URL de l'image
