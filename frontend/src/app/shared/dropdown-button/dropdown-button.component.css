@@ -71,3 +71,7 @@
   .dropdown.open .dropdown-arrow {
 	transform: rotate(180deg);
   }
+
+  li {
+	font-family: 'Montserrat', sans-serif;
+  }

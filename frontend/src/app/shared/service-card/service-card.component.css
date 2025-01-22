@@ -25,15 +25,8 @@
 
 @media (max-width : 1024px) {
 	.card {
-	height: 35vh;
 	width: 60vw;
 
-	}
-	}
-
-@media (max-width : 768px) {
-	.card {
-	height: 40vh;
 	}
 	}
 
@@ -72,13 +65,23 @@ button {
 }
 
 .card-body {
-	width: 100%
+	width: 100%;
+	height: 20vh;
 }
 
 p {
 	margin: 2px;
 	font-size: 16px;
 	font-family: 'Montserrat', sans-serif;
+	margin-top: 5px;
+}
+
+h2 {
+	margin: 2px;
+	font-size: 18px;
+	font-family: 'Montserrat', sans-serif;
+	margin-bottom: 15px;
+	margin-top: 15px;
 }
 
 .user {
@@ -89,3 +92,43 @@ p {
 .search, .propose {
 	margin-top: 8px;
 }
+
+button {
+	padding: 0.75rem;
+	font-size: 1rem;
+	color: #ffffff;
+	background-color: #3CB371;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	margin: 15px;
+  }
+
+  button:hover {
+	background-color: #3CB371;
+  }
+
+  button:disabled {
+	background-color: #cccccc;
+	cursor: not-allowed;
+  }
+
+  /* Initialement, cacher le texte */
+.warning {
+	color: red;
+	font-size: 10px;
+	opacity: 0; /* Masqué par défaut */
+	visibility: hidden; /* Le texte ne prend pas de place quand il est masqué */
+	transition: opacity 0.3s ease; /* Transition douce pour l'apparition/disparition */
+  }
+
+  /* Montrer le texte lors du survol du bouton */
+  button:hover + .warning {
+	opacity: 1; /* Rendre visible */
+	visibility: visible; /* Le texte devient visible et prend de la place */
+  }
+
+  .coordonnees {
+	margin: 2px;
+  }

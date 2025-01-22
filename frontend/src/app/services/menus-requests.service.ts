@@ -16,8 +16,4 @@ export class MenusRequestsService {
     return this.http.get<string[]>(`${this.baseUrl}/categories`);
   }
 
-  // Récupérer la liste des types
-  getTypes(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/types`);
-  }
 }

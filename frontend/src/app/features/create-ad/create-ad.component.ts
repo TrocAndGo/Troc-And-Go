@@ -21,16 +21,8 @@ export class CreateAdComponent implements OnInit{
   constructor(private menusrequestsservice: MenusRequestsService, private adservice: AdService) {}
 
   ngOnInit(): void {
-      this.loadTypes();
       this.loadCategories();
   }
-
-      loadTypes(): void {
-        this.menusrequestsservice.getTypes().subscribe({
-          next: (data) => (this.types = data),
-          error: (err) => console.error('Erreur lors de la récupération des types', err),
-        });
-      }
 
       loadCategories(): void {
         this.menusrequestsservice.getCategories().subscribe({

@@ -26,7 +26,12 @@ public class DefaultDataInitializer {
         List<ServiceCategories> defaultCategories = Arrays.asList(
             new ServiceCategories("Jardinage"),
             new ServiceCategories("Bricolage"),
-            new ServiceCategories("Massage")
+            new ServiceCategories("Aide enfants"),
+            new ServiceCategories("Aide animaux"),
+            new ServiceCategories("Mécanique"),
+            new ServiceCategories("Autre"),
+            new ServiceCategories("Nettoyage"),
+            new ServiceCategories("Informatique")
         );
 
         // serviceCategoriesRepository.deleteAll();

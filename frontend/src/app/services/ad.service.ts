@@ -7,16 +7,35 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class AdService {
 
-  private apiUrl = 'http://localhost:8080/api/v1/';
+  private apiUrl = 'http://localhost:8080/api/v1/services';
 
       constructor(private http: HttpClient) {}
 
       uploadAd(adRequest: AdRequest): Observable<any> {
-        return this.http.post(`${this.apiUrl}/ad`, adRequest, {
-          headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-        });
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+          return this.http.post(`${this.apiUrl}`, adRequest, {
+            headers: headers,  // Passe les headers dans la requête
+          });
+        }
+        return throwError('Token is missing');  // Retourne une erreur si le token est absent
+      }
+
+
+      getServices(): Observable<any> {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+          return this.http.get(`${this.apiUrl}`, {
+            headers: headers,
+          });
+        }
+        return throwError('Token is missing');  // Retourne une erreur si le token est absent
+      }
     }
-  }
 
   export interface AdRequest {
     type: string;
