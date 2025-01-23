@@ -10,6 +10,8 @@ import com.trocandgo.trocandgo.repository.UserRepository;
 import com.trocandgo.trocandgo.util.EncryptionUtil;
 import net.coobird.thumbnailator.Thumbnails;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import javax.imageio.ImageIO;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,6 +29,7 @@ public class ImageService {
 
     private final UserRepository userRepository;
     private final Path uploadDirectory = Paths.get("src/main/resources/static/uploads/profile-pictures");
+    // Permet de vérifier le type MIME réel
     private Tika tika = new Tika();
 
     public ImageService(UserRepository userRepository, EncryptionUtil encryptionUtil) {
@@ -72,6 +75,20 @@ public class ImageService {
         Path filePath = getFilePath(user);
 
         // Lire et décrypter l'image
+        byte[] encryptedImage = Files.readAllBytes(filePath);
+        return encryptionUtil.decrypt(encryptedImage);
+    }
+
+    public byte[] getImage(String relativePath) throws Exception {
+       // Valider si le chemin reste dans le répertoire autorisé
+        Path filePath = Paths.get("src/main/resources/static", relativePath).normalize();
+
+        // Vérifie si le fichier existe dans le répertoire autorisé
+        if (!Files.exists(filePath)) {
+            throw new IOException("Fichier introuvable : " + filePath);
+        }
+
+        // Read and decrypt the image
         byte[] encryptedImage = Files.readAllBytes(filePath);
         return encryptionUtil.decrypt(encryptedImage);
     }

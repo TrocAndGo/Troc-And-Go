@@ -1,14 +1,19 @@
 package com.trocandgo.trocandgo.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,10 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.trocandgo.trocandgo.dto.mapper.ServiceMapper;
 import com.trocandgo.trocandgo.dto.request.CreateReviewRequest;
 import com.trocandgo.trocandgo.dto.request.CreateServiceRequest;
+import com.trocandgo.trocandgo.dto.request.ImagePath;
 import com.trocandgo.trocandgo.dto.request.SearchRequest;
 import com.trocandgo.trocandgo.dto.response.SearchResultEntryResponse;
 import com.trocandgo.trocandgo.entity.Reviews;
 import com.trocandgo.trocandgo.entity.Services;
+import com.trocandgo.trocandgo.service.ImageService;
 import com.trocandgo.trocandgo.service.ServiceService;
 
 import jakarta.validation.Valid;
@@ -31,6 +38,12 @@ import jakarta.validation.Valid;
 public class ServiceController {
     @Autowired
     private ServiceService serviceService;
+
+    @Autowired
+    private ServiceMapper serviceMapper;
+
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping("hello")
     public ResponseEntity<String> hello() {
@@ -42,8 +55,30 @@ public class ServiceController {
             @SortDefault(sort = "creationDate", direction = Direction.DESC) @PageableDefault(size = 20) Pageable pageable) {
         var servicePage = serviceService.findServicesPaginated(request, pageable);
 
-        return servicePage.map(ServiceMapper::toSearchResponse);
+        return servicePage.map(serviceMapper::toSearchResponse);
     }
+
+    @GetMapping("/image")
+    public ResponseEntity<byte[]> getImage(@Valid @ModelAttribute ImagePath imagePath) {
+        try {
+            String path = imagePath.getPath();
+
+            byte[] imageBytes = imageService.getImage(path);
+
+            // Retourner l'image décryptée
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(imageBytes);
+        } catch (IOException e) {
+            // Gérer l'erreur, peut-être un fichier introuvable
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            // Gérer d'autres exceptions non anticipées
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
 
     @PostMapping("")
     @PreAuthorize("hasRole('USER')")
