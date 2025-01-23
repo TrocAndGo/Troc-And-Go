@@ -52,7 +52,7 @@
 	width: 100%; /* Prend toute la largeur du header */
 	max-width: 100%; /* Empêche de dépasser */
 	overflow-x: auto; /* Ajoute un scroll horizontal si nécessaire */
-	overflow: hidden;
+	overflow: visible;
   }
 
   .loggedin {

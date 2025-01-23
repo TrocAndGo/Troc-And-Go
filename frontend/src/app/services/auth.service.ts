@@ -10,8 +10,7 @@ export class AuthService {
   public loggedIn$ = this.loggedInSubject.asObservable();
 
   constructor(private imageService: ImageManagementService) {
-    var authToken = localStorage.getItem('authToken');
-    if (authToken) {
+    if (this.isTokenExpired() == false) {
       this.setLoggedIn(true);
     }
   }
@@ -33,4 +32,16 @@ export class AuthService {
     this.imageService.resetProfilePicture();
   }
 
+  private isTokenExpired(): boolean {
+    const authToken = localStorage.getItem('authToken');
+    if (!authToken) {
+      return true;
+    }
+
+    const tokenPayload = JSON.parse(atob(authToken.split('.')[1]));
+    const expiryTime = tokenPayload.exp * 1000;
+    console.log('Token expiry time: ' + expiryTime);
+    console.log('Current time: ' + Date.now());
+    return Date.now() > expiryTime;
+  }
 }
