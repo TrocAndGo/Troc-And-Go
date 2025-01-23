@@ -9,8 +9,9 @@
 	border-radius: 60px;
 	transition: background-color 0.3s ease;
 	font-family: 'Montserrat', sans-serif;
-	width: 262px;
-	height: 65px;
+	width: 200px;
+	height: 45px;
+	margin-right: 20px;
   }
 
   .btn:hover {

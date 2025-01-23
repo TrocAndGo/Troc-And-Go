@@ -10,6 +10,9 @@
     @for (result of results.content; track result.id) {
         <div class="entry">
             <app-service-card
+                [mail]="result.mail ? result.mail : 'Pas d\'adresse mail disponible'"
+                [phoneNumber]="result.phoneNumber ? result.phoneNumber : 'Pas de numéro disponible'"
+                [id]="result.id"
                 [user]="result.createdBy"
                 [profilePicture]="result.creatorProfilePicture ?? './quote.png'"
                 [localisation]="result.city"

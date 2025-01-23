@@ -7,6 +7,13 @@
 		<p>Posté le : {{ formattedDate }}</p>
 		<span></span>
 	</div>
+	<div *ngIf="!isFavorite">
+	<p class="heart" (click)="addToFavorites(id)">&#10084;</p>
+	</div>
+	<div *ngIf="isFavorite">
+	<p class="grey-heart" (click)="removeFromFavorites(id)">&#10084;</p>
+	</div>
+
 </div>
 <div class="card-body">
 	<h2>{{ title }}</h2>
@@ -19,7 +26,7 @@
 </div>
 <div class="coordonnees" *ngIf="isCoordinatesVisible">
 	<p> {{ mail }} </p>
-	<p> {{ phone_number }} </p>
+	<p> {{ phoneNumber }} </p>
 </div>
 
 </div>

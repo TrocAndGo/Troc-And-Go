@@ -21,6 +21,9 @@ public class ServiceMapper {
         entry.setCreationDate(service.getCreationDate());
         entry.setCreatedBy(service.getCreatedBy().getName());
         entry.setCreatorProfilePicture(service.getCreatedBy().getPicture());
+        entry.setMail(service.getCreatedBy().getEmail());
+        entry.setPhoneNumber(service.getCreatedBy().getPhoneNumber());
+
 
         return entry;
     }

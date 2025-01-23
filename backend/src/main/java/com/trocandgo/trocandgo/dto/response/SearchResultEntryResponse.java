@@ -16,4 +16,6 @@ public class SearchResultEntryResponse {
     private Date creationDate;
     private String createdBy;
     private String creatorProfilePicture;
+    private String mail;
+    private String phoneNumber;
 }

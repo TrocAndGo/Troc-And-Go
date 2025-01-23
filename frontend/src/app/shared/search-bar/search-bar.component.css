@@ -26,12 +26,12 @@
 	left: 50%; /* Décalage horizontal */
 	background-color: rgba(60, 179, 113, 0.7); /* Couleur verte avec 70% d'opacité */
 	height: 10vh; /* Hauteur relative à la fenêtre */
-	width: 70vw; /* Largeur relative à la fenêtre */
 	border-radius: 50px;
 	transform: translate(-50%, -50%);
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
+	padding: 15px;
   }
 
 button {
@@ -44,8 +44,8 @@ button {
 	border-radius: 60px;
 	transition: background-color 0.3s ease;
 	font-family: 'Montserrat', sans-serif;
-	width: 262px;
-	height: 65px;
+	width: 200px;
+	height: 45px;
 }
 
 button:hover {

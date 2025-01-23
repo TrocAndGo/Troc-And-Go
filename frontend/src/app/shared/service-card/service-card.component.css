@@ -1,6 +1,7 @@
 .card-header {
 	display: flex;
 	margin-bottom: 18px;
+	justify-content: space-between;
 }
 
 .card {
@@ -131,4 +132,14 @@ button {
 
   .coordonnees {
 	margin: 2px;
+  }
+
+  .heart {
+	font-size: 25px;
+	color: #2E594F;
+  }
+
+  .grey-heart {
+	font-size: 25px;
+	color: grey;
   }

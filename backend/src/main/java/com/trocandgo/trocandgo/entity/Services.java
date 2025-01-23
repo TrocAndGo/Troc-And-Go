@@ -1,6 +1,7 @@
 package com.trocandgo.trocandgo.entity;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -27,6 +29,9 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @ToString
 public class Services {
+     @OneToMany(mappedBy = "service")
+    private List<Favorites> favorites;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

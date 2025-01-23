@@ -44,7 +44,7 @@ export type SearchResponse = {
 }
 
 export type SearchResult = {
-  id: number;
+  id: string;
   title: string;
   description: string;
   category: string;
@@ -54,6 +54,8 @@ export type SearchResult = {
   creationDate: Date;
   createdBy: string;
   creatorProfilePicture: string | null;
+  mail: string | null;
+  phoneNumber: string | null;
 }
 
 export type SearchPagination = {
