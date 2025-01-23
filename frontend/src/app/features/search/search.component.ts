@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SearchResponse, SearchService } from '../../services/search.service';
+import { SearchResponse, SearchService, SearchResult } from '../../services/search.service';
 import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
 import { ServiceCardComponent } from '../../shared/service-card/service-card.component';
 
@@ -22,7 +22,11 @@ export class SearchComponent implements OnInit {
   sortDir!: string;
   results!: SearchResponse;
 
-  constructor(private route: ActivatedRoute, private router: Router, private searchService: SearchService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private searchService: SearchService
+  ) {}
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(params => {
@@ -54,14 +58,38 @@ export class SearchComponent implements OnInit {
   }
 
   private loadSearchResults() {
-    this.searchService.search({
-      region: this.region,
-      department: this.department,
-      city: this.city,
-      category: this.category,
-      sort: `${this.sort},${this.sortDir}`,
-      size: 20
-    }).subscribe(results => this.results = results);
+    this.searchService
+      .search({
+        region: this.region,
+        department: this.department,
+        city: this.city,
+        category: this.category,
+        sort: `${this.sort},${this.sortDir}`,
+        size: 20,
+      })
+      .subscribe((results) => {
+        this.results = results;
+
+        // Télécharge les images pour chaque résultat
+        this.results.content.forEach((result) => {
+          if (result.creatorProfilePicture) {
+            this.downloadImage(result);
+          }
+        });
+      });
+  }
+
+  downloadImage(result: SearchResult) {
+    this.searchService.getImageBlob(result.creatorProfilePicture!).subscribe((blob) => {
+      const reader = new FileReader();
+
+      // Converti le blob en URL local pour l'affichage
+      reader.onload = () => {
+        result.creatorProfilePicture = reader.result as string;
+      };
+
+      reader.readAsDataURL(blob);
+    });
   }
 
 }

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,20 @@ export class SearchService {
 
   constructor(private http: HttpClient) {}
 
+  // Récupérer les services en fonction des filtres
   search(query: SearchQuery) {
     return this.http.get<SearchResponse>(this.apiUrl, {
       params: {...query}
+    });
+  }
+
+  // Requête pour récupérer l'image décryptée en tant que blob
+  getImageBlob(imagePath: string): Observable<Blob> {
+    // Utilisation de l'URL de l'endpoint qui inclut le chemin de l'image
+    const imageUrl = `${this.apiUrl}/image?path=${imagePath}`;
+
+    return this.http.get(imageUrl, {
+      responseType: 'blob'
     });
   }
 }

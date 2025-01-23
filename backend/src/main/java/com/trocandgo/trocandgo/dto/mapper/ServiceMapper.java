@@ -3,8 +3,12 @@ package com.trocandgo.trocandgo.dto.mapper;
 import com.trocandgo.trocandgo.dto.response.SearchResultEntryResponse;
 import com.trocandgo.trocandgo.entity.Services;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ServiceMapper {
-    public static SearchResultEntryResponse toSearchResponse(Services service) {
+
+    public SearchResultEntryResponse toSearchResponse(Services service) {
         var entry = new SearchResultEntryResponse();
 
         entry.setId(service.getId().toString());
@@ -21,3 +25,4 @@ public class ServiceMapper {
         return entry;
     }
 }
+
