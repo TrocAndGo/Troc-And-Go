@@ -3,6 +3,8 @@ package com.trocandgo.trocandgo.service;
 import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
@@ -11,11 +13,13 @@ import com.trocandgo.trocandgo.dto.response.ProfileResponse;
 import com.trocandgo.trocandgo.entity.Adresses;
 import com.trocandgo.trocandgo.entity.Favorites;
 import com.trocandgo.trocandgo.entity.FavoritesPK;
+import com.trocandgo.trocandgo.entity.Services;
 import com.trocandgo.trocandgo.entity.Users;
 import com.trocandgo.trocandgo.exception.FavoriteAlreadyExistsException;
 import com.trocandgo.trocandgo.exception.FavoriteDoesntExistException;
 import com.trocandgo.trocandgo.exception.FavoriteOwnServiceException;
 import com.trocandgo.trocandgo.exception.NotAuthenticatedException;
+import com.trocandgo.trocandgo.exception.ServiceNotFoundException;
 import com.trocandgo.trocandgo.repository.AddressRepository;
 import com.trocandgo.trocandgo.repository.FavoriteRepository;
 import com.trocandgo.trocandgo.repository.UserRepository;
@@ -39,8 +43,6 @@ public class UserService {
     @Autowired
     private FavoriteRepository favoriteRepository;
 
-
-
     // Méthode pour récupérer un utilisateur par son nom
     public Users getUserByUsername(String username) {
         return userRepository.findByName(username)
@@ -58,7 +60,8 @@ public class UserService {
      *
      * @param request the {@link SetAdressRequest} containing address details.
      * @return the newly created {@link Adresses} object associated with the user.
-     * @throws NotAuthenticatedException if there is no authenticated user or the user is not logged in.
+     * @throws NotAuthenticatedException if there is no authenticated user or the
+     *                                   user is not logged in.
      */
     public Adresses setAdress(SetAdressRequest request) {
         // Récupérer l'utilisateur connecté
@@ -93,13 +96,18 @@ public class UserService {
     }
 
     /**
-     * Adds a specified service to the favorites list of the currently logged-in user.
+     * Adds a specified service to the favorites list of the currently logged-in
+     * user.
      *
      * @param serviceId the unique identifier of the service to add to favorites.
-     * @throws NotAuthenticatedException if there is no authenticated user or the user is not logged in.
-     * @throws ServiceNotFoundException if no service is found with the provided ID.
-     * @throws FavoriteOwnServiceException if the logged-in user attempts to favorite their own service.
-     * @throws FavoriteAlreadyExistsException if the service is already in the user's favorites list.
+     * @throws NotAuthenticatedException      if there is no authenticated user or
+     *                                        the user is not logged in.
+     * @throws ServiceNotFoundException       if no service is found with the
+     *                                        provided ID.
+     * @throws FavoriteOwnServiceException    if the logged-in user attempts to
+     *                                        favorite their own service.
+     * @throws FavoriteAlreadyExistsException if the service is already in the
+     *                                        user's favorites list.
      */
     public void addServiceToFavorites(String serviceId) {
         var user = authService.getLoggedInUser();
@@ -108,31 +116,49 @@ public class UserService {
         if (service.getCreatedBy() == user)
             throw new FavoriteOwnServiceException();
 
-        FavoritesPK favoritesId = new FavoritesPK(user, service);
-        if (favoriteRepository.existsById(favoritesId))
+        if (isServiceFavorited(service))
             throw new FavoriteAlreadyExistsException();
 
-        Favorites favorite = new Favorites(favoritesId.getUser(), favoritesId.getService());
+        Favorites favorite = new Favorites(user, service);
         favoriteRepository.save(favorite);
     }
 
     /**
-     * Removes a specified service from the favorites list of the currently logged-in user.
+     * Removes a specified service from the favorites list of the currently
+     * logged-in user.
      *
-     * @param serviceId the unique identifier of the service to remove from favorites.
-     * @throws NotAuthenticatedException if there is no authenticated user or the user is not logged in.
-     * @throws ServiceNotFoundException if no service is found with the provided ID.
-     * @throws FavoriteDoesntExistException if the service is not in the user's favorites list.
+     * @param serviceId the unique identifier of the service to remove from
+     *                  favorites.
+     * @throws NotAuthenticatedException    if there is no authenticated user or the
+     *                                      user is not logged in.
+     * @throws ServiceNotFoundException     if no service is found with the provided
+     *                                      ID.
+     * @throws FavoriteDoesntExistException if the service is not in the user's
+     *                                      favorites list.
      */
     public void removeServiceFromFavorites(String serviceId) {
         var user = authService.getLoggedInUser();
         var service = serviceService.getServiceById(serviceId);
 
-        FavoritesPK favoritesId = new FavoritesPK(user, service);
-        if (!favoriteRepository.existsById(favoritesId))
+        if (!isServiceFavorited(service))
             throw new FavoriteDoesntExistException();
 
+        FavoritesPK favoritesId = new FavoritesPK(user, service);
         favoriteRepository.deleteById(favoritesId);
+    }
+
+    public boolean isServiceFavorited(Services service) {
+        var user = authService.getLoggedInUser();
+
+        FavoritesPK favoritesId = new FavoritesPK(user, service);
+        return favoriteRepository.existsById(favoritesId);
+    }
+
+    public Page<Favorites> getMyFavoritesPaginated(Pageable pageable) {
+        var user = authService.getLoggedInUser();
+        var favorites = favoriteRepository.findByUser(user, pageable);
+
+        return favorites;
     }
 
     // Récupérer les informations du profil utilisateur
@@ -140,13 +166,12 @@ public class UserService {
         Adresses address = user.getAddress();
 
         return new ProfileResponse(
-            user.getName(),
-            user.getEmail(),
-            user.getPhoneNumber(),
-            address != null ? address.getAdress() : null,
-            address != null ? address.getCity() : null,
-            address != null ? address.getZipCode() : null
-        );
+                user.getName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                address != null ? address.getAdress() : null,
+                address != null ? address.getCity() : null,
+                address != null ? address.getZipCode() : null);
     }
 
     // Mettre à jour le profil utilisateur

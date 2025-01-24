@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import com.trocandgo.trocandgo.dto.request.CreateServiceRequest;
 import com.trocandgo.trocandgo.dto.request.ImagePath;
 import com.trocandgo.trocandgo.dto.request.SearchRequest;
 import com.trocandgo.trocandgo.dto.response.AdressFiltersResponse;
+import com.trocandgo.trocandgo.dto.response.GenericMessageResponse;
 import com.trocandgo.trocandgo.dto.response.SearchResultEntryResponse;
 import com.trocandgo.trocandgo.entity.Reviews;
 import com.trocandgo.trocandgo.entity.ServiceCategories;
@@ -111,6 +113,13 @@ public class ServiceController {
         var service = serviceService.getServiceById(serviceId);
 
         return ResponseEntity.ok(service);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<GenericMessageResponse> deleteService(@PathVariable(value = "id") String serviceId) {
+        serviceService.deleteService(serviceId);
+
+        return ResponseEntity.ok(new GenericMessageResponse("Service deleted"));
     }
 
     @GetMapping("{id}/reviews")

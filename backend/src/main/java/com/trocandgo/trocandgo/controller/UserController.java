@@ -8,6 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,21 +28,21 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.trocandgo.trocandgo.dto.mapper.ServiceMapper;
 import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
 import com.trocandgo.trocandgo.dto.request.UploadProfilePictureRequest;
 import com.trocandgo.trocandgo.dto.response.ProfileResponse;
+import com.trocandgo.trocandgo.dto.response.SearchResultEntryResponse;
 import com.trocandgo.trocandgo.dto.response.UploadProfilePictureResponse;
 import com.trocandgo.trocandgo.entity.Adresses;
 import com.trocandgo.trocandgo.entity.Users;
 import com.trocandgo.trocandgo.service.AuthService;
 import com.trocandgo.trocandgo.service.ImageService;
-
+import com.trocandgo.trocandgo.service.ServiceService;
 import com.trocandgo.trocandgo.service.UserService;
 import com.trocandgo.trocandgo.dto.request.UpdateProfileRequest;
 
-
 import jakarta.validation.Valid;
-
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -52,6 +57,12 @@ public class UserController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private ServiceService serviceService;
+
+    @Autowired
+    private ServiceMapper serviceMapper;
 
     @GetMapping("hello")
     public ResponseEntity<?> hello() {
@@ -68,12 +79,10 @@ public class UserController {
             return ResponseEntity.ok(profileResponse);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                "status", "error",
-                "message", "Failed to get profile."
-            ));
+                    "status", "error",
+                    "message", "Failed to get profile."));
         }
     }
-
 
     // Mettre à jour le profil de l'utilisateur et l'adresse
     @PutMapping("/profile/update")
@@ -85,42 +94,39 @@ public class UserController {
             return ResponseEntity.ok(Map.of("result", "Profile updated successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                "status", "error",
-                "message", "Failed to update profile."));
+                    "status", "error",
+                    "message", "Failed to update profile."));
 
         }
 
     }
 
-
     @Transactional
     @PostMapping("/profile/upload-picture")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UploadProfilePictureResponse> uploadProfilePicture(
-        @Valid @ModelAttribute UploadProfilePictureRequest request,
-        Authentication authentication) {
+            @Valid @ModelAttribute UploadProfilePictureRequest request,
+            Authentication authentication) {
 
         try {
             // Appeler le service ImageService pour gérer l'image
             imageService.uploadProfilePicture(request.getImage(), authentication.getName());
 
             return ResponseEntity.ok(new UploadProfilePictureResponse(
-                "success",
-                "Profile picture uploaded successfully."));
+                    "success",
+                    "Profile picture uploaded successfully."));
 
         } catch (Exception e) {
             logger.error("Failed to upload profile picture: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                new UploadProfilePictureResponse(
-                    "error", "Failed to upload profile picture.")
-            );
+                    new UploadProfilePictureResponse(
+                            "error", "Failed to upload profile picture."));
         }
     }
 
     @GetMapping("/profile/download-picture")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> downloadProfilePicture(Authentication authentication)
-    {
+    public ResponseEntity<?> downloadProfilePicture(Authentication authentication) {
         try {
             // Appeler le service pour gérer le téléchargement et la décryption
             byte[] decryptedImage = imageService.downloadProfilePicture(authentication.getName());
@@ -133,9 +139,8 @@ public class UserController {
         } catch (Exception e) {
             logger.error("Failed to download profile picture: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                "status", "error",
-                "message", "Failed to download profile picture."
-            ));
+                    "status", "error",
+                    "message", "Failed to download profile picture."));
         }
     }
 
@@ -161,5 +166,22 @@ public class UserController {
         userService.removeServiceFromFavorites(serviceId);
 
         return ResponseEntity.ok(Map.of("result", "ok"));
+    }
+
+    @GetMapping("/me/services")
+    @PreAuthorize("hasRole('USER')")
+    public Page<SearchResultEntryResponse> getMyServices(
+            @SortDefault(sort = "creationDate", direction = Direction.DESC) @PageableDefault(size = 20) Pageable pageable) {
+        var services = serviceService.getServicesCreatedByUserPaginated(authService.getLoggedInUser(), pageable);
+
+        return services.map(serviceMapper::toSearchResponse);
+    }
+
+    @GetMapping("/me/favorites")
+    @PreAuthorize("hasRole('USER')")
+    public Page<SearchResultEntryResponse> getMyFavoritesPaginated(@PageableDefault(size = 20) Pageable pageable) {
+        var favorites = userService.getMyFavoritesPaginated(pageable);
+
+        return favorites.map(favorite -> serviceMapper.toSearchResponse(favorite.getService()));
     }
 }

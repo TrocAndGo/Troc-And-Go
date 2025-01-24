@@ -2,9 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SearchResponse, SearchService, SearchResult } from '../../services/search.service';
+import { SearchResult, SearchService } from '../../services/search.service';
 import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
 import { ServiceCardComponent } from '../../shared/service-card/service-card.component';
+import PageableResponse from '../../utils/PageableResponse';
 
 @Component({
   selector: 'app-search',
@@ -20,7 +21,7 @@ export class SearchComponent implements OnInit {
   category!: string;
   sort!: string;
   sortDir!: string;
-  results!: SearchResponse;
+  results!: PageableResponse<SearchResult>;
 
   constructor(
     private route: ActivatedRoute,
@@ -51,6 +52,10 @@ export class SearchComponent implements OnInit {
       },
       queryParamsHandling: 'merge',
     });
+  }
+
+  onServiceDeleted(): void {
+    this.loadSearchResults();
   }
 
   get resultCount(): number {

@@ -18,4 +18,6 @@ public class SearchResultEntryResponse {
     private String creatorProfilePicture;
     private String mail;
     private String phoneNumber;
+    private boolean isOwner;
+    private boolean isFavorite;
 }

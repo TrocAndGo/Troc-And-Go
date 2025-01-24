@@ -16,6 +16,8 @@ import com.trocandgo.trocandgo.entity.ServiceCategories;
 import com.trocandgo.trocandgo.entity.ServiceStatuses;
 import com.trocandgo.trocandgo.entity.ServiceTypes;
 import com.trocandgo.trocandgo.entity.Services;
+import com.trocandgo.trocandgo.entity.Users;
+import com.trocandgo.trocandgo.exception.GenericBadRequestException;
 import com.trocandgo.trocandgo.exception.InvalidPageableException;
 import com.trocandgo.trocandgo.exception.InvalidServiceCategoryException;
 import com.trocandgo.trocandgo.exception.InvalidUUIDException;
@@ -125,6 +127,10 @@ public class ServiceService {
         return serviceRepository.findAll(specification, pageable);
     }
 
+    public Page<Services> getServicesCreatedByUserPaginated(Users user, Pageable pageable) {
+        return serviceRepository.findAllByCreatedBy(user, pageable);
+    }
+
     /**
      * Retrieves a paginated list of reviews for a specific service.
      *
@@ -187,5 +193,15 @@ public class ServiceService {
 
     public String[] getCities() {
         return adressRepository.findAllDistinctCities().toArray(new String[0]);
+    }
+
+    public void deleteService(String serviceId) {
+        var user = authService.getLoggedInUser();
+        var service = getServiceById(serviceId);
+
+        if (service.getCreatedBy() != user)
+            throw new GenericBadRequestException("User is not authorized to delete this service.");
+
+        serviceRepository.delete(service);
     }
 }

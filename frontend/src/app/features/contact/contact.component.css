@@ -19,10 +19,8 @@
 
   .contact {
 		margin: 20px auto; /* Centre horizontalement et ajoute des marges */
-		max-width: 90%; /* Empêche l'écrasement sur des écrans étroits */
 		width: 1000px; /* Largeur par défaut pour les écrans plus grands */
 		padding: 20px; /* Ajoute un espace intérieur */
 		border-radius: 8px; /* Arrondi des coins */
 		font-family: 'Montserrat', sans-serif;
-		height: 68vh;
 	  }
