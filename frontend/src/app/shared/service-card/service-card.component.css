@@ -33,7 +33,6 @@
 
 .card:hover {
 	box-shadow: 0px 8px 16px rgba(46,89,79, 0.4); /* Effet hover */
-	cursor: pointer;
   }
 
 img {
@@ -42,12 +41,12 @@ img {
   	border-radius: 50%; /* Rend l'image circulaire */
   	border: 2px solid #2E594F; /* Bordure verte */
   	transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-left: 20px;
 }
 
 img:hover{
 	transform: scale(1.1); /* Zoom léger au survol */
-  	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-	cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 span {
@@ -134,12 +133,25 @@ button {
 	margin: 2px;
   }
 
+  .heart, .grey-heart, .delete {
+    cursor: pointer;
+    font-size: 25px;
+    transition: all 0.25s ease;
+
+    &:hover {
+      transform: scale(1.2);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+  }
+
   .heart {
-	font-size: 25px;
-	color: #2E594F;
+	  color: #2E594F;
   }
 
   .grey-heart {
-	font-size: 25px;
-	color: grey;
+	  color: #3cb371;
+  }
+
+  .delete {
+    color: red;
   }

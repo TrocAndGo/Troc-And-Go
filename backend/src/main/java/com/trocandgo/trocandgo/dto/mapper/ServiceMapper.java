@@ -2,11 +2,16 @@ package com.trocandgo.trocandgo.dto.mapper;
 
 import com.trocandgo.trocandgo.dto.response.SearchResultEntryResponse;
 import com.trocandgo.trocandgo.entity.Services;
+import com.trocandgo.trocandgo.service.AuthService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ServiceMapper {
+
+    @Autowired
+    private AuthService authService;
 
     public SearchResultEntryResponse toSearchResponse(Services service) {
         var entry = new SearchResultEntryResponse();
@@ -24,6 +29,13 @@ public class ServiceMapper {
         entry.setMail(service.getCreatedBy().getEmail());
         entry.setPhoneNumber(service.getCreatedBy().getPhoneNumber());
 
+        try {
+            var loggedInUser = authService.getLoggedInUser();
+            var isOwner = service.getCreatedBy() == loggedInUser;
+            entry.setOwner(isOwner);
+        } catch(Exception e) {
+            entry.setOwner(false);
+        }
 
         return entry;
     }

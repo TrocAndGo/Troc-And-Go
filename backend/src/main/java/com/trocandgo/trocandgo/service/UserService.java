@@ -16,6 +16,7 @@ import com.trocandgo.trocandgo.exception.FavoriteAlreadyExistsException;
 import com.trocandgo.trocandgo.exception.FavoriteDoesntExistException;
 import com.trocandgo.trocandgo.exception.FavoriteOwnServiceException;
 import com.trocandgo.trocandgo.exception.NotAuthenticatedException;
+import com.trocandgo.trocandgo.exception.ServiceNotFoundException;
 import com.trocandgo.trocandgo.repository.AddressRepository;
 import com.trocandgo.trocandgo.repository.FavoriteRepository;
 import com.trocandgo.trocandgo.repository.UserRepository;

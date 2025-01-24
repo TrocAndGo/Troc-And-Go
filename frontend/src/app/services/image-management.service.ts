@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 })
 export class ImageManagementService {
   private apiUrl = 'http://localhost:8080/api/v1/user/';
-  private avatarUrlSubject = new BehaviorSubject<string>('icone.jpg'); // URL par défaut
+  avatarUrlSubject = new BehaviorSubject<string>('icone.jpg'); // URL par défaut
   avatarUrl$ = this.avatarUrlSubject.asObservable();
 
   constructor(private http: HttpClient) {}

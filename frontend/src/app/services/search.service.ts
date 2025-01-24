@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import PageableResponse from '../utils/PageableResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class SearchService {
 
   // Récupérer les services en fonction des filtres
   search(query: SearchQuery) {
-    return this.http.get<SearchResponse>(this.apiUrl, {
+    return this.http.get<PageableResponse<SearchResult>>(this.apiUrl, {
       params: {...query}
     });
   }
@@ -38,11 +39,6 @@ export type SearchQuery = {
   size: number;
 }
 
-export type SearchResponse = {
-  content: SearchResult[];
-  page: SearchPagination;
-}
-
 export type SearchResult = {
   id: string;
   title: string;
@@ -56,6 +52,7 @@ export type SearchResult = {
   creatorProfilePicture: string | null;
   mail: string | null;
   phoneNumber: string | null;
+  owner: boolean;
 }
 
 export type SearchPagination = {

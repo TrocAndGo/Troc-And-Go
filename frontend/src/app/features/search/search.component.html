@@ -6,7 +6,7 @@
     [category]="category"
     (searched)="onSearch($event)" />
 
-<div class="results" *ngIf="resultCount > 0">
+<div class="results" *ngIf="resultCount > 0; else noResults">
     @for (result of results.content; track result.id) {
         <div class="entry">
             <app-service-card
@@ -18,7 +18,12 @@
                 [localisation]="result.city"
                 [date]="result.creationDate"
                 [categorie]="result.category"
-                [propose]="result.description" />
+                [propose]="result.description"
+                [owner]="result.owner"/>
         </div>
     }
 </div>
+
+<ng-template #noResults>
+    <p>Aucun résultat pour votre recherche</p>
+</ng-template>

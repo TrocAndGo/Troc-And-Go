@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AdService } from '../../services/ad.service';
 import { AuthService } from '../../services/auth.service';
-import { ButtonComponent } from '../button/button.component';
 import { FavoritesService } from '../../services/favorites.service';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-service-card',
@@ -22,6 +23,7 @@ export class ServiceCardComponent {
   @Input() categorie: string = 'Categorie';
   @Input() mail: string = 'Mail';
   @Input() phoneNumber: string = 'phoneNumber';
+  @Input() owner: boolean = false;
 
   get formattedDate(): string {
     const dateObj = typeof this.date === 'string' ? new Date(this.date) : this.date;
@@ -37,7 +39,7 @@ export class ServiceCardComponent {
   }
 
   creationDate: Date; // Déclaration explicite de la propriété
-  constructor(public authService: AuthService, private favoritesService: FavoritesService) {
+  constructor(public authService: AuthService, private favoritesService: FavoritesService, private adService: AdService) {
     this.creationDate = new Date(); // Enregistre la date actuelle
   }
 
@@ -50,6 +52,7 @@ export class ServiceCardComponent {
 
    // Définir un événement de clic
     @Output() clicked = new EventEmitter<void>();
+    @Output() deleted = new EventEmitter<void>();
 
     // Méthode pour émettre l'événement de clic
     onClick() {
@@ -80,4 +83,15 @@ export class ServiceCardComponent {
     });
   }
 
+  deleteService(serviceId: string): void {
+    this.adService.deleteService(serviceId).subscribe({
+      next: (_) => {
+        alert('Service deleted successfully');
+        this.deleted.emit();
+      },
+      error: (error) => {
+        console.error('Error deleting service:', error.message);
+      }
+    });
+  }
 }
