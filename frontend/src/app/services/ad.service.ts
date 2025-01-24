@@ -30,7 +30,7 @@ export class AdService {
     if (token) {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-      return this.http.get(`${this.apiUrl}`, {
+      return this.http.get(`${this.apiUrl}/services`, {
         headers: headers,
       });
     }
@@ -42,7 +42,7 @@ export class AdService {
     if (token) {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-      return this.http.get<PageableResponse<SearchResult>>(`http://localhost:8080/api/v1/user/me/services`, {
+      return this.http.get<PageableResponse<SearchResult>>(`${this.apiUrl}/user/me/services`, {
         headers: headers,
       });
     }
@@ -50,11 +50,11 @@ export class AdService {
   }
 
   getCategories(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/categories`);
+    return this.http.get(`${this.apiUrl}/services/categories`);
   }
 
   getAdressFilters(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/adresses`);
+    return this.http.get(`${this.apiUrl}/services/adresses`);
   }
 
   deleteService(serviceId: string) {
@@ -64,7 +64,7 @@ export class AdService {
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const url = `${this.apiUrl}/${serviceId}`;
+    const url = `${this.apiUrl}/services/${serviceId}`;
 
     return this.http.delete(url, { headers }).pipe(
       catchError((error) => {

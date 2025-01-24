@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class ImageManagementService {
   private apiUrl = environment.apiUrl;
-  private avatarUrlSubject = new BehaviorSubject<string>('icone.jpg'); // URL par défaut
+  avatarUrlSubject = new BehaviorSubject<string>('icone.jpg'); // URL par défaut
   avatarUrl$ = this.avatarUrlSubject.asObservable();
 
   constructor(private http: HttpClient) {}

@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import PageableResponse from '../utils/PageableResponse';
 import { SearchResult } from './search.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoritesService {
-  private apiUrl = 'http://localhost:8080/api/v1/user';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
@@ -20,7 +21,7 @@ export class FavoritesService {
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const url = `${this.apiUrl}/me/favorites`;
+    const url = `${this.apiUrl}/user/me/favorites`;
 
     return this.http.get<PageableResponse<SearchResult>>(url, { headers }).pipe(
       catchError((error) => {
@@ -37,7 +38,7 @@ export class FavoritesService {
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const url = `${this.apiUrl}/favorites/${serviceId}`;
+    const url = `${this.apiUrl}/user/favorites/${serviceId}`;
 
     return this.http.post(url, null, { headers }).pipe(
       catchError((error) => {
@@ -54,7 +55,7 @@ export class FavoritesService {
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const url = `${this.apiUrl}/favorites/${serviceId}`;
+    const url = `${this.apiUrl}/user/favorites/${serviceId}`;
 
     return this.http.delete(url, { headers }).pipe(
       catchError((error) => {

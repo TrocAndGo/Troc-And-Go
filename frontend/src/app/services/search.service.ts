@@ -22,7 +22,7 @@ export class SearchService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
-    return this.http.get<PageableResponse<SearchResult>>(this.apiUrl, {
+    return this.http.get<PageableResponse<SearchResult>>(`${this.apiUrl}/services`, {
       headers: headers,
       params: {...query}
     });
