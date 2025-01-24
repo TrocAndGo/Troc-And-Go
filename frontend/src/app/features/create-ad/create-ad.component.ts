@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdCategory, AdService, AdUploadRequest } from '../../services/ad.service';
 import { ProfileService } from '../../services/profile.service';
 import { DropdownButtonComponent } from '../../shared/dropdown-button/dropdown-button.component';
+import { UserAdressService } from '../../services/user-adress.service';
 
 @Component({
   selector: 'app-create-ad',
@@ -13,15 +14,16 @@ import { DropdownButtonComponent } from '../../shared/dropdown-button/dropdown-b
   styleUrl: './create-ad.component.css'
 })
 export class CreateAdComponent implements OnInit {
+
   categories: AdCategory[] = [];
   userAdress: string | null = null;
   errorMessage: string | null = null;
 
-  constructor(private adService: AdService, private profileService: ProfileService) { }
+  constructor(private adService: AdService,  private userAdressService: UserAdressService ) { }
 
   ngOnInit(): void {
     this.loadCategories();
-    this.loadUserAdress();
+    this.subscribeToUserAdress();
   }
 
   loadCategories(): void {
@@ -33,13 +35,18 @@ export class CreateAdComponent implements OnInit {
     });
   }
 
-  loadUserAdress(): void {
-    this.profileService.getUserProfile().subscribe({
-      next: (data) => {
-        this.userAdress = `${data.address} ${data.zipCode} ${data.city}`;
+  subscribeToUserAdress(): void {
+    this.userAdressService.userAdress$.subscribe({
+      next: (adress) => {
+        this.userAdress = adress;
       },
-      error: (err) => console.error('Erreur lors de la récupération des données utilisateur', err),
+      error: (err) => {
+        console.error('Erreur lors de l\'abonnement à l\'adresse utilisateur', err);
+        this.userAdress = null;
+      },
     });
+
+    this.userAdressService.loadUserAdress();
   }
 
   get categoryNames(): string[] {

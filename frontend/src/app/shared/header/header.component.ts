@@ -6,6 +6,7 @@ import { SignupComponent } from '../../features/signup/signup.component';
 import { AuthService } from '../../services/auth.service';
 import { ImageManagementService } from '../../services/image-management.service';
 import { ButtonComponent } from '../button/button.component';
+import { UserAdressService } from '../../services/user-adress.service';
 
 @Component({
   selector: 'app-header',
@@ -27,8 +28,12 @@ export class HeaderComponent implements OnInit {
   avatarUrl: string | null = null;
   isLoggedIn = false;
   showDropdown = false;
+  userAdress: string | null = null;
 
-  constructor(public authService: AuthService, private router: Router, private imageService: ImageManagementService) {}
+  constructor(public authService: AuthService,
+    private router: Router,
+    private imageService: ImageManagementService,
+    private userAdressService: UserAdressService) {}
 
   ngOnInit() {
     // S'abonner à l'état de connexion
@@ -39,6 +44,7 @@ export class HeaderComponent implements OnInit {
       this.avatarUrl = url;
     });
     this.imageService.getProfilePicture(); // Charger l'avatar au démarrage
+    this.subscribeToUserAdress();
   }
 
   @Output() clicked = new EventEmitter<void>();
@@ -79,11 +85,33 @@ export class HeaderComponent implements OnInit {
   }
 
   openCreateAd() {
+    console.log("adresse: ", this.userAdress)
+    if (!this.userAdress || this.userAdress === null) {
+      console.log("dans la condition")
+      this.router.navigate(['/profil'])
+      alert("vous devez renseigner votre adresse avant de pouvoir poster une annonce");
+    }
+    else {
     this.router.navigate(['/annonce'])
+    }
   }
 
   logout() {
     this.authService.logout();  // Appel de la fonction de déconnexion
     this.router.navigate(['/']);  // Redirection vers la page de connexion
+  }
+
+  subscribeToUserAdress(): void {
+    this.userAdressService.userAdress$.subscribe({
+      next: (adress) => {
+        this.userAdress = adress;
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'abonnement à l\'adresse utilisateur', err);
+        this.userAdress = null;
+      },
+    });
+
+    this.userAdressService.loadUserAdress();
   }
 }
