@@ -1,53 +1,31 @@
 <div class="image-container">
-<img src="banniere2.jpeg" alt="banniere">
-<div class="text-overlay">Time dedicated to helping people, together</div>
+	<img src="banniere2.jpeg" alt="banniere">
+	<div class="text-overlay">Time dedicated to helping people, together</div>
 </div>
 
 <div class="annonces">
-<h2>Annonces à la une</h2>
+	<h2>Annonces à la une</h2>
 
-<div class = cards-container>
+	<div class="cards-container">
 
-	<app-service-card
-	   user= "Jean Charles"
-	   localisation="Clichy sous bois"
-	   [date]= "date"
-		title="Aide pour les devoirs"
-		categorie="Aide"
-	   propose="Je peux aider vos enfants à faire leurs devoirs"
-	   mail="jc@wanadoo.com"
-	   phoneNumber="0789354652"
-	   (clicked)="handleClick()">
-	</app-service-card>
-
-	<app-service-card
-	  cheminImage="./avatar3.png"
-	   user= "Haricover"
-	   localisation="Gonesse"
-	   [date]= "date"
-		title="Bricolage"
-		categorie="Bricolage"
-	   propose="Je peux faire tous vos travaux simples de bricolage"
-	   mail="harricot@wanadoo.fr"
-	   phoneNumber="0789354652"
-	   (clicked)="handleClick()">
-	</app-service-card>
-
-	<app-service-card
-	  cheminImage="./avatar2.png"
-	   user= "Geraldine"
-	   localisation="Gonesse"
-	   [date]= "date"
-		title="Garde animaux"
-		categorie="Animaux"
-	   propose="Je peux m'occuper de vos animaux "
-	   mail="geraldine@hotmail.fr"
-	   phoneNumber="0789354652"
-	   (clicked)="handleClick()">
-	</app-service-card>
-</div>
+		<app-service-card
+			*ngFor="let service of services"
+			[id]="service.id"
+			[user]="service.createdBy"
+			[profilePicture]="service.creatorProfilePicture"
+			[localisation]="service.city"
+			[date]="service.creationDate"
+			[title]="service.title"
+			[propose]="service.description"
+			[categorie]="service.category"
+			[mail]="service.mail ?? ''"
+			[phoneNumber]="service.phoneNumber ?? ''"
+			[isFavorite]="service.favorite"
+			[owner]="service.owner" />
+	</div>
 </div>
 
-<app-search-bar [showAdressFilters]="false" (searched)="onSearch($event)">
-
-</app-search-bar>
+<app-search-bar
+	[showAdressFilters]="false"
+	[serviceCount]="count"
+	(searched)="onSearch($event)" />

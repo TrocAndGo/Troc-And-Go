@@ -39,12 +39,12 @@ export class SearchService {
 }
 
 export type SearchQuery = {
-  region: string;
-  department: string;
-  city: string;
-  category: string;
-  sort: string;
-  size: number;
+  region?: string;
+  department?: string;
+  city?: string;
+  category?: string;
+  sort?: string;
+  size?: number;
 }
 
 export type SearchResult = {
