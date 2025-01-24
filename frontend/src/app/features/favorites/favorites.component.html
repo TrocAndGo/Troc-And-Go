@@ -1,19 +1,21 @@
-<div *ngIf="services.length > 0; else noServices">
+<div *ngIf="services.length > 0; else noServices" class="services-container">
 	<div *ngFor="let service of services" class="service-card">
 		<app-service-card
-		[profilePicture]="service.imagePath || './default-avatar.png'"
-		[user]="service.userName"
-		[localisation]="service.location"
+		[id]="service.id"
+		[profilePicture]="service.creatorProfilePicture ?? 'icone.png'"
+		[user]="service.createdBy"
+		[localisation]="service.city"
 		[date]="service.creationDate"
 		[title]="service.title"
 		[categorie]="service.category"
 		[propose]="service.description"
-		[mail]="service.contactEmail"
-		[phoneNumber]="service.contactPhone"
-		(clicked)="handleClick()">
+		[mail]="service.mail ?? ''"
+		[phoneNumber]="service.phoneNumber ?? ''"
+		[owner]="service.owner"
+		[isFavorite]="service.favorite">
 	  </app-service-card>
-</div>
+	</div>
 </div>
 <ng-template #noServices>
-	<p>Vous n'avez pas d'annonces dans vos favoris</p>
+	<p>Vous n'avez pas d'annonces en favoris pour le moment</p>
   </ng-template>

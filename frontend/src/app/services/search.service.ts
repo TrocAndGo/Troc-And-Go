@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import PageableResponse from '../utils/PageableResponse';
 
 @Injectable({
@@ -14,7 +14,15 @@ export class SearchService {
 
   // Récupérer les services en fonction des filtres
   search(query: SearchQuery) {
+    const token = localStorage.getItem('authToken');
+
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
     return this.http.get<PageableResponse<SearchResult>>(this.apiUrl, {
+      headers: headers,
       params: {...query}
     });
   }
@@ -53,6 +61,7 @@ export type SearchResult = {
   mail: string | null;
   phoneNumber: string | null;
   owner: boolean;
+  favorite: boolean;
 }
 
 export type SearchPagination = {

@@ -19,4 +19,5 @@ public class SearchResultEntryResponse {
     private String mail;
     private String phoneNumber;
     private boolean isOwner;
+    private boolean isFavorite;
 }

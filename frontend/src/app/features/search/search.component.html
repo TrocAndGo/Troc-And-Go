@@ -19,7 +19,9 @@
                 [date]="result.creationDate"
                 [categorie]="result.category"
                 [propose]="result.description"
-                [owner]="result.owner"/>
+                [owner]="result.owner"
+                [isFavorite]="result.favorite"
+                (deleted)="onServiceDeleted()"/>
         </div>
     }
 </div>

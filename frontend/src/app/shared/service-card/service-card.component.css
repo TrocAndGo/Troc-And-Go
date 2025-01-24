@@ -133,7 +133,7 @@ button {
 	margin: 2px;
   }
 
-  .heart, .grey-heart, .delete {
+  .heart, .grey-heart, .delete, .empty {
     cursor: pointer;
     font-size: 25px;
     transition: all 0.25s ease;

@@ -54,6 +54,10 @@ export class SearchComponent implements OnInit {
     });
   }
 
+  onServiceDeleted(): void {
+    this.loadSearchResults();
+  }
+
   get resultCount(): number {
     return this.results ? this.results.page.totalElements : 0;
   }

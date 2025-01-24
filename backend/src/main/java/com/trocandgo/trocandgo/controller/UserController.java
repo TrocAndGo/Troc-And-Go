@@ -176,4 +176,12 @@ public class UserController {
 
         return services.map(serviceMapper::toSearchResponse);
     }
+
+    @GetMapping("/me/favorites")
+    @PreAuthorize("hasRole('USER')")
+    public Page<SearchResultEntryResponse> getMyFavoritesPaginated(@PageableDefault(size = 20) Pageable pageable) {
+        var favorites = userService.getMyFavoritesPaginated(pageable);
+
+        return favorites.map(favorite -> serviceMapper.toSearchResponse(favorite.getService()));
+    }
 }

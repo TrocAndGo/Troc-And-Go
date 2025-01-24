@@ -24,6 +24,7 @@ export class ServiceCardComponent {
   @Input() mail: string = 'Mail';
   @Input() phoneNumber: string = 'phoneNumber';
   @Input() owner: boolean = false;
+  @Input() isFavorite: boolean = false;
 
   get formattedDate(): string {
     const dateObj = typeof this.date === 'string' ? new Date(this.date) : this.date;
@@ -32,7 +33,6 @@ export class ServiceCardComponent {
 
   isLoggedIn = false;
   isCoordinatesVisible = false;
-  isFavorite = false;
 
   toggleCoordinates() {
     this.isCoordinatesVisible = !this.isCoordinatesVisible;
@@ -84,6 +84,8 @@ export class ServiceCardComponent {
   }
 
   deleteService(serviceId: string): void {
+    if(!confirm('Are you sure you want to delete this service?')) return;
+
     this.adService.deleteService(serviceId).subscribe({
       next: (_) => {
         alert('Service deleted successfully');
