@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdService {
 
-  private apiUrl = 'http://localhost:8080/api/v1/services';
+  private apiUrl = environment.apiUrl;;
 
       constructor(private http: HttpClient) {}
 
@@ -16,7 +17,7 @@ export class AdService {
         if (token) {
           const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-          return this.http.post(`${this.apiUrl}`, adRequest, {
+          return this.http.post(`${this.apiUrl}/services`, adRequest, {
             headers: headers,  // Passe les headers dans la requête
           });
         }
