@@ -4,18 +4,19 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { ImageManagementService } from './image-management.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  private apiUrl = 'http://localhost:8080/api/v1/auth';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private authService: AuthService, private imageService: ImageManagementService) {}
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, loginRequest, {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, loginRequest, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     }).pipe(
       tap((response: LoginResponse) => {

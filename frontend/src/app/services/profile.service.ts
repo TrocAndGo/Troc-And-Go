@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
 
-  private apiUrl = 'http://localhost:8080/api/v1/user';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {};
 
@@ -21,7 +22,7 @@ export class ProfileService {
 
   getUserProfile(): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.get<any>(`${this.apiUrl}/profile`, { headers });
+    return this.http.get<any>(`${this.apiUrl}/user/profile`, { headers });
   }
 /*
   updateUserProfile(profileData: ProfileRequest): Observable<any> {
@@ -41,7 +42,7 @@ export class ProfileService {
     }): Observable<any> {
       const headers = this.getAuthHeaders();
       return this.http.put<any>(
-        `${this.apiUrl}/profile/update`,
+        `${this.apiUrl}/user/profile/update`,
         data,
         { headers }
       );
