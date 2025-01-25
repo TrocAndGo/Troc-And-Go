@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { ImageManagementService } from './image-management.service';
 import { environment } from '../../environments/environment';
+import { UserAdressService } from './user-adress.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,10 @@ export class LoginService {
 
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient, private authService: AuthService, private imageService: ImageManagementService) {}
+  constructor(private http: HttpClient,
+    private authService: AuthService,
+    private imageService: ImageManagementService,
+    private userAdressService: UserAdressService) {}
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, loginRequest, {
@@ -23,6 +27,16 @@ export class LoginService {
         localStorage.setItem('authToken', response.token);
         this.authService.setLoggedIn(true);
         this.imageService.getProfilePicture();
+        this.userAdressService.loadUserAdress();
+
+        this.userAdressService.userAdress$.subscribe({
+          next: (adress) => {
+            console.log('Adresse utilisateur récupérée après login :', adress);
+          },
+          error: (err) => {
+            console.error('Erreur lors de la récupération de l\'adresse utilisateur', err);
+          }
+        });
       }),
       catchError(this.handleError)  // Ajout de la gestion des erreurs
     );

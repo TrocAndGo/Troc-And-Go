@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { ImageManagementService } from '../../services/image-management.service';
 import { ButtonComponent } from '../button/button.component';
 import { UserAdressService } from '../../services/user-adress.service';
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-header',
@@ -33,18 +34,31 @@ export class HeaderComponent implements OnInit {
   constructor(public authService: AuthService,
     private router: Router,
     private imageService: ImageManagementService,
-    private userAdressService: UserAdressService) {}
+    private userAdressService: UserAdressService,
+    private profileService: ProfileService) {}
 
   ngOnInit() {
     // S'abonner à l'état de connexion
     this.authService.loggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
+
+      if (status) {
+        // Charger l'adresse utilisateur après connexion
+        this.userAdressService.loadUserAdress();
+      }
     });
+
+    // S'abonner aux changements d'adresse utilisateur
+    this.userAdressService.userAdress$.subscribe((adress) => {
+      console.log('Adresse utilisateur mise à jour :', adress);
+      this.userAdress = adress;
+    });
+
     this.imageService.avatarUrl$.subscribe((url) => {
       this.avatarUrl = url;
     });
     this.imageService.getProfilePicture(); // Charger l'avatar au démarrage
-    this.subscribeToUserAdress();
+    this.listenToAdressChanges();
   }
 
   @Output() clicked = new EventEmitter<void>();
@@ -101,17 +115,11 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/']);  // Redirection vers la page de connexion
   }
 
-  subscribeToUserAdress(): void {
-    this.userAdressService.userAdress$.subscribe({
-      next: (adress) => {
-        this.userAdress = adress;
-      },
-      error: (err) => {
-        console.error('Erreur lors de l\'abonnement à l\'adresse utilisateur', err);
-        this.userAdress = null;
-      },
+  listenToAdressChanges() {
+    this.profileService.userAdress$.subscribe((adress) => {
+      console.log('Adresse utilisateur mise à jour :', adress);
+      this.userAdress = adress;
     });
 
-    this.userAdressService.loadUserAdress();
   }
 }
