@@ -37,11 +37,12 @@
 
 img {
 	width: 6rem;
-  	height: 6rem;
-  	border-radius: 50%; /* Rend l'image circulaire */
-  	border: 2px solid #2E594F; /* Bordure verte */
-  	transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-left: 20px;
+  height: 6rem;
+  border-radius: 50%; /* Rend l'image circulaire */
+  border: 2px solid #2E594F; /* Bordure verte */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-left: 20px;
+  object-fit: cover;
 }
 
 img:hover{
