@@ -2,9 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdCategory, AdService, AdUploadRequest } from '../../services/ad.service';
-import { ProfileService } from '../../services/profile.service';
-import { DropdownButtonComponent } from '../../shared/dropdown-button/dropdown-button.component';
 import { UserAdressService } from '../../services/user-adress.service';
+import { DropdownButtonComponent } from '../../shared/dropdown-button/dropdown-button.component';
 
 @Component({
   selector: 'app-create-ad',
@@ -79,9 +78,9 @@ export class CreateAdComponent implements OnInit {
     this.adService.uploadAd(adRequest).subscribe({
       next: (response) => {
         console.log('Ad registered successfully:', response);
+        alert('Annonce enregistrée avec succès');
         this.errorMessage = null; // Réinitialiser les erreurs
         form.reset(); // Réinitialiser le formulaire
-
       },
       error: (err) => {
         console.error('Error registering user:');

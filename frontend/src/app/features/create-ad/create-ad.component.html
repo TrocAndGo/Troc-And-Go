@@ -41,6 +41,10 @@
 			<p>L'annonce sera lié à votre adresse actuelle :</p>
 			<input type="text" id="address" name="address" [value]="userAdress ?? ''" disabled>
 
+			<p *ngIf="errorMessage" class="error-message">
+				<small>{{ errorMessage }}</small>
+			</p>
+
 			<div class="button-container">
 				<button type="submit" [disabled]="!createAdForm.valid">Publier l'annonce</button>
 			</div>
