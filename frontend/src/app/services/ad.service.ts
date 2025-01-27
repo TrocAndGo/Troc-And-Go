@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
 import PageableResponse from '../utils/PageableResponse';
 import { SearchResult } from './search.service';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -37,13 +37,17 @@ export class AdService {
     return throwError('Token is missing');  // Retourne une erreur si le token est absent
   }
 
-  getMyServices(): Observable<PageableResponse<SearchResult>> {
+  getMyServices(page: number = 0): Observable<PageableResponse<SearchResult>> {
     const token = localStorage.getItem('authToken');
     if (token) {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
       return this.http.get<PageableResponse<SearchResult>>(`${this.apiUrl}/user/me/services`, {
         headers: headers,
+        params: {
+          page: page,
+          size: 6
+        }
       });
     }
     return throwError(() => new Error('Token is missing'));  // Retourne une erreur si le token est absent

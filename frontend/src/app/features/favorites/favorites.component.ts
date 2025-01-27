@@ -1,21 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AdService } from '../../services/ad.service';
 import { FavoritesService } from '../../services/favorites.service';
 import { SearchResult, SearchService } from '../../services/search.service';
+import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { ServiceCardComponent } from '../../shared/service-card/service-card.component';
 import { Page } from '../../utils/PageableResponse';
 
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [CommonModule, ServiceCardComponent],
+  imports: [CommonModule, ServiceCardComponent, PaginationComponent],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.css'
 })
 export class FavoritesComponent implements OnInit {
   services: SearchResult[] = [];
   page: Page | null = null;
+  currentPage: number = 0;
 
   constructor(private favoritesService: FavoritesService, private searchService: SearchService) { }
 
@@ -27,8 +28,13 @@ export class FavoritesComponent implements OnInit {
     alert('Button clicked!');
   }
 
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.getFavorites();
+  }
+
   getFavorites(): void {
-    this.favoritesService.getFavorites().subscribe({
+    this.favoritesService.getFavorites(this.currentPage).subscribe({
       next: (data) => {
         this.services = data.content;
         this.page = data.page;

@@ -27,6 +27,13 @@
     }
 </div>
 
+<ng-container *ngIf="results && results.page.totalPages > 1">
+    <app-pagination
+        [currentPage]="results.page.number"
+        [totalPages]="results.page.totalPages"
+        (onPageChange)="onPageChange($event)"/>
+</ng-container>
+
 <ng-template #noResults>
     <p>Aucun résultat pour votre recherche</p>
 </ng-template>
