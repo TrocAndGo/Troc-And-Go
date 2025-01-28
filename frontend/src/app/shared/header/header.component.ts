@@ -8,6 +8,7 @@ import { ImageManagementService } from '../../services/image-management.service'
 import { ButtonComponent } from '../button/button.component';
 import { UserAdressService } from '../../services/user-adress.service';
 import { ProfileService } from '../../services/profile.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-header',
@@ -35,7 +36,9 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private imageService: ImageManagementService,
     private userAdressService: UserAdressService,
-    private profileService: ProfileService) {}
+    private profileService: ProfileService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     // S'abonner à l'état de connexion
@@ -103,10 +106,10 @@ export class HeaderComponent implements OnInit {
     if (!this.userAdress || this.userAdress === null) {
       console.log("dans la condition")
       this.router.navigate(['/profil'])
-      alert("vous devez renseigner votre adresse avant de pouvoir poster une annonce");
+      this.toastr.warning("Vous devez renseigner votre adresse avant de pouvoir poster une annonce");
     }
     else {
-    this.router.navigate(['/annonce'])
+      this.router.navigate(['/annonce'])
     }
   }
 

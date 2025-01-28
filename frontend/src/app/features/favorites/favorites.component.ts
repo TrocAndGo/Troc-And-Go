@@ -5,6 +5,7 @@ import { SearchResult, SearchService } from '../../services/search.service';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { ServiceCardComponent } from '../../shared/service-card/service-card.component';
 import { Page } from '../../utils/PageableResponse';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-favorites',
@@ -18,7 +19,7 @@ export class FavoritesComponent implements OnInit {
   page: Page | null = null;
   currentPage: number = 0;
 
-  constructor(private favoritesService: FavoritesService, private searchService: SearchService) { }
+  constructor(private favoritesService: FavoritesService, private searchService: SearchService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.getFavorites();
@@ -34,7 +35,7 @@ export class FavoritesComponent implements OnInit {
   }
 
   onFavoriteRemoved(id: string): void {
-    this.services= this.services.filter((service) => service.id !== id);
+    this.services = this.services.filter((service) => service.id !== id);
   }
 
   getFavorites(): void {
@@ -52,6 +53,7 @@ export class FavoritesComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erreur lors de la récupération du service', error);
+        this.toastr.error('Erreur lors de la récupération de vos services favoris');
       }
     });
   }

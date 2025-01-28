@@ -4,6 +4,7 @@ import { AdService } from '../../services/ad.service';
 import { AuthService } from '../../services/auth.service';
 import { FavoritesService } from '../../services/favorites.service';
 import { ButtonComponent } from '../button/button.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-service-card',
@@ -38,10 +39,12 @@ export class ServiceCardComponent {
     this.isCoordinatesVisible = !this.isCoordinatesVisible;
   }
 
-  creationDate: Date; // Déclaration explicite de la propriété
-  constructor(public authService: AuthService, private favoritesService: FavoritesService, private adService: AdService) {
-    this.creationDate = new Date(); // Enregistre la date actuelle
-  }
+  constructor(
+    public authService: AuthService,
+    private favoritesService: FavoritesService,
+    private adService: AdService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     // S'abonner à l'état de connexion
@@ -53,6 +56,8 @@ export class ServiceCardComponent {
    // Définir un événement de clic
     @Output() clicked = new EventEmitter<void>();
     @Output() deleted = new EventEmitter<void>();
+    @Output() favorited = new EventEmitter<void>();
+    @Output() unfavorited = new EventEmitter<void>();
 
     // Méthode pour émettre l'événement de clic
     onClick() {
@@ -64,9 +69,11 @@ export class ServiceCardComponent {
       next: (response) => {
         console.log('Favorite added successfully:', response);
         this.isFavorite = true;
+        this.favorited.emit();
       },
       error: (error) => {
         console.error('Error adding favorite:', error.message);
+        this.toastr.error('Une erreur est survenue.');
       }
     });
   }
@@ -82,6 +89,7 @@ export class ServiceCardComponent {
       },
       error: (error) => {
         console.error('Error removing favorite:', error.message);
+        this.toastr.error('Une erreur est survenue.');
       }
     });
   }
@@ -91,11 +99,12 @@ export class ServiceCardComponent {
 
     this.adService.deleteService(serviceId).subscribe({
       next: (_) => {
-        alert('Service deleted successfully');
+        this.toastr.success('Service supprimé avec succès.');
         this.deleted.emit();
       },
       error: (error) => {
         console.error('Error deleting service:', error.message);
+        this.toastr.error('Une erreur est survenue.');
       }
     });
   }

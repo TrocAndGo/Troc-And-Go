@@ -22,7 +22,7 @@ export class AdService {
         headers: headers,  // Passe les headers dans la requête
       });
     }
-    return throwError('Token is missing');  // Retourne une erreur si le token est absent
+    return throwError(() => new Error('Token is missing'));  // Retourne une erreur si le token est absent
   }
 
   getServices(): Observable<any> {
@@ -34,7 +34,7 @@ export class AdService {
         headers: headers,
       });
     }
-    return throwError('Token is missing');  // Retourne une erreur si le token est absent
+    return throwError(() => new Error('Token is missing'));  // Retourne une erreur si le token est absent
   }
 
   getMyServices(page: number = 0): Observable<PageableResponse<SearchResult>> {
@@ -97,4 +97,3 @@ export type AdressFilters = {
   departments: string[];
   cities: string[];
 }
-

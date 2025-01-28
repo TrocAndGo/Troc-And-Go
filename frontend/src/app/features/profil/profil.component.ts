@@ -1,10 +1,13 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ImageManagementService } from '../../services/image-management.service';
 import { ButtonComponent } from '../../shared/button/button.component';
-import { ProfileService, ProfileRequest } from '../../services/profile.service';
+import { ProfileService } from '../../services/profile.service';
 import { GeocodingService } from '../../services/geocoding.service';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-profil',
   standalone: true,
@@ -41,11 +44,18 @@ export class ProfilComponent implements OnInit {
   initialPhoneNumber: string = '';
   // États pour gérer les modifications
   isAddressValidated: boolean = false; // Indique si l'adresse est validée par l'API
+  // Pour la gestion de l'image de profil
+  selectedFileName: string | null = null;
+  isPhotoValidated: boolean = false;
+
   constructor(
     private imageService: ImageManagementService,
     private profileService: ProfileService,
-    private geocodingService: GeocodingService
+    private geocodingService: GeocodingService,
+    private toastr: ToastrService,
+    private router: Router
   ) {}
+
   ngOnInit(): void {
     // Initialisation des valeurs initiales
     this.initialFullAddress = this.fullAddress;
@@ -70,12 +80,11 @@ export class ProfilComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur lors de la récupération du profil utilisateur:', err);
+        this.toastr.error('Erreur lors de la récupération du profil utilisateur.')
       },
     });
   }
-  // Pour la gestion de l'image de profil
-  selectedFileName: string | null = null;
-  isPhotoValidated: boolean = false;
+
   onFileSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files.length > 0) {
@@ -106,23 +115,28 @@ export class ProfilComponent implements OnInit {
         this.imageService.uploadImage(this.selectedFile, token).subscribe({
           next: (response) => {
             console.log('Image uploaded successfully:', response);
+            this.toastr.success('Votre photo de profil a été mise à jour avec succès !');
             this.isPhotoValidated = true; // La photo a été validée
           },
           error: (error) => {
             console.error('Failed to upload image:', error);
+            this.toastr.error('Une erreur est survenue lors de la mise à jour de votre photo de profil.');
           },
         });
       } else {
         console.error('Token not found.');
+        this.toastr.error('Vous n\'êtes pas authentifié.');
       }
     } else {
       console.error('No file selected.');
+      this.toastr.error('Aucun fichier sélectionné.');
     }
   }
+
   // Validation de l'adresse via Géoportail
   validateAddress(): void {
     if (!this.fullAddress) {
-      alert('Veuillez saisir une adresse complète.');
+      this.toastr.error('Veuillez saisir une adresse complète.');
       return;
     }
     // Appel à l'API de géocodage pour valider l'adresse
@@ -137,20 +151,21 @@ export class ProfilComponent implements OnInit {
           this.isAddressModified = true; // Marque l'adresse comme modifiée
           this.isAddressValidated = true; // Adresse validée
           this.updateFormState(); // Vérifie si le formulaire doit être activé
-          alert('Adresse validée avec succès.');
+          this.toastr.success('Adresse validée avec succès.');
           this.onProfileChange(); // Mise à jour de l'état du formulaire
         } else {
-          alert("L'adresse n'a pas pu être trouvée.");
+          this.toastr.error("L'adresse n'a pas pu être trouvée.");
           this.isAddressValidated = false; // Échec de validation
           this.updateFormState();
         }
       },
       error: (err) => {
         console.error('Erreur lors de la validation de l’adresse :', err);
-        alert('Une erreur est survenue lors de la validation de l’adresse.');
+        this.toastr.error('Une erreur est survenue lors de la validation de l’adresse.');
       },
     });
   }
+
   // Fonction qui suit les modifications du formulaire
   onProfileChange(): void {
     // Appelé lorsque le téléphone est modifié
@@ -159,12 +174,14 @@ export class ProfilComponent implements OnInit {
     // Mise à jour de l'état du formulaire
     this.isFormModified = phoneModified || addressModified;
   }
+
   updateFormState(): void {
     // Met à jour l'état du formulaire après validation de l'adresse ou modification du téléphone
     const phoneModified = this.phoneNumber !== this.initialPhoneNumber;
     const addressModified = this.isAddressValidated; // Adresse validée par Géoportail
     this.isFormModified = phoneModified || addressModified;
   }
+
   // Envoi des données modifiées au backend
   onSubmit(form: any): void {
     // Initialisation de l'objet de données à envoyer
@@ -191,17 +208,18 @@ export class ProfilComponent implements OnInit {
     // Envoi les données au backend
     this.profileService.updateUserProfileWithGeocode(profileData).subscribe({
       next: () => {
-        alert('Profil mis à jour avec succès !');
+        this.toastr.success('Profil mis à jour avec succès !');
         // Réinitialiser l'état du formulaire après un envoi réussi
         this.initialPhoneNumber = this.phoneNumber;
         this.initialFullAddress = this.fullAddress;
         this.isAddressValidated = false; // Réinitialiser la validation d'adresse
         this.isFormModified = false; // Griser le bouton
         this.isSubmitting = false; // Réactiver le formulaire si besoin
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         console.error('Erreur lors de la mise à jour du profil :', err);
-        alert('Une erreur est survenue lors de la mise à jour.');
+        this.toastr.error('Une erreur est survenue lors de la mise à jour.');
         this.isSubmitting = false;
       },
     });

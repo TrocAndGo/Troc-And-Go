@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgForm, FormsModule } from '@angular/forms';
 import { LoginService, LoginRequest } from '../../services/login.service';
 import { AuthService } from '../../services/auth.service';
+import { errorMessageFromStatusCode } from '../../utils/ErrorMessage';
 
 
 @Component({
@@ -48,7 +49,6 @@ export class LoginComponent {
 
         const token = response.token; // Récupère le token de la réponse
         localStorage.setItem('authToken', token); // Sauvegarde le token dans le localStorage
-        console.log(token);
 
         this.authService.setLoggedIn(true);
 
@@ -58,29 +58,7 @@ export class LoginComponent {
 
       },
       error: (err) => {
-        console.error('Error registering user:');
-        console.error('Status:', err.status);
-        console.error('Status Text:', err.statusText);
-        console.error('Error message:', err.message);
-        console.error('Detailed error:', err.error);
-
-        // Affichage d'un message d'erreur plus précis
-        if (err.status === 0) {
-          // Cas où il y a une erreur de connexion ou si le backend n'est pas accessible
-          this.errorMessage = 'Problème de connexion au serveur';
-        } else if (err.status === 400) {
-          // Cas d'une mauvaise requête (par exemple, données invalides)
-          this.errorMessage = 'Données non valides';
-        } else if (err.status === 404) {
-          // Cas d'une ressource introuvable
-          this.errorMessage = 'Ressource introuvable';
-        } else if (err.status === 500) {
-          // Cas d'une erreur serveur interne
-          this.errorMessage = 'Problème de serveur, merci de rééssayer plus tard';
-        } else {
-          // Cas général d'erreur
-          this.errorMessage = err.error || "Erreur d'enregistrement";
-        }
+        this.errorMessage = errorMessageFromStatusCode(err.status);
       },
     });
   }

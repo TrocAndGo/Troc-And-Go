@@ -13,3 +13,7 @@ body {
     flex-grow: 1;
   }
 }
+
+.toast-top-right {
+  top: 112px;
+}

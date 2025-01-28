@@ -6,6 +6,7 @@ import { SearchResult } from '../../services/search.service';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { ServiceCardComponent } from '../../shared/service-card/service-card.component';
 import { Page } from '../../utils/PageableResponse';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-my-ads',
@@ -20,7 +21,7 @@ export class MyAdsComponent implements OnInit {
   currentPage: number = 0;
   profilePictureUrl: string = 'icone.jpg';
 
-  constructor(private adService: AdService, private imageService: ImageManagementService) {}
+  constructor(private adService: AdService, private imageService: ImageManagementService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.getMyServices();
@@ -44,6 +45,7 @@ export class MyAdsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erreur lors de la récupération du service', error);
+        this.toastr.error('Erreur lors de la récupération du service');
       }
     });
   }
