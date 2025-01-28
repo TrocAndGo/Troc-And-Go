@@ -23,4 +23,42 @@
 		padding: 20px; /* Ajoute un espace intérieur */
 		border-radius: 8px; /* Arrondi des coins */
 		font-family: 'Montserrat', sans-serif;
+		font-size: 16px;
+		width: 90%;
+	  }
+
+	  @media (max-width: 768px) {
+		.contact {
+
+		  width: 90%; /* Réduit la largeur pour les petits écrans */
+		  font-size: 14px; /* Réduit la taille de la police pour les petits écrans */
+		}
+	  }
+
+	  @media (max-width: 480px) {
+		.contact {
+
+		  width: 90%; /* Utilise toute la largeur pour les très petits écrans */
+		  font-size: 12px; /* Réduit encore la taille de la police pour les très petits écrans */
+		}
+	  }
+
+	  .contact-image {
+		width: 750px; /* Largeur par défaut pour les grands écrans */
+		object-fit: cover; /* Assure que l'image est rognée pour remplir son conteneur */
+	  }
+
+	  @media (max-width: 768px) {
+		.contact-image {
+		  width: 100%; /* Utilise toute la largeur disponible pour les petits écrans */
+		  height: auto; /* Ajuste la hauteur automatiquement */
+		}
+	  }
+
+	  @media (max-width: 480px) {
+		.contact-image {
+		  width: 100%; /* Utilise toute la largeur disponible pour les très petits écrans */
+		  height: 200px; /* Hauteur fixe pour rogner l'image */
+		  object-fit: cover; /* Assure que l'image est rognée pour remplir son conteneur */
+		}
 	  }

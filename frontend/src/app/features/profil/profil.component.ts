@@ -5,13 +5,12 @@ import { ImageManagementService } from '../../services/image-management.service'
 import { ButtonComponent } from '../../shared/button/button.component';
 import { ProfileService, ProfileRequest } from '../../services/profile.service';
 import { GeocodingService } from '../../services/geocoding.service';
-
 @Component({
   selector: 'app-profil',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent ],
+  imports: [CommonModule, FormsModule, ButtonComponent],
   templateUrl: './profil.component.html',
-  styleUrl: './profil.component.css'
+  styleUrls: ['./profil.component.css']
 })
 export class ProfilComponent implements OnInit {
   selectedFile: File | null = null;
@@ -35,122 +34,115 @@ export class ProfilComponent implements OnInit {
   isSubmitting = false;
   addressPlaceholder: string = 'Entrez une adresse';
   cityPlaceholder: string = 'Entrez une ville';
-
+  isAddressValid: boolean = false;
+  isFormModified: boolean = false;
+  isAddressModified: boolean = false; // Nouvelle variable pour savoir si l'adresse a été modifiée
+  initialFullAddress: string = '';
+  initialPhoneNumber: string = '';
+  // États pour gérer les modifications
+  isAddressValidated: boolean = false; // Indique si l'adresse est validée par l'API
   constructor(
     private imageService: ImageManagementService,
     private profileService: ProfileService,
     private geocodingService: GeocodingService
   ) {}
-
   ngOnInit(): void {
-    // Charger l'image de profil au démarrage
+    // Initialisation des valeurs initiales
+    this.initialFullAddress = this.fullAddress;
+    this.initialPhoneNumber = this.phoneNumber;
+    // Charger l'image de profil
     this.imageService.getProfilePicture();
-
     // Récupérer l'URL de l'avatar depuis le service
     this.imageService.avatarUrl$.subscribe((url) => {
       this.avatarUrl = url;
     });
-
     // Récupérer le profil utilisateur depuis le backend
     this.profileService.getUserProfile().subscribe({
       next: (data) => {
-        console.log('Données récupérées depuis le backend :', data);
-
         this.username = data.username || '';
+        this.fullAddress = data.fullAddress || '';
         this.address = data.address || '';
         this.city = data.city || '';
         this.zipCode = data.zipCode || '';
         this.phoneNumber = data.phoneNumber || '';
-        //this.email = data.email || '';
-        // Mettre à jour les placeholders avec les valeurs récupérées
-
+        this.initialFullAddress = this.fullAddress;
+        this.initialPhoneNumber = this.phoneNumber;
       },
       error: (err) => {
         console.error('Erreur lors de la récupération du profil utilisateur:', err);
       },
     });
   }
-
-selectedFileName: string | null = null;
-isPhotoValidated: boolean = false;
-
-onFileSelected(event: Event): void {
-  const fileInput = event.target as HTMLInputElement;
-  if (fileInput.files && fileInput.files.length > 0) {
-    const file = fileInput.files[0];
-    this.selectedFile = file; // Stocker le fichier sélectionné
-    this.selectedFileName = file.name; // Stocker le nom du fichier
-    this.isPhotoValidated = false; // Réinitialise l'état de validation
-
-    // Prévisualisation de l'image
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview = reader.result as string;
-    };
-    reader.readAsDataURL(file);
-  } else {
-    // Réinitialiser si aucun fichier sélectionné
-    this.selectedFile = null;
-    this.selectedFileName = null;
-    this.imagePreview = null; // Réinitialise si aucun fichier sélectionné
-    this.isPhotoValidated = false; // Réinitialise l'état de validation
-  }
-}
-
-onSubmitImg(): void {
-  if (this.selectedFile) {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      this.imageService.uploadImage(this.selectedFile, token).subscribe({
-        next: (response) => {
-          console.log('Image uploaded successfully:', response);
-          alert('Votre photo de profil a été mise à jour avec succès !');
-          this.isPhotoValidated = true; // La photo a été validée
-          // Vous pouvez réinitialiser selectedFile ici si nécessaire :
-          // this.selectedFile = null;
-        },
-        error: (error) => {
-          console.error('Failed to upload image:', error);
-          alert('Une erreur est survenue lors de la mise à jour de votre photo de profil.');
-        },
-      });
+  // Pour la gestion de l'image de profil
+  selectedFileName: string | null = null;
+  isPhotoValidated: boolean = false;
+  onFileSelected(event: Event): void {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      this.selectedFile = file; // Stocker le fichier sélectionné
+      this.selectedFileName = file.name; // Stocker le nom du fichier
+      this.isPhotoValidated = false; // Réinitialise l'état de validation
+      // Prévisualisation de l'image
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+        // Valider automatiquement la photo après prévisualisation
+        this.onSubmitImg();
+      };
+      reader.readAsDataURL(file);
     } else {
-      console.error('Token not found.');
+      // Réinitialiser si aucun fichier sélectionné
+      this.selectedFile = null;
+      this.selectedFileName = null;
+      this.imagePreview = null; // Réinitialise si aucun fichier sélectionné
+      this.isPhotoValidated = false; // Réinitialise l'état de validation
     }
-  } else {
-    console.error('No file selected.');
   }
-}
-
-
-  onPasswordChange(password: string, confirmPassword: string): void {
-    this.passwordsMatch = password === confirmPassword;
+  onSubmitImg(): void {
+    if (this.selectedFile) {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        this.imageService.uploadImage(this.selectedFile, token).subscribe({
+          next: (response) => {
+            console.log('Image uploaded successfully:', response);
+            this.isPhotoValidated = true; // La photo a été validée
+          },
+          error: (error) => {
+            console.error('Failed to upload image:', error);
+          },
+        });
+      } else {
+        console.error('Token not found.');
+      }
+    } else {
+      console.error('No file selected.');
+    }
   }
-
+  // Validation de l'adresse via Géoportail
   validateAddress(): void {
     if (!this.fullAddress) {
       alert('Veuillez saisir une adresse complète.');
       return;
     }
-
+    // Appel à l'API de géocodage pour valider l'adresse
     this.geocodingService.searchAddress(this.fullAddress).subscribe({
       next: (response) => {
         if (response.features && response.features.length > 0) {
           const feature = response.features[0];
-
           // Extraire les champs pour affichage
           this.address = feature.properties.name || '';
           this.city = feature.properties.city || '';
           this.zipCode = feature.properties.postcode || '';
-
-          // Stocker les données supplémentaires pour le backend
-          this.region = feature.properties.context.split(', ')[2] || '';
-          this.department = feature.properties.context.split(', ')[1] || '';
-          [this.longitude, this.latitude] = feature.geometry.coordinates;
-
+          this.isAddressModified = true; // Marque l'adresse comme modifiée
+          this.isAddressValidated = true; // Adresse validée
+          this.updateFormState(); // Vérifie si le formulaire doit être activé
           alert('Adresse validée avec succès.');
+          this.onProfileChange(); // Mise à jour de l'état du formulaire
         } else {
           alert("L'adresse n'a pas pu être trouvée.");
+          this.isAddressValidated = false; // Échec de validation
+          this.updateFormState();
         }
       },
       error: (err) => {
@@ -159,36 +151,59 @@ onSubmitImg(): void {
       },
     });
   }
-
+  // Fonction qui suit les modifications du formulaire
+  onProfileChange(): void {
+    // Appelé lorsque le téléphone est modifié
+    const phoneModified = this.phoneNumber !== this.initialPhoneNumber;
+    const addressModified = this.isAddressValidated; // Adresse validée après appel à l'API
+    // Mise à jour de l'état du formulaire
+    this.isFormModified = phoneModified || addressModified;
+  }
+  updateFormState(): void {
+    // Met à jour l'état du formulaire après validation de l'adresse ou modification du téléphone
+    const phoneModified = this.phoneNumber !== this.initialPhoneNumber;
+    const addressModified = this.isAddressValidated; // Adresse validée par Géoportail
+    this.isFormModified = phoneModified || addressModified;
+  }
+  // Envoi des données modifiées au backend
   onSubmit(form: any): void {
-    if (form.invalid) return;
-
-    // Vérification et conversion des coordonnées
-    if (this.latitude === null || this.longitude === null) {
-      alert("Les coordonnées sont manquantes. Veuillez valider l'adresse à nouveau.");
+    // Initialisation de l'objet de données à envoyer
+    const profileData: any = {};
+    // Vérification et ajout du numéro de téléphone si modifié
+    if (this.phoneNumber !== this.initialPhoneNumber) {
+      console.log('je suis ici.');
+      profileData.phoneNumber = this.phoneNumber;
+    }
+    // Vérification et ajout de l'adresse si modifiée et validée
+    if (this.isAddressModified && this.fullAddress !== this.initialFullAddress) {
+      profileData.address = this.address;
+      profileData.city = this.city;
+      profileData.zipCode = this.zipCode;
+      profileData.latitude = this.latitude;
+      profileData.longitude = this.longitude;
+    }
+    // Vérifier s'il y a des modifications
+    if (Object.keys(profileData).length === 0) {
+      console.log('Aucune modification à envoyer.');
       return;
     }
-
-    const profileData = {
-      phoneNumber: this.phoneNumber,
-      address: this.address,
-      city: this.city,
-      zipCode: this.zipCode,
-      region: this.region,
-      department: this.department,
-      latitude: this.latitude,
-      longitude: this.longitude,
-    };
-
+    this.isSubmitting = true; // Désactiver temporairement le bouton pendant l'envoi
+    // Envoi les données au backend
     this.profileService.updateUserProfileWithGeocode(profileData).subscribe({
       next: () => {
         alert('Profil mis à jour avec succès !');
+        // Réinitialiser l'état du formulaire après un envoi réussi
+        this.initialPhoneNumber = this.phoneNumber;
+        this.initialFullAddress = this.fullAddress;
+        this.isAddressValidated = false; // Réinitialiser la validation d'adresse
+        this.isFormModified = false; // Griser le bouton
+        this.isSubmitting = false; // Réactiver le formulaire si besoin
       },
       error: (err) => {
         console.error('Erreur lors de la mise à jour du profil :', err);
         alert('Une erreur est survenue lors de la mise à jour.');
+        this.isSubmitting = false;
       },
     });
   }
-
 }

@@ -4,15 +4,19 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 0 60px; /* Pour donner un peu d'espace autour du contenu */
-	bottom: 0;
+	padding: 0 30px; /* Réduit l'espace pour les petits écrans */
+	box-sizing: border-box; /* Inclut la largeur du padding dans le calcul de la largeur */
+	position: relative; /* Nécessaire pour que les éléments positionnés absolus à l'intérieur fonctionnent */
+	z-index: 1;
   }
 
   .logo-links-container {
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	gap: 40px;
+	gap: 20px; /* Réduit l'espace entre les éléments */
+	flex-wrap: wrap; /* Permet aux éléments de s'ajuster */
+	width: 60%;
   }
 
   .islogged {
@@ -25,6 +29,7 @@
   img {
 	height: 75px;
 	width: 118px;
+	object-fit: cover; /* Garde la proportion de l'image */
   }
 
   a {
@@ -34,10 +39,11 @@
 	color: #F7F4E1;
   }
 
-  .buttons-container {
+  .islogged {
 	display: flex;
 	justify-content: flex-end;
-	gap: 40px; /* Pour espacer les boutons */
+	gap: 20px; /* Réduit l'espace entre les boutons */
+	flex-wrap: wrap; /* Permet aux boutons de s'ajuster sur plusieurs lignes */
   }
 
   .button {
@@ -45,4 +51,144 @@
 	justify-content: center;
 	align-items: center;
   }
+
+  /* Conteneur principal pour les boutons */
+  .loggedin-container {
+	display: flex; /* Active Flexbox */
+	justify-content: flex-end; /* Place les éléments à droite */
+	max-width: 100%; /* Empêche de dépasser */
+	overflow-x: auto; /* Ajoute un scroll horizontal si nécessaire */
+	overflow: visible;
+  }
+
+  .loggedin {
+	display: flex; /* Aligne les éléments horizontalement */
+	gap: 15px; /* Espace entre les éléments */
+	align-items: center; /* Aligne verticalement au centre */
+  }
+
+  .loggedin a,
+  .loggedin app-button {
+	flex-shrink: 0; /* Empêche les éléments de se réduire */
+  }
+
+    /* Image de profil */
+	.profile-picture {
+		width: 60px;
+		height: 60px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid #fff;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		transition: transform 0.3s, box-shadow 0.3s;
+	  }
+
+	  .profile-picture:hover {
+		transform: scale(1.05);
+	  }
+
+  /* Styles spécifiques aux petits écrans */
+  @media screen and (max-width: 1024px) {
+	.logo-links-container {
+	  gap: 10px; /* Espacement plus petit */
+	}
+
+	.islogged {
+	  gap: 10px; /* Réduit l'espace entre les boutons */
+	}
+
+	.loggedin-container {
+	  gap: 10px; /* Espacement réduit entre les éléments du menu utilisateur */
+	}
+  }
+
+  @media screen and (max-width: 768px) {
+	.footer {
+	  height: auto; /* Permet d'ajuster la hauteur pour les petits écrans */
+	  flex-direction: column; /* Organise les éléments du footer verticalement */
+	  justify-content: flex-start;
+	  padding: 10px 20px; /* Réduit les marges internes */
+	}
+
+	.logo-links-container {
+	  gap: 15px; /* Espacement entre les éléments du logo et des liens */
+	  flex-direction: column; /* Empile les éléments du logo et des liens */
+	  align-items: center; /* Centre les éléments */
+	  margin-bottom: 10px;
+	}
+
+	.islogged {
+	  gap: 15px; /* Espacement plus petit entre les boutons */
+	  flex-direction: column; /* Les boutons seront alignés verticalement */
+	  align-items: center; /* Centre les boutons */
+	}
+
+	.loggedin-container {
+	  gap: 15px; /* Espacement réduit */
+	  flex-direction: column; /* Empile les éléments */
+	  align-items: center; /* Centre les éléments */
+	}
+
+	.profile-picture {
+	  width: 50px; /* Réduit la taille de l'avatar pour les petits écrans */
+	  height: 50px;
+	}
+  }
+
+  @media screen and (max-width: 480px) {
+	.logo-links-container {
+	  gap: 5px; /* Réduit encore l'espacement */
+	}
+
+	.islogged {
+	  gap: 5px; /* Réduit l'espace entre les boutons */
+	}
+
+	.loggedin-container {
+	  gap: 5px; /* Espacement réduit encore */
+	}
+  }
+
+
+/* Conteneur principal du dropdown */
+.dropdown {
+	display: inline-block;
+	cursor: pointer;
+	z-index: 10; /* Assurez-vous qu'il est au-dessus de ses frères/soeurs immédiats */
+  }
+
+  /* Liste déroulante */
+  .dropdown-menu {
+	position: absolute; /* Positionnement par rapport au conteneur parent (dropdown) */
+	top: 100%; /* Place le menu juste en dessous de l'image */
+	right: 0; /* Aligne le menu à droite */
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	z-index: 1050; /* Priorité élevée pour que le menu soit visible par-dessus tout */
+	list-style: none;
+	padding: 10px 0;
+	margin: 0;
+	width: 150px;
+	overflow: hidden;
+  }
+
+  /* Lien dans le menu */
+  .dropdown-menu li a {
+	display: block;
+	padding: 10px;
+	text-decoration: none;
+	font-size: 14px;
+	font-family: 'Montserrat', sans-serif;
+	color: #333;
+	transition: background-color 0.3s;
+  }
+
+  .dropdown-menu li a:hover {
+	background-color: #f2f2f2;
+  }
+
+
+
 

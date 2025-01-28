@@ -33,6 +33,10 @@ export class FavoritesComponent implements OnInit {
     this.getFavorites();
   }
 
+  onFavoriteRemoved(id: string): void {
+    this.services= this.services.filter((service) => service.id !== id);
+  }
+
   getFavorites(): void {
     this.favoritesService.getFavorites(this.currentPage).subscribe({
       next: (data) => {
@@ -50,6 +54,10 @@ export class FavoritesComponent implements OnInit {
         console.error('Erreur lors de la récupération du service', error);
       }
     });
+  }
+
+  onServiceRemovedFromFavorite(): void {
+    this.getFavorites();
   }
 
   downloadImage(result: SearchResult) {

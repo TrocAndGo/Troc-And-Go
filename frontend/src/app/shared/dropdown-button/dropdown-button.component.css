@@ -76,3 +76,9 @@
   li {
 	font-family: 'Montserrat', sans-serif;
   }
+
+  @media screen and (max-width: 768px) {
+	.btn {
+		margin: 0;
+	  }
+	}

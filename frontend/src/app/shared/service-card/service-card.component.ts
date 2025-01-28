@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, output, Output } from '@angular/core';
 import { AdService } from '../../services/ad.service';
 import { AuthService } from '../../services/auth.service';
 import { FavoritesService } from '../../services/favorites.service';
@@ -71,11 +71,14 @@ export class ServiceCardComponent {
     });
   }
 
+  @Output() favoriteRemoved = new EventEmitter<string>();
+
   removeFromFavorites(serviceId: string): void {
     this.favoritesService.removeFavorite(serviceId).subscribe({
       next: (response) => {
         console.log('Favorite removed successfully:', response);
         this.isFavorite = false;
+        this.favoriteRemoved.emit(serviceId);
       },
       error: (error) => {
         console.error('Error removing favorite:', error.message);

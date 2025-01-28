@@ -12,7 +12,8 @@
 		[mail]="service.mail ?? ''"
 		[phoneNumber]="service.phoneNumber ?? ''"
 		[owner]="service.owner"
-		[isFavorite]="service.favorite">
+		[isFavorite]="service.favorite"
+		(favoriteRemoved)="onFavoriteRemoved($event)">
 	  </app-service-card>
 	</div>
 </div>

@@ -8,3 +8,12 @@ p {
   margin-inline: auto;
   place-items: center;
 }
+
+
+@media (max-width : 1024px) {
+	.services-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+	}
+	}

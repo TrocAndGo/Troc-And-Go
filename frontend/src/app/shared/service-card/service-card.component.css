@@ -16,6 +16,7 @@
 	box-shadow: 0px 4px 8px rgba(46,89,79, 0.2); /* Ombre douce */
 	transition: box-shadow 0.3s ease; /* Transition douce */
 	margin: 5px;
+	position: relative;
 }
 
 .description {
@@ -27,7 +28,11 @@
 @media (max-width : 1024px) {
 	.card {
 	width: 60vw;
-
+	}
+	.card-header {
+		display: block;
+		margin-bottom: 18px;
+		justify-content: space-between;
 	}
 	}
 
@@ -156,3 +161,13 @@ button {
   .delete {
     color: red;
   }
+
+  @media screen and (max-width: 768px) {
+	.delete, .heart, .grey-heart {
+		display: block;
+		position: absolute;
+		top: 0;
+		right: 0;
+		margin: 20px;
+	}
+	}

@@ -25,14 +25,31 @@
 	top: 50%;
 	left: 50%; /* Décalage horizontal */
 	background-color: rgba(60, 179, 113, 0.7); /* Couleur verte avec 70% d'opacité */
-	height: 10vh; /* Hauteur relative à la fenêtre */
 	border-radius: 50px;
 	transform: translate(-50%, -50%);
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
-	padding: 15px;
+	padding: 30px;
   }
+
+  @media (max-width : 1024px) {
+	.background {
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	padding: 15px;
+	}
+
+	.container {
+		position: relative; /* Permet de positionner les enfants avec position absolue */
+		background-image: url('/banniere4.bmp');
+		background-size: cover; /* Adapte l'image à la taille du conteneur */
+		background-position: center; /* Centre l'image */
+		height: 70vh; /* Hauteur à 50% de la hauteur de la fenêtre */
+		color: white; /* Couleur du texte pour qu'il soit visible */
+	  }
+	}
 
 button {
 	background-color: white;

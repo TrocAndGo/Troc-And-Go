@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdCategory, AdService, AdUploadRequest } from '../../services/ad.service';
 import { UserAdressService } from '../../services/user-adress.service';
 import { DropdownButtonComponent } from '../../shared/dropdown-button/dropdown-button.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-ad',
@@ -18,7 +19,7 @@ export class CreateAdComponent implements OnInit {
   userAdress: string | null = null;
   errorMessage: string | null = null;
 
-  constructor(private adService: AdService,  private userAdressService: UserAdressService ) { }
+  constructor(private adService: AdService,  private userAdressService: UserAdressService, private router: Router, ) { }
 
   ngOnInit(): void {
     this.loadCategories();
@@ -81,6 +82,7 @@ export class CreateAdComponent implements OnInit {
         alert('Annonce enregistrée avec succès');
         this.errorMessage = null; // Réinitialiser les erreurs
         form.reset(); // Réinitialiser le formulaire
+        this.router.navigate(['my-ads']);
       },
       error: (err) => {
         console.error('Error registering user:');
