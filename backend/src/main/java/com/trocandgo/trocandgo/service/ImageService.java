@@ -20,6 +20,8 @@ import java.nio.file.Files;
 import org.apache.tika.Tika;
 import java.awt.image.BufferedImage;
 
+import java.util.UUID;
+
 
 @Service
 public class ImageService {
@@ -133,7 +135,11 @@ public class ImageService {
     }
 
     private String generateEncryptedFileName(String username) {
-        return username + "_" + System.currentTimeMillis() + ".enc";
+        // Génère un UUID aléatoire
+        String uniqueId = UUID.randomUUID().toString();
+
+        // Retourne le nom de fichier avec l'extension
+        return uniqueId + ".enc";
     }
 
     private void updateUserImage(Users user, String imageUrl) {
