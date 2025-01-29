@@ -9,15 +9,15 @@
 	</div>
 	<ng-container *ngIf="isLoggedIn; else notLoggedInTemplate">
 		<ng-container *ngIf="!owner; else ownerTemplate">
-			<div *ngIf="!isFavorite">
+			<div *ngIf="!isFavorite" class="icon-container">
 				<p class="heart" (click)="addToFavorites(id)">&#10084;</p>
 			</div>
-			<div *ngIf="isFavorite">
+			<div *ngIf="isFavorite" class="icon-container">
 				<p class="grey-heart" (click)="removeFromFavorites(id)">&#10084;</p>
 			</div>
 		</ng-container>
 		<ng-template #ownerTemplate>
-			<div>
+			<div class="icon-container">
 				<p class="delete" (click)="deleteService(id)">&#9587;</p>
 			</div>
 		</ng-template>

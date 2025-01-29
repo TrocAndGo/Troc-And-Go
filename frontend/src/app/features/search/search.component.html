@@ -4,35 +4,35 @@
     [department]="department"
     [city]="city"
     [category]="category"
+    [paginationData]="results && results.page.totalPages > 1 ? results.page : null"
+    (onPageChange)="onPageChange($event)"
     (searched)="onSearch($event)" />
 
 <div class="results" *ngIf="resultCount > 0; else noResults">
     @for (result of results.content; track result.id) {
-        <div class="entry">
-            <app-service-card
-                [mail]="result.mail ? result.mail : 'Pas d\'adresse mail disponible'"
-                [phoneNumber]="result.phoneNumber ? result.phoneNumber : 'Pas de numéro disponible'"
-                [id]="result.id"
-                [user]="result.createdBy"
-                [profilePicture]="result.creatorProfilePicture ?? './quote.png'"
-                [localisation]="result.city"
-                [date]="result.creationDate"
-                [categorie]="result.category"
-                [propose]="result.description"
-                [owner]="result.owner"
-                [isFavorite]="result.favorite"
-                [title]="result.title"
-                (deleted)="onServiceDeleted()"/>
-        </div>
+        <app-service-card
+            [mail]="result.mail ? result.mail : 'Pas d\'adresse mail disponible'"
+            [phoneNumber]="result.phoneNumber ? result.phoneNumber : 'Pas de numéro disponible'"
+            [id]="result.id"
+            [user]="result.createdBy"
+            [profilePicture]="result.creatorProfilePicture ?? './quote.png'"
+            [localisation]="result.city"
+            [date]="result.creationDate"
+            [categorie]="result.category"
+            [propose]="result.description"
+            [owner]="result.owner"
+            [isFavorite]="result.favorite"
+            [title]="result.title"
+            (deleted)="onServiceDeleted()"/>
     }
 </div>
 
-<ng-container *ngIf="results && results.page.totalPages > 1">
+<div class="bottom-pagination" *ngIf="results && results.page.totalPages > 1">
     <app-pagination
         [currentPage]="results.page.number"
         [totalPages]="results.page.totalPages"
         (onPageChange)="onPageChange($event)"/>
-</ng-container>
+</div>
 
 <ng-template #noResults>
     <p>Aucun résultat pour votre recherche</p>

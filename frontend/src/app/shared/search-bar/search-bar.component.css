@@ -4,20 +4,21 @@
 	background-size: cover; /* Adapte l'image à la taille du conteneur */
 	background-position: center; /* Centre l'image */
 	height: 40vh; /* Hauteur à 50% de la hauteur de la fenêtre */
+  min-height: 300px;
 	color: white; /* Couleur du texte pour qu'il soit visible */
   }
 
-  .container h1 {
-	position: absolute; /* Position absolue par rapport à .container */
-	top: 10%; /* Position verticale */
-	left: 50%; /* Position horizontale */
-	font-size: 1.5rem; /* Taille du texte */
-	font-family: 'Montserrat', sans-serif;
-	color: black;
-	font-size: 28px;
-	letter-spacing: 0.3rem;
-	transform: translate(-50%, -50%);
-	font-size: bold;
+  h1 {
+    margin-top: 0;
+    padding-top: 2rem; /* Position verticale */
+    text-align: center;
+    left: 50%; /* Position horizontale */
+    font-size: 1.5rem; /* Taille du texte */
+    font-family: 'Montserrat', sans-serif;
+    color: black;
+    font-size: 28px;
+    letter-spacing: 0.3rem;
+    font-size: bold;
   }
 
   .background {
@@ -34,20 +35,21 @@
   }
 
   @media (max-width : 1024px) {
-	.background {
-	flex-direction: column;
-	align-items: center;
-	gap: 10px;
-	padding: 15px;
-	}
+    .background {
+      /* flex-direction: column; */
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 15px;
+    }
 
-	.container {
-		position: relative; /* Permet de positionner les enfants avec position absolue */
-		background-image: url('/banniere4.bmp');
-		background-size: cover; /* Adapte l'image à la taille du conteneur */
-		background-position: center; /* Centre l'image */
-		height: 70vh; /* Hauteur à 50% de la hauteur de la fenêtre */
-		color: white; /* Couleur du texte pour qu'il soit visible */
+    .container {
+      position: relative; /* Permet de positionner les enfants avec position absolue */
+      background-image: url('/banniere4.bmp');
+      background-size: cover; /* Adapte l'image à la taille du conteneur */
+      background-position: center; /* Centre l'image */
+      height: 70vh; /* Hauteur à 50% de la hauteur de la fenêtre */
+      color: white; /* Couleur du texte pour qu'il soit visible */
 	  }
 	}
 
@@ -67,4 +69,10 @@ button {
 
 button:hover {
 	background-color: rgba(60, 179, 113);
+}
+
+.pagination {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }

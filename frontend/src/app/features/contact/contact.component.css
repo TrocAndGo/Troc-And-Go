@@ -24,8 +24,16 @@
 		border-radius: 8px; /* Arrondi des coins */
 		font-family: 'Montserrat', sans-serif;
 		font-size: 16px;
-		width: 90%;
 	  }
+
+    @media (max-width: 1024px) {
+      .contact {
+
+        width: 90%; /* Réduit la largeur pour les petits écrans */
+        margin-inline: 5%;
+        font-size: 14px; /* Réduit la taille de la police pour les petits écrans */
+      }
+    }
 
 	  @media (max-width: 768px) {
 		.contact {

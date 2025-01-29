@@ -77,6 +77,12 @@
 	font-family: 'Montserrat', sans-serif;
   }
 
+  @media screen and (max-width : 1200px) {
+    .btn {
+      margin-right: 5px;
+    }
+  }
+
   @media screen and (max-width: 768px) {
 	.btn {
 		margin: 0;

@@ -16,6 +16,7 @@
   padding: 10px 15px;
   text-decoration: none;
   color: #3CB371;
+  background-color: white;
   border: 1px solid #dee2e6;
   border-radius: 4px;
   transition: background-color 0.3s, color 0.3s;
@@ -37,7 +38,7 @@
   cursor: not-allowed;
 
   a {
-    color: #6c757d;
+    background-color: #6c757d6d;
     pointer-events: none;
   }
 }

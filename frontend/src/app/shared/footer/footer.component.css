@@ -6,8 +6,6 @@
 	align-items: center;
 	padding: 0 30px; /* Réduit l'espace pour les petits écrans */
 	box-sizing: border-box; /* Inclut la largeur du padding dans le calcul de la largeur */
-	position: relative; /* Nécessaire pour que les éléments positionnés absolus à l'intérieur fonctionnent */
-	z-index: 1;
   }
 
   .logo-links-container {

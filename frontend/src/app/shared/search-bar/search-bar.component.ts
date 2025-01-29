@@ -3,18 +3,21 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdCategory, AdressFilters, AdService } from '../../services/ad.service';
+import { Page } from '../../utils/PageableResponse';
 import { DropdownButtonComponent } from '../dropdown-button/dropdown-button.component';
+import { PaginationComponent } from '../pagination/pagination.component';
 
 @Component({
   selector: 'app-search-bar',
   standalone: true,
-  imports: [DropdownButtonComponent, ReactiveFormsModule, CommonModule],
+  imports: [DropdownButtonComponent, ReactiveFormsModule, CommonModule, PaginationComponent],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.css'
 })
 export class SearchBarComponent implements OnInit {
   @Input() serviceCount: number = 0;
-  @Input() showAdressFilters: boolean = true;
+  @Input() showFilters: boolean = true;
+  @Input() paginationData: Page | null = null;
   @Input() region: string | null = null;
   @Input() department: string | null = null;
   @Input() city: string | null = null;
@@ -27,6 +30,7 @@ export class SearchBarComponent implements OnInit {
 
 
   @Output() searched = new EventEmitter<FormGroup>();
+  @Output() onPageChange = new EventEmitter<number>();
 
   constructor(private formBuilder: FormBuilder, private router: Router, private activatedRoute: ActivatedRoute, private adService: AdService) {}
 
@@ -38,7 +42,7 @@ export class SearchBarComponent implements OnInit {
       category: [this.category]
     };
 
-    if (this.showAdressFilters) {
+    if (this.showFilters) {
       this.loadAdressFilters();
       this.region = this.region?.trim() || null;
       this.department = this.department?.trim() || null;
