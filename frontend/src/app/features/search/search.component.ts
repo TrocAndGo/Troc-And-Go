@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { SearchResult, SearchService } from '../../services/search.service';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
@@ -24,11 +25,13 @@ export class SearchComponent implements OnInit {
   sortDir!: string;
   page!: number;
   results!: PageableResponse<SearchResult>;
+  isLoggedIn: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -41,6 +44,13 @@ export class SearchComponent implements OnInit {
       this.sortDir = params.get('sortDir') || 'desc';
       this.page = +(params.get('page') || 0);
       this.loadSearchResults();
+    });
+
+    this.isLoggedIn = this.authService.isLoggedIn();
+    this.authService.loggedIn$.subscribe((newLoggedInValue) => {
+      if (!this.isLoggedIn && newLoggedInValue)
+        this.loadSearchResults();
+      this.isLoggedIn = newLoggedInValue;
     });
   }
 
