@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgForm, FormsModule } from '@angular/forms';
-import { LoginService, LoginRequest } from '../../services/login.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { LoginRequest, LoginService } from '../../services/login.service';
 import { errorMessageFromStatusCode } from '../../utils/ErrorMessage';
 
 
@@ -20,8 +21,10 @@ export class LoginComponent {
 
   errorMessage: string | null = null;
 
-  constructor(private LoginService: LoginService,
-              private authService: AuthService) {}
+  constructor(
+    private LoginService: LoginService,
+    private authService: AuthService
+  ) {}
 
   close() {
     this.isVisible = false;
@@ -55,7 +58,6 @@ export class LoginComponent {
         this.errorMessage = null; // Réinitialiser les erreurs
         form.reset(); // Réinitialiser le formulaire
         this.close();
-
       },
       error: (err) => {
         this.errorMessage = errorMessageFromStatusCode(err.status);
