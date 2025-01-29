@@ -23,6 +23,10 @@
             </div>
         </div>
     </form>
+
+    <!-- BOUTON MODIFIER MOT DE PASSE -->
+    <button class="password-button" (click)="openPasswordModal()">Modifier mot de passe</button>
+
     <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
         <!-- Adresse complète -->
         <label for="fullAddress"><strong>Outil de recherche automatique d'adresse :</strong></label>
@@ -93,4 +97,23 @@
             Valider profil
         </button>
     </form>
+
+    <!-- MODAL POPUP -->
+    <div class="modal-overlay" *ngIf="isPasswordModalOpen">
+        <div class="modal">
+            <h2>Changer de mot de passe</h2>
+
+            <input class="modal-input" type="password" [(ngModel)]="currentPassword" placeholder="Actuel" />
+            <input class="modal-input" type="password" [(ngModel)]="newPassword" placeholder="Nouveau" />
+            <input class="modal-input" type="password" [(ngModel)]="confirmPassword" placeholder="Confirmer" />
+
+             <!-- Affichage du message d'erreur -->
+            <p class="error-message" *ngIf="errorMessageModal">{{ errorMessageModal }}</p>
+
+            <div class="modal-buttons">
+                <button (click)="changePassword()">Valider</button>
+                <button class="close-button" (click)="closePasswordModal()">❌</button>
+            </div>
+        </div>
+    </div>
 </div>

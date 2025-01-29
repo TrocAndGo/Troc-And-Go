@@ -41,6 +41,7 @@ import com.trocandgo.trocandgo.service.ImageService;
 import com.trocandgo.trocandgo.service.ServiceService;
 import com.trocandgo.trocandgo.service.UserService;
 import com.trocandgo.trocandgo.dto.request.UpdateProfileRequest;
+import com.trocandgo.trocandgo.dto.request.UpdateUserPasswordRequest;
 
 import jakarta.validation.Valid;
 
@@ -100,6 +101,26 @@ public class UserController {
         }
 
     }
+
+    // Mettre à jour le mot de passe de l'utilisateur
+    @PutMapping("/profile/update-password")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> updateUserPassword(@Valid @RequestBody UpdateUserPasswordRequest request) {
+        try {
+            Users currentUser = authService.getLoggedInUser();
+            userService.updateUserPassword(request, currentUser);
+            return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "status", "error",
+                    "message", e.getMessage())); // Affiche un message d'erreur clair
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "status", "error",
+                    "message", "An unexpected error occurred while updating the password."));
+        }
+    }
+
 
     @Transactional
     @PostMapping("/profile/upload-picture")

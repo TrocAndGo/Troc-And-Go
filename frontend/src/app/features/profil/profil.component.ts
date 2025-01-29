@@ -224,4 +224,56 @@ export class ProfilComponent implements OnInit {
       },
     });
   }
+
+  // État de la modal du mot de passe
+  isPasswordModalOpen: boolean = false;
+  currentPassword: string = '';
+  newPassword: string = '';
+  confirmPassword: string = '';
+  errorMessageModal: string = '';
+
+  openPasswordModal() {
+    this.isPasswordModalOpen = true;
+    this.errorMessageModal = '';
+  }
+
+  closePasswordModal() {
+    this.isPasswordModalOpen = false;
+    this.currentPassword = '';
+    this.newPassword = '';
+    this.confirmPassword = '';
+    this.errorMessageModal = '';
+  }
+
+  changePassword() {
+    // Vérifier si tous les champs sont remplis
+    if (!this.currentPassword || !this.newPassword || !this.confirmPassword) {
+        this.errorMessageModal = "Tous les champs doivent être remplis !";
+        return;
+    }
+
+    // Vérifier si le nouveau mot de passe respecte un format sécurisé
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(this.newPassword)) {
+        this.errorMessageModal = "Le nouveau mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre.";
+        return;
+    }
+
+    // Vérifier si le nouveau mot de passe et la confirmation sont identiques
+    if (this.newPassword !== this.confirmPassword) {
+        this.errorMessageModal = "Les nouveaux mots de passe ne correspondent pas !";
+        return;
+    }
+
+    // Envoi au backend
+    this.profileService.updatePassword(this.currentPassword, this.newPassword).subscribe({
+      next: () => {
+        this.closePasswordModal(); // Ferme la popup après succès
+      },
+      error: (err) => {
+        this.errorMessageModal = err.error.message || "Erreur lors du changement de mot de passe.";
+      }
+    });
+
+  }
 }

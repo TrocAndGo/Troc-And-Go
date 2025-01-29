@@ -27,6 +27,16 @@ export class ProfileService {
     const headers = this.getAuthHeaders();
     return this.http.get<any>(`${this.apiUrl}/user/profile`, { headers });
   }
+
+  updatePassword(currentPassword: string, newPassword: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    const body = { currentPassword, newPassword };
+
+    return this.http.put<any>(`${this.apiUrl}/user/profile/update-password`, body, { headers }).pipe(
+      tap(() => console.log("Mot de passe mis à jour avec succès"))
+    );
+  }
+
 /*
   updateUserProfile(profileData: ProfileRequest): Observable<any> {
     const headers = this.getAuthHeaders();
