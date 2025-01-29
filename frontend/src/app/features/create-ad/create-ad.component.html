@@ -1,0 +1,54 @@
+<div class="create-ad">
+	<h1>Créer une annonce</h1>
+
+	<form #createAdForm="ngForm" (ngSubmit)="onSubmit(createAdForm)">
+
+		<div class="dropdown-menus">
+
+			<!-- <app-dropdown-button
+				text="Type"
+				color="secondary"
+				[items]="['Je recherche', 'Je propose']"
+				[showDefaultItem]="false"/> -->
+
+			<app-dropdown-button
+				text="Catégorie"
+				color="secondary"
+				ngModel name="category" required
+				#category="ngModel"
+				[items]="categoryNames"
+				[itemValues]="categoryValues"
+				[showDefaultItem]="false"/>
+
+		</div>
+		<div class="content">
+
+			<!-- Title -->
+			<input type="text" id="title" name="title" ngModel required placeholder="Titre de l'annonce"
+				#title="ngModel">
+			<div *ngIf="title.invalid && title.touched" class="error-message">
+				<small *ngIf="title.errors?.['required']">Title is required.</small>
+			</div>
+
+			<!-- Description -->
+			<textarea id="description" name="description" rows="6" cols="40" ngModel required
+				placeholder="Description de l'annonce" #description="ngModel"></textarea>
+			<div *ngIf="description.invalid && description.touched" class="error-message">
+				<small *ngIf="description.errors?.['required']">Description is required.</small>
+			</div>
+
+			<!-- Adress -->
+			<p>L'annonce sera lié à votre adresse actuelle :</p>
+			<input type="text" id="address" name="address" [value]="userAdress ?? ''" disabled>
+
+			<p *ngIf="errorMessage" class="error-message">
+				<small>{{ errorMessage }}</small>
+			</p>
+
+			<div class="button-container">
+				<button type="submit" [disabled]="!createAdForm.valid">Publier l'annonce</button>
+			</div>
+
+		</div>
+	</form>
+</div>

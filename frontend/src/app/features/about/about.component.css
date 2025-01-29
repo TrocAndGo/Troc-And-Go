@@ -1,0 +1,20 @@
+.about {
+    margin: 20px auto;
+    max-width: 1000px;
+    font-family: 'Montserrat', sans-serif;
+    width: 90%;
+}
+
+img {
+    display: block;
+    width: 60%;
+    height: auto;
+    margin-inline: auto;
+    border-radius: 8px;
+}
+
+.team-member {
+  & + & {
+    margin-top: 20px;
+  }
+}

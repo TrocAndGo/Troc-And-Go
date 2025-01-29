@@ -1,0 +1,119 @@
+<div class="profile">
+    <h1>{{ username }}</h1>
+    <!-- Picture -->
+    <form (submit)="onSubmitImg(); $event.preventDefault();">
+        <div class="container">
+            <div class="profile-picture-container">
+                <img
+                    [src]="imagePreview || avatarUrl || 'icone.jpg'"
+                    alt="Photo de profil"
+                    class="profile-picture"
+                />
+                <!-- Bouton crayon -->
+                <button type="button" class="edit-button" (click)="fileInput.click()" aria-label="Modifier la photo de profil">
+                    ✏️
+                </button>
+                <input
+                    #fileInput
+                    type="file"
+                    (change)="onFileSelected($event)"
+                    accept="image/*"
+                    style="display: none;"
+                />
+            </div>
+        </div>
+    </form>
+
+    <!-- BOUTON MODIFIER MOT DE PASSE -->
+    <button class="password-button" (click)="openPasswordModal()">Modifier mot de passe</button>
+
+    <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
+        <!-- Adresse complète -->
+        <label for="fullAddress"><strong>Outil de recherche automatique d'adresse :</strong></label>
+        <div class="input-with-icon">
+            <input
+                type="text"
+                id="fullAddress"
+                name="fullAddress"
+                [(ngModel)]="fullAddress"
+                (ngModelChange)="onProfileChange()"
+                placeholder="Entrez une adresse complète"
+                #fullAddressModel="ngModel"
+                required
+                (keydown.enter)="validateAddress()"
+            />
+            <span
+                class="icon-check"
+                (click)="fullAddress && validateAddress()"
+                [class.disabled]="!fullAddress"
+                aria-label="Valider l'adresse"
+            >
+                {{ fullAddress ? '✅' : '❎' }}
+            </span>
+        </div>
+        <!-- Adresse -->
+        <div class="span-offset">
+            <span class="label">Adresse :</span>
+            <span class="value">
+                <i class="fas fa-home"></i> {{ address || 'Adresse non détectée' }}
+            </span>
+        </div>
+        <!-- Ville -->
+        <div class="span-offset">
+            <span class="label">Ville :</span>
+            <span class="value">
+                <i class="fas fa-city"></i> {{ city || 'Ville non détectée' }}
+            </span>
+        </div>
+        <!-- Code postal -->
+        <div class="span-offset">
+            <span class="label">Code postal :</span>
+            <span class="value">
+                <i class="fas fa-envelope"></i> {{ zipCode || 'Code postal non détecté' }}
+            </span>
+        </div>
+        <!-- Numéro de téléphone -->
+        <label for="phoneNumber"><strong>Numéro de téléphone :</strong></label>
+        <input
+            type="text"
+            id="phoneNumber"
+            name="phoneNumber"
+            [(ngModel)]="phoneNumber"
+            (ngModelChange)="onProfileChange()"
+            placeholder="Entrez votre numéro de téléphone"
+            #phoneNumberModel="ngModel"
+            required
+            [pattern]="phonePattern"
+        />
+        <div *ngIf="phoneNumberModel.invalid && phoneNumberModel.touched" class="error-message">
+            <small *ngIf="phoneNumberModel.errors?.['required']">Le numéro de téléphone est obligatoire.</small>
+            <small *ngIf="phoneNumberModel.errors?.['pattern']">Format de numéro de téléphone invalide.</small>
+        </div>
+        <!-- Valider profil -->
+        <button
+            type="submit"
+            [disabled]="!isFormModified"
+            >
+            Valider profil
+        </button>
+    </form>
+
+    <!-- MODAL POPUP -->
+    <div class="modal-overlay" *ngIf="isPasswordModalOpen">
+        <div class="modal">
+            <h2>Changer de mot de passe</h2>
+
+            <input class="modal-input" type="password" [(ngModel)]="currentPassword" placeholder="Actuel" />
+            <input class="modal-input" type="password" [(ngModel)]="newPassword" placeholder="Nouveau" />
+            <input class="modal-input" type="password" [(ngModel)]="confirmPassword" placeholder="Confirmer" />
+
+             <!-- Affichage du message d'erreur -->
+            <p class="error-message" *ngIf="errorMessageModal">{{ errorMessageModal }}</p>
+
+            <div class="modal-buttons">
+                <button (click)="changePassword()">Valider</button>
+                <button class="close-button" (click)="closePasswordModal()">❌</button>
+            </div>
+        </div>
+    </div>
+</div>

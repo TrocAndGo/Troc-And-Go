@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  router-outlet + * {
+    flex-grow: 1;
+  }
+}
+
+.toast-top-right {
+  top: 112px;
+}

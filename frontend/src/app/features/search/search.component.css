@@ -1,0 +1,14 @@
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30vw, 1fr));
+  margin-inline: auto;
+  place-items: center;
+}
+
+@media (max-width : 1024px) {
+	.results {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+	}
+	}

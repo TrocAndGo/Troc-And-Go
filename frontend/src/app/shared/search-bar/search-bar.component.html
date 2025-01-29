@@ -1,0 +1,37 @@
+<div class="container">
+	<h1>Recherche - {{serviceCount}} service{{getPluralSuffix()}} disponible{{getPluralSuffix()}}</h1>
+	<form [formGroup]="form" (ngSubmit)="onSubmit()" class="background">
+		<ng-container *ngIf="showFilters">
+			<app-dropdown-button
+				text="Région"
+				color="secondary"
+				[items]="regions"
+				formControlName="region"/>
+			<app-dropdown-button
+				text="Département"
+				color="secondary"
+				[items]="departments"
+				formControlName="departement" />
+			<app-dropdown-button
+				text="Ville"
+				color="secondary"
+				[items]="cities"
+				formControlName="ville" />
+			<app-dropdown-button
+				text="Catégorie"
+				color="secondary"
+				formControlName="category"
+				[items]="categoryNames"
+				[itemValues]="categoryValues" />
+		</ng-container>
+		<button type="submit">
+			Rechercher
+		</button>
+	</form>
+	<div class="pagination" *ngIf="paginationData">
+		<app-pagination
+			[currentPage]="paginationData.number"
+			[totalPages]="paginationData.totalPages"
+			(onPageChange)="onPageChange.emit($event)"/>
+	</div>
+</div>

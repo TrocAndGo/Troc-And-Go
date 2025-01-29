@@ -1,0 +1,30 @@
+<div *ngIf="services.length > 0; else noServices" class="services-container">
+	<div *ngFor="let service of services" class="service-card">
+		<app-service-card
+		[id]="service.id"
+		[profilePicture]="service.creatorProfilePicture ?? 'icone.png'"
+		[user]="service.createdBy"
+		[localisation]="service.city"
+		[date]="service.creationDate"
+		[title]="service.title"
+		[categorie]="service.category"
+		[propose]="service.description"
+		[mail]="service.mail ?? ''"
+		[phoneNumber]="service.phoneNumber ?? ''"
+		[owner]="service.owner"
+		[isFavorite]="service.favorite"
+		(favoriteRemoved)="onFavoriteRemoved($event)">
+	  </app-service-card>
+	</div>
+</div>
+
+<ng-container *ngIf="page && page.totalPages > 1">
+    <app-pagination
+        [currentPage]="page.number"
+        [totalPages]="page.totalPages"
+        (onPageChange)="onPageChange($event)"/>
+</ng-container>
+
+<ng-template #noServices>
+	<p>Vous n'avez pas d'annonces en favoris pour le moment</p>
+  </ng-template>

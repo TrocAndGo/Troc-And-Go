@@ -1,0 +1,32 @@
+<div class="image-container">
+	<img src="banniere2.jpeg" alt="banniere">
+	<!-- <div class="text-overlay">Time dedicated to helping people, together</div> -->
+	<div class="text-overlay">Du temps consacré à aider les gens, ensemble.</div>
+</div>
+
+<div class="annonces">
+	<h2>Annonces à la une</h2>
+
+	<div class="cards-container">
+
+		<app-service-card
+			*ngFor="let service of services"
+			[id]="service.id"
+			[user]="service.createdBy"
+			[profilePicture]="service.creatorProfilePicture"
+			[localisation]="service.city"
+			[date]="service.creationDate"
+			[title]="service.title"
+			[propose]="service.description"
+			[categorie]="service.category"
+			[mail]="service.mail ?? ''"
+			[phoneNumber]="service.phoneNumber ?? ''"
+			[isFavorite]="service.favorite"
+			[owner]="service.owner" />
+	</div>
+</div>
+
+<app-search-bar
+	[showFilters]="false"
+	[serviceCount]="count"
+	(searched)="onSearch($event)" />

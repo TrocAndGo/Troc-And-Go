@@ -2,6 +2,10 @@
 cd "$(dirname "$0")"
 source db.env
 
+echo Add password to redis database and restart it
+sudo sed -i "s/^# *requirepass .*/requirepass $redis_pw/" "/etc/redis/redis.conf"
+sudo systemctl restart redis
+
 echo Starting PostgreSQL
 sudo service postgresql start
 

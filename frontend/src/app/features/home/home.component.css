@@ -1,0 +1,58 @@
+img {
+	height: 500px;
+	width: 100%;
+	object-fit: cover;
+	opacity: 0.5;
+}
+
+.image-container {
+	position: relative; /* Nécessaire pour positionner le texte par rapport à cette div */
+	width: 100%; /* Assure que la div prend toute la largeur de l'image */
+	height: 400px; /* Ajuste la hauteur selon l'image */
+	margin-bottom: 0;
+  }
+
+  .image-container img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+  }
+
+  .text-overlay {
+	position: absolute;
+	top: 50%; /* Centrer verticalement */
+	left: 50%; /* Centrer horizontalement */
+	transform: translate(-50%, -50%); /* Ajuste pour centrer parfaitement */
+	color: black; /* Choisis la couleur du texte */
+	font-size: 24px; /* Ajuste la taille du texte */
+	font-weight: bold; /* Optionnel, pour un texte plus épais */
+	font-family: 'Montserrat', sans-serif;
+	letter-spacing: 5px;
+  text-wrap: nowrap;
+  }
+
+  h2 {
+	font-family: 'Montserrat', sans-serif;
+	text-align: center;
+	margin-bottom: 50px;
+	margin-top: 0;
+  }
+
+  .cards-container {
+	display: flex;
+	justify-content: space-around;
+  }
+
+  .annonces {
+	background-color: rgba(51, 51, 51, 0.1);
+	margin-top: 0;
+	padding: 5vh;
+
+  }
+
+  @media (max-width : 1024px) {
+	.cards-container {
+	flex-direction: column;
+	align-items: center;
+	}
+	}
