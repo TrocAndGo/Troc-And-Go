@@ -28,6 +28,7 @@ img {
 	font-weight: bold; /* Optionnel, pour un texte plus épais */
 	font-family: 'Montserrat', sans-serif;
 	letter-spacing: 5px;
+  text-wrap: nowrap;
   }
 
   h2 {
