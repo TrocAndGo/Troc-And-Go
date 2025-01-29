@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.trocandgo.trocandgo.dto.request.SetAdressRequest;
 import com.trocandgo.trocandgo.dto.request.UpdateProfileRequest;
+import com.trocandgo.trocandgo.dto.request.UpdateUserPasswordRequest;
 import com.trocandgo.trocandgo.dto.response.ProfileResponse;
 import com.trocandgo.trocandgo.entity.Adresses;
 import com.trocandgo.trocandgo.entity.Favorites;
@@ -42,6 +44,9 @@ public class UserService {
 
     @Autowired
     private FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Méthode pour récupérer un utilisateur par son nom
     public Users getUserByUsername(String username) {
@@ -222,6 +227,21 @@ public class UserService {
         address = addressRepository.save(address);
         user.setAddress(address);
 
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateUserPassword(UpdateUserPasswordRequest request, Users user) {
+        // Vérifie si le mot de passe actuel est correct
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect.");
+        }
+
+        // Hash du nouveau mot de passe
+        String newHashedPassword = passwordEncoder.encode(request.getNewPassword());
+
+        // Mise à jour du mot de passe
+        user.setPassword(newHashedPassword);
         userRepository.save(user);
     }
 }
