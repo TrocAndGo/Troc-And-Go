@@ -148,6 +148,12 @@ export class ProfilComponent implements OnInit {
           this.address = feature.properties.name || '';
           this.city = feature.properties.city || '';
           this.zipCode = feature.properties.postcode || '';
+
+          // Stocker les données supplémentaires pour le backend
+          this.region = feature.properties.context.split(', ')[2] || '';
+          this.department = feature.properties.context.split(', ')[1] || '';
+          [this.longitude, this.latitude] = feature.geometry.coordinates;
+
           this.isAddressModified = true; // Marque l'adresse comme modifiée
           this.isAddressValidated = true; // Adresse validée
           this.updateFormState(); // Vérifie si le formulaire doit être activé
@@ -196,6 +202,8 @@ export class ProfilComponent implements OnInit {
       profileData.address = this.address;
       profileData.city = this.city;
       profileData.zipCode = this.zipCode;
+      profileData.region = this.region;
+      profileData.department = this.department;
       profileData.latitude = this.latitude;
       profileData.longitude = this.longitude;
     }
