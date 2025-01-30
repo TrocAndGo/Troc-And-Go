@@ -1,15 +1,18 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { ImageManagementService } from './image-management.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private apiUrl = environment.apiUrl;
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   public loggedIn$ = this.loggedInSubject.asObservable();
 
-  constructor(private imageService: ImageManagementService) {
+  constructor(private imageService: ImageManagementService, private http: HttpClient) {
     if (this.isTokenExpired() == false) {
       this.setLoggedIn(true);
     }
@@ -26,6 +29,13 @@ export class AuthService {
   }
 
   logout(): void {
+    const authToken = localStorage.getItem('authToken');
+    if (authToken) {
+      const headers = new HttpHeaders({'Authorization': `Bearer ${authToken}`});
+      this.http.post(`${this.apiUrl}/auth/logout`, null, { headers }).subscribe(() => {
+        console.log('Logged out');
+      });
+    }
     // Réinitialisation de l'état de connexion
     this.setLoggedIn(false); // Met à jour l'état de connexion
     localStorage.removeItem('authToken'); // Supprime le token ou autre méthode
