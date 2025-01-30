@@ -1,10 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, output, Output } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { AdService } from '../../services/ad.service';
 import { AuthService } from '../../services/auth.service';
 import { FavoritesService } from '../../services/favorites.service';
 import { ButtonComponent } from '../button/button.component';
-import { ToastrService } from 'ngx-toastr';
+
+export type Coords = {
+  user: string;
+  mail: string;
+  phoneNumber: string;
+};
 
 @Component({
   selector: 'app-service-card',
@@ -27,6 +33,8 @@ export class ServiceCardComponent {
   @Input() owner: boolean = false;
   @Input() isFavorite: boolean = false;
 
+  @Output() onShowCoords = new EventEmitter<Coords>();
+
   get formattedDate(): string {
     const dateObj = typeof this.date === 'string' ? new Date(this.date) : this.date;
     return dateObj.toLocaleDateString(); // Exemple : "17/12/1995"
@@ -37,6 +45,7 @@ export class ServiceCardComponent {
 
   toggleCoordinates() {
     this.isCoordinatesVisible = !this.isCoordinatesVisible;
+    this.onShowCoords.emit({user: this.user, mail: this.mail, phoneNumber: this.phoneNumber});
   }
 
   constructor(

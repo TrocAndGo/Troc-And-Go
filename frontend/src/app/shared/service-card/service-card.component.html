@@ -37,11 +37,11 @@
 </div>
 <button type="button" [disabled]="!isLoggedIn" (click)="toggleCoordinates()">Voir les coordonnées</button>
 <div *ngIf="!isLoggedIn" class="warning">
-	<p>Vous devez être connecté pour voir les coordonnées</p>
+	<p>Vous devez être connecté pour voir les coordonnées.</p>
 </div>
-<div class="coordonnees" *ngIf="isCoordinatesVisible">
+<!-- <div class="coordonnees" *ngIf="isCoordinatesVisible">
 	<p> {{ mail }} </p>
 	<p> {{ phoneNumber }} </p>
-</div>
+</div> -->
 
 </div>

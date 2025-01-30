@@ -6,6 +6,7 @@
 	height: 40vh; /* Hauteur à 50% de la hauteur de la fenêtre */
   min-height: 300px;
 	color: white; /* Couleur du texte pour qu'il soit visible */
+  isolation: isolate;
   }
 
   h1 {

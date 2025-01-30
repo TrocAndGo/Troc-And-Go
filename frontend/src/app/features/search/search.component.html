@@ -23,7 +23,8 @@
             [owner]="result.owner"
             [isFavorite]="result.favorite"
             [title]="result.title"
-            (deleted)="onServiceDeleted()"/>
+            (deleted)="onServiceDeleted()"
+            (onShowCoords)="onShowCoords($event)"/>
     }
 </div>
 
@@ -37,3 +38,14 @@
 <ng-template #noResults>
     <p>Aucun résultat pour votre recherche</p>
 </ng-template>
+
+<!-- MODAL POPUP -->
+<div class="modal-overlay" *ngIf="showCoordsModal && coords">
+	<div class="modal">
+		<h2>Coordonnées de {{ coords.user }}</h2>
+		<button class="close-button" (click)="closeCoordsModal()">❌</button>
+
+		<p><strong>Email:</strong> {{ coords.mail }}</p>
+		<p><strong>Téléphone:</strong> {{ coords.phoneNumber }}</p>
+	</div>
+</div>

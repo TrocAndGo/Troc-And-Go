@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { SearchResult, SearchService } from '../../services/search.service';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
-import { ServiceCardComponent } from '../../shared/service-card/service-card.component';
+import { Coords, ServiceCardComponent } from '../../shared/service-card/service-card.component';
 import PageableResponse from '../../utils/PageableResponse';
 
 @Component({
@@ -26,6 +26,8 @@ export class SearchComponent implements OnInit {
   page!: number;
   results!: PageableResponse<SearchResult>;
   isLoggedIn: boolean = false;
+  showCoordsModal: boolean = false;
+  coords: Coords | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -52,6 +54,15 @@ export class SearchComponent implements OnInit {
         this.loadSearchResults();
       this.isLoggedIn = newLoggedInValue;
     });
+  }
+
+  onShowCoords(coords: Coords) {
+    this.coords = coords;
+    this.showCoordsModal = true;
+  }
+
+  closeCoordsModal() {
+    this.showCoordsModal = false;
   }
 
   onSearch(form: FormGroup): void {

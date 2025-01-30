@@ -71,7 +71,7 @@ button {
 
 .card-body {
 	width: 100%;
-	min-height: 20vh;
+	min-height: 150px;
 }
 
 p {
@@ -126,6 +126,7 @@ button {
 	opacity: 0; /* Masqué par défaut */
 	visibility: hidden; /* Le texte ne prend pas de place quand il est masqué */
 	transition: opacity 0.3s ease; /* Transition douce pour l'apparition/disparition */
+  margin-left: .5rem;
   }
 
   /* Montrer le texte lors du survol du bouton */
