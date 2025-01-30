@@ -6,7 +6,7 @@
             </a>
         </li>
         <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
-            <a class="page-link" (click)="changePage(page)">{{ page }}</a>
+            <a class="page-link" (click)="changePage(page)">{{ page + 1 }}</a>
         </li>
         <li class="page-item page-next" [class.disabled]="currentPage >= totalPages - 1">
             <a class="page-link" aria-label="Next" title="Next" (click)="changePage(currentPage + 1)">

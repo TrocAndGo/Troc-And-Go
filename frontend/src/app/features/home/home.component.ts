@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { SearchResult, SearchService } from '../../services/search.service';
 import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
-import { ServiceCardComponent } from '../../shared/service-card/service-card.component';
+import { Coords, ServiceCardComponent } from '../../shared/service-card/service-card.component';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +18,8 @@ export class HomeComponent implements OnInit {
   services: SearchResult[] = [];
   count: number = 0;
   isLoggedIn: boolean = false;
+    showCoordsModal: boolean = false;
+    coords: Coords | null = null;
 
   constructor(
     private router: Router,
@@ -35,6 +37,15 @@ export class HomeComponent implements OnInit {
       this.isLoggedIn = newLoggedInValue;
     });
   }
+
+   onShowCoords(coords: Coords) {
+      this.coords = coords;
+      this.showCoordsModal = true;
+    }
+
+    closeCoordsModal() {
+      this.showCoordsModal = false;
+    }
 
   getHomePageServices() {
     this.searchService.search({

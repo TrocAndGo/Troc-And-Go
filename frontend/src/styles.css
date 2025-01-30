@@ -17,3 +17,7 @@ body {
 .toast-top-right {
   top: 112px;
 }
+
+/* *, *::before, *::after {
+  outline: 1px solid green;
+} */
