@@ -112,7 +112,7 @@ export class ProfilComponent implements OnInit {
     if (this.selectedFile) {
       const token = localStorage.getItem('authToken');
       if (token) {
-        this.imageService.uploadImage(this.selectedFile, token).subscribe({
+        this.imageService.uploadImage(this.selectedFile).subscribe({
           next: (response) => {
             console.log('Image uploaded successfully:', response);
             this.toastr.success('Votre photo de profil a été mise à jour avec succès !');

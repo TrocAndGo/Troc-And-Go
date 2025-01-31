@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -14,7 +14,7 @@ export class MenusRequestsService {
 
   // Récupérer la liste des catégories
   getCategories(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/user/categories`);
+    return this.http.get<string[]>(`/user/categories`);
   }
 
 }

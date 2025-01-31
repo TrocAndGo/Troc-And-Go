@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { ImageManagementService } from './image-management.service';
-import { environment } from '../../environments/environment';
 import { UserAdressService } from './user-adress.service';
 
 @Injectable({
@@ -12,15 +11,13 @@ import { UserAdressService } from './user-adress.service';
 })
 export class LoginService {
 
-  private apiUrl = environment.apiUrl;
-
   constructor(private http: HttpClient,
     private authService: AuthService,
     private imageService: ImageManagementService,
     private userAdressService: UserAdressService) {}
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, loginRequest, {
+    return this.http.post<LoginResponse>(`/auth/login`, loginRequest, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     }).pipe(
       tap((response: LoginResponse) => {
