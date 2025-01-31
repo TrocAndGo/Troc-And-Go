@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 cd "$(dirname "$0")"
 
-npm start
+npm run start-dev
