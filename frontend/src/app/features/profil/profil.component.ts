@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ImageManagementService } from '../../services/image-management.service';
-import { ButtonComponent } from '../../shared/button/button.component';
-import { ProfileService } from '../../services/profile.service';
-import { GeocodingService } from '../../services/geocoding.service';
-import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { GeocodingService } from '../../services/geocoding.service';
+import { ImageManagementService } from '../../services/image-management.service';
+import { ProfileService } from '../../services/profile.service';
+import { ButtonComponent } from '../../shared/button/button.component';
 
 @Component({
   selector: 'app-profil',
@@ -277,9 +277,19 @@ export class ProfilComponent implements OnInit {
     this.profileService.updatePassword(this.currentPassword, this.newPassword).subscribe({
       next: () => {
         this.closePasswordModal(); // Ferme la popup après succès
+        this.toastr.success("Mot de passe modifié avec succès !");
       },
       error: (err) => {
-        this.errorMessageModal = err.error.message || "Erreur lors du changement de mot de passe.";
+        switch(err.error.message) {
+          case "Current password is incorrect.":
+            this.errorMessageModal = "Mot de passe actuel incorrect.";
+            break;
+          case null:
+            this.errorMessageModal = "Erreur lors du changement de mot de passe.";
+            break;
+          default:
+            this.errorMessageModal =  err.error.message;
+        }
       }
     });
 
