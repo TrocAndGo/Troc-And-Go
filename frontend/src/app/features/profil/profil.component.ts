@@ -54,7 +54,7 @@ export class ProfilComponent implements OnInit {
     private geocodingService: GeocodingService,
     private toastr: ToastrService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Initialisation des valeurs initiales
@@ -110,23 +110,17 @@ export class ProfilComponent implements OnInit {
   }
   onSubmitImg(): void {
     if (this.selectedFile) {
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        this.imageService.uploadImage(this.selectedFile, token).subscribe({
-          next: (response) => {
-            console.log('Image uploaded successfully:', response);
-            this.toastr.success('Votre photo de profil a été mise à jour avec succès !');
-            this.isPhotoValidated = true; // La photo a été validée
-          },
-          error: (error) => {
-            console.error('Failed to upload image:', error);
-            this.toastr.error('Une erreur est survenue lors de la mise à jour de votre photo de profil.');
-          },
-        });
-      } else {
-        console.error('Token not found.');
-        this.toastr.error('Vous n\'êtes pas authentifié.');
-      }
+      this.imageService.uploadImage(this.selectedFile).subscribe({
+        next: (response) => {
+          console.log('Image uploaded successfully:', response);
+          this.toastr.success('Votre photo de profil a été mise à jour avec succès !');
+          this.isPhotoValidated = true; // La photo a été validée
+        },
+        error: (error) => {
+          console.error('Failed to upload image:', error);
+          this.toastr.error('Une erreur est survenue lors de la mise à jour de votre photo de profil.');
+        },
+      });
     } else {
       console.error('No file selected.');
       this.toastr.error('Aucun fichier sélectionné.');
@@ -256,21 +250,21 @@ export class ProfilComponent implements OnInit {
   changePassword() {
     // Vérifier si tous les champs sont remplis
     if (!this.currentPassword || !this.newPassword || !this.confirmPassword) {
-        this.errorMessageModal = "Tous les champs doivent être remplis !";
-        return;
+      this.errorMessageModal = "Tous les champs doivent être remplis !";
+      return;
     }
 
     // Vérifier si le nouveau mot de passe respecte un format sécurisé
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(this.newPassword)) {
-        this.errorMessageModal = "Le nouveau mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre.";
-        return;
+      this.errorMessageModal = "Le nouveau mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre.";
+      return;
     }
 
     // Vérifier si le nouveau mot de passe et la confirmation sont identiques
     if (this.newPassword !== this.confirmPassword) {
-        this.errorMessageModal = "Les nouveaux mots de passe ne correspondent pas !";
-        return;
+      this.errorMessageModal = "Les nouveaux mots de passe ne correspondent pas !";
+      return;
     }
 
     // Envoi au backend
@@ -280,7 +274,7 @@ export class ProfilComponent implements OnInit {
         this.toastr.success("Mot de passe modifié avec succès !");
       },
       error: (err) => {
-        switch(err.error.message) {
+        switch (err.error.message) {
           case "Current password is incorrect.":
             this.errorMessageModal = "Mot de passe actuel incorrect.";
             break;
@@ -288,7 +282,7 @@ export class ProfilComponent implements OnInit {
             this.errorMessageModal = "Erreur lors du changement de mot de passe.";
             break;
           default:
-            this.errorMessageModal =  err.error.message;
+            this.errorMessageModal = err.error.message;
         }
       }
     });

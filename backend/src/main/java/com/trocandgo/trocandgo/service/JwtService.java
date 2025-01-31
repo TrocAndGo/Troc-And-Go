@@ -34,7 +34,7 @@ public class JwtService {
 
     public String generateToken(final String username, final List<String> roles) {
 
-        logger.info("Appel de la fonction generateToken!");
+        // logger.info("Appel de la fonction generateToken!");
 
         final var issuedAt = Instant.now();
 
@@ -55,7 +55,7 @@ public class JwtService {
 
     public void revokeToken(String token) {
         try {
-            logger.info("Appel de la fonction revokeToken!");
+            // logger.info("Appel de la fonction revokeToken!");
 
             // Ajoute le token à la liste des révoqués
             redisTemplate.opsForValue().set(token, "revoked", 5, TimeUnit.MINUTES);
@@ -66,13 +66,13 @@ public class JwtService {
     }
 
     public boolean isTokenRevoked(String token) {
-        logger.info("Appel de la fonction isTokenRevoked!");
+        // logger.info("Appel de la fonction isTokenRevoked!");
         // Si le token existe dans la liste des révoqués, il est révoqué
         return redisTemplate.hasKey(token);
     }
 
     public UserInfo extractUserInfoFromToken(String token) {
-        logger.info("Appel de la fonction extractUserInfoFromToken!");
+        // logger.info("Appel de la fonction extractUserInfoFromToken!");
         try {
             // Vérifier si le token est révoqué
             if (isTokenRevoked(token)) {

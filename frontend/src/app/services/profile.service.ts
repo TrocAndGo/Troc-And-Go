@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -9,30 +9,26 @@ import { environment } from '../../environments/environment';
 export class ProfileService {
 
   private userAdressSubject = new BehaviorSubject<string | null>(null);
-    userAdress$ = this.userAdressSubject.asObservable();
-
-  private apiUrl = environment.apiUrl;
+  userAdress$ = this.userAdressSubject.asObservable();
 
   constructor(private http: HttpClient) {};
 
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('authToken');
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
   }
 
   getUserProfile(): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.get<any>(`${this.apiUrl}/user/profile`, { headers });
+    return this.http.get<any>(`/user/profile`, { headers });
   }
 
   updatePassword(currentPassword: string, newPassword: string): Observable<any> {
     const headers = this.getAuthHeaders();
     const body = { currentPassword, newPassword };
 
-    return this.http.put<any>(`${this.apiUrl}/user/profile/update-password`, body, { headers }).pipe(
+    return this.http.put<any>(`/user/profile/update-password`, body, { headers }).pipe(
       tap(() => console.log("Mot de passe mis à jour avec succès"))
     );
   }
@@ -55,7 +51,7 @@ export class ProfileService {
     }): Observable<any> {
       const headers = this.getAuthHeaders();
 
-      return this.http.put<any>(`${this.apiUrl}/user/profile/update`, data, { headers }).pipe(
+      return this.http.put<any>(`/user/profile/update`, data, { headers }).pipe(
         // Charger la nouvelle adresse utilisateur après la mise à jour
         switchMap(() =>
           this.getUserProfile().pipe(

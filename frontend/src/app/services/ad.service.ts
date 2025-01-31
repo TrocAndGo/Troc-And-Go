@@ -1,7 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, throwError } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
 import PageableResponse from '../utils/PageableResponse';
 import { SearchResult } from './search.service';
 
@@ -10,72 +9,35 @@ import { SearchResult } from './search.service';
 })
 export class AdService {
 
-  private apiUrl = environment.apiUrl;;
-
   constructor(private http: HttpClient) { }
 
   uploadAd(adRequest: AdUploadRequest): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      return this.http.post(`${this.apiUrl}/services`, adRequest, {
-        headers: headers,  // Passe les headers dans la requête
-      });
-    }
-    return throwError(() => new Error('Token is missing'));  // Retourne une erreur si le token est absent
+    return this.http.post(`/services`, adRequest);
   }
 
   getServices(): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-      return this.http.get(`${this.apiUrl}/services`, {
-        headers: headers,
-      });
-    }
-    return throwError(() => new Error('Token is missing'));  // Retourne une erreur si le token est absent
+    return this.http.get(`/services`);
   }
 
   getMyServices(page: number = 0): Observable<PageableResponse<SearchResult>> {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-      return this.http.get<PageableResponse<SearchResult>>(`${this.apiUrl}/user/me/services`, {
-        headers: headers,
-        params: {
-          page: page,
-          size: 6
-        }
-      });
-    }
-    return throwError(() => new Error('Token is missing'));  // Retourne une erreur si le token est absent
+    return this.http.get<PageableResponse<SearchResult>>(`/user/me/services`, {
+      params: {
+        page: page,
+        size: 6
+      }
+    });
   }
 
   getCategories(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/services/categories`);
+    return this.http.get(`/services/categories`);
   }
 
   getAdressFilters(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/services/adresses`);
+    return this.http.get(`/services/adresses`);
   }
 
   deleteService(serviceId: string) {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      return throwError(() => new Error('Token is missing'));
-    }
-
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const url = `${this.apiUrl}/services/${serviceId}`;
-
-    return this.http.delete(url, { headers }).pipe(
-      catchError((error) => {
-        console.error('Error deleting service:', error);
-        return throwError(() => new Error('Failed to delete service. Please try again.'));
-      })
-    );
+    return this.http.delete(`/services/${serviceId}`);
   }
 }
 

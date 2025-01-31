@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        logger.info("Appel de la fonction doFilterInternal!");
+        // logger.info("Appel de la fonction doFilterInternal!");
 
         // Récupérer le header Authorization
         final String authHeader = request.getHeader("Authorization");

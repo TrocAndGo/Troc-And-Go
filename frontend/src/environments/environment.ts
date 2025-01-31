@@ -1,4 +1,7 @@
-export const environment = {
-  production: false,
-  apiUrl: 'https://localhost:8443/api/v1'
-};
+import { environmentDev } from './environment.dev';
+import { environmentProd } from './environment.prod';
+
+export const environment =
+  process.env['NODE_ENV'] === 'development'
+    ? environmentDev
+    : environmentProd;
