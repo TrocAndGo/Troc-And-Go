@@ -7,6 +7,9 @@ import { SearchResult, SearchService } from '../../services/search.service';
 import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
 import { Coords, ServiceCardComponent } from '../../shared/service-card/service-card.component';
 
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -22,58 +25,82 @@ export class HomeComponent implements OnInit {
     coords: Coords | null = null;
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private router: Router,
     private searchService: SearchService,
     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.getHomePageServices();
-
-    this.isLoggedIn = this.authService.isLoggedIn();
-    this.authService.loggedIn$.subscribe((newLoggedInValue) => {
-      if (!this.isLoggedIn && newLoggedInValue)
-        this.getHomePageServices();
-      this.isLoggedIn = newLoggedInValue;
-    });
-  }
-
-   onShowCoords(coords: Coords) {
-      this.coords = coords;
-      this.showCoordsModal = true;
-    }
-
-    closeCoordsModal() {
-      this.showCoordsModal = false;
-    }
-
-  getHomePageServices() {
-    this.searchService.search({
-      size: 3
-    }).subscribe((resultPageable) => {
-      this.services = resultPageable.content;
-      this.count = resultPageable.page.totalElements;
-      // Télécharge les images pour chaque résultat
-      this.services.forEach((service) => {
-        if (service.creatorProfilePicture) {
-          this.downloadImage(service);
+    if (isPlatformBrowser(this.platformId)) {  // ✅ Empêche l'exécution côté serveur
+      this.getHomePageServices();
+      this.isLoggedIn = this.authService.isLoggedIn();
+      this.authService.loggedIn$.subscribe({
+        next: (newLoggedInValue) => {
+          if (!this.isLoggedIn && newLoggedInValue) {
+            this.getHomePageServices();
+          }
+          this.isLoggedIn = newLoggedInValue;
+        },
+        error: (err) => {
+          console.error('Erreur lors de la vérification de l’état de connexion :', err);
         }
       });
+    }
+  }
+
+
+  onShowCoords(coords: Coords) {
+    this.coords = coords;
+    this.showCoordsModal = true;
+  }
+
+  closeCoordsModal() {
+    this.showCoordsModal = false;
+  }
+
+  getHomePageServices() {
+    this.searchService.search({ size: 3 }).subscribe({
+      next: (resultPageable) => {
+        if (resultPageable && resultPageable.content) {
+          this.services = resultPageable.content;
+          this.count = resultPageable.page?.totalElements || 0;
+
+          this.services.forEach((service) => {
+            if (service.creatorProfilePicture) {
+              this.downloadImage(service);
+            }
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération des services :', err);
+      }
     });
   }
 
   downloadImage(result: SearchResult) {
-    this.searchService.getImageBlob(result.creatorProfilePicture!).subscribe((blob) => {
-      const reader = new FileReader();
+    if (!result.creatorProfilePicture || result.creatorProfilePicture.startsWith('data:image/')) {
+      return; // ✅ Déjà chargée ou pas d'image
+    }
 
-      // Converti le blob en URL local pour l'affichage
-      reader.onload = () => {
-        result.creatorProfilePicture = reader.result as string;
-      };
-
-      reader.readAsDataURL(blob);
+    this.searchService.getImageBlob(result.creatorProfilePicture).subscribe({
+      next: (blob) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          result.creatorProfilePicture = reader.result as string;
+        };
+        reader.onerror = (e) => {
+          console.error('Erreur lors de la lecture du blob :', e);
+        };
+        reader.readAsDataURL(blob);
+      },
+      error: (err) => {
+        console.error(`Erreur lors du téléchargement de l'image pour ${result.creatorProfilePicture}:`, err);
+      }
     });
   }
+
 
   onSearch(form: FormGroup) {
     console.log(form, typeof form);
