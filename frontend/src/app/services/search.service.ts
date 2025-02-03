@@ -14,7 +14,7 @@ export class SearchService {
 
   // Récupérer les services en fonction des filtres
   search(query: SearchQuery) {
-    return this.http.get<PageableResponse<SearchResult>>(`/services`, {
+    return this.http.get<PageableResponse<SearchResult>>(`/services/all`, {
       params: {...query}
     });
   }
