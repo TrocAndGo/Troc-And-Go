@@ -34,16 +34,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String path = request.getRequestURI();
-        // Exclure les routes de signup et login, mais pas logout
-        if (path.startsWith("/api/v1/auth/")) {
-            if (path.equals("/api/v1/auth/login") || path.equals("/api/v1/auth/signup")) {
-                // Si c'est une route login ou signup, on passe au filtre suivant sans traitement
-                chain.doFilter(request, response);
-                return;
-            }
+
+        // Exclure les routes de signup, login et les endpoints publics
+        if (isPublicEndpoint(path)) {
+            chain.doFilter(request, response);
+            return;
         }
 
-        // logger.info("Appel de la fonction doFilterInternal!");
 
         // Récupérer le header Authorization
         final String authHeader = request.getHeader("Authorization");
@@ -88,5 +85,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Continuer la chaîne de filtres
         chain.doFilter(request, response);
+    }
+
+    /**
+     * Vérifie si l'endpoint est public et ne nécessite pas d'authentification.
+     */
+    private boolean isPublicEndpoint(String path) {
+        return path.equals("/api/v1/auth/login")
+                || path.equals("/api/v1/auth/signup")
+                || path.equals("/api/v1/services")
+                || path.equals("/api/v1/services/image")
+                || path.equals("/api/v1/services/categories")
+                || path.equals("/api/v1/services/adresses");
     }
 }
