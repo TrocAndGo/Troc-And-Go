@@ -30,9 +30,10 @@
 			<app-button text="Créer une annonce" color="primary" (clicked)="openCreateAd()">
 			</app-button>
 			 <!-- Avatar avec menu déroulant -->
-			 <div class="dropdown" (click)="toggleDropdown()">
+			<div class="dropdown" (click)="toggleDropdown()">
 				<img
-				  [src]="imagePreview || avatarUrl || 'icone.jpg'"
+				  [src]="imagePreview || avatarUrl || 'default_avatar.jpg'"
+				  (error)="avatarUrl = 'default_avatar.jpg'"
 				  alt="Avatar de l'utilisateur"
 				  class="profile-picture"
 				/>
@@ -42,8 +43,7 @@
 				  <li><a routerLink="favorites">Mes favoris</a></li>
 				  <li><a href="#" (click)="logout()">Se déconnecter</a></li>
 				</ul>
-			  </div>
 			</div>
-		  </div>
-
+		</div>
+	</div>
 </div>
