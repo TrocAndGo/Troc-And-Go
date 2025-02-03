@@ -152,18 +152,28 @@ public class UserController {
             // Appeler le service pour gérer le téléchargement et la décryption
             byte[] decryptedImage = imageService.downloadProfilePicture(authentication.getName());
 
-            // Retourner l'image décryptée avec le bon type MIME
+            // Si l'image est absente (tableau vide), envoyer une image vide (pas d'erreur)
+            if (decryptedImage.length == 0) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(new byte[0]);  // Retourne une image vide
+            }
+
+            // Si l'image est trouvée, la renvoyer
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_JPEG)
                     .body(decryptedImage);
 
         } catch (Exception e) {
-            logger.error("Failed to download profile picture: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                    "status", "error",
-                    "message", "Failed to download profile picture."));
+            // Si une exception se produit, logguer l'erreur sans lever une exception
+            logger.error("Erreur lors de la récupération de l'image de profil : " + e.getMessage());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(new byte[0]);  // Retourne une image vide même en cas d'erreur
         }
     }
+
+
 
     @PutMapping("/profile/address")
     @PreAuthorize("hasRole('USER')")

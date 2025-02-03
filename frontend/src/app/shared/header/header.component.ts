@@ -41,28 +41,34 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // S'abonner à l'état de connexion
     this.authService.loggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
 
       if (status) {
-        // Charger l'adresse utilisateur après connexion
         this.userAdressService.loadUserAdress();
+
+        // Charger l'avatar et écouter les changements d'adresse uniquement si l'utilisateur est connecté
+        this.imageService.getProfilePicture();
+        this.listenToAdressChanges();
       }
     });
 
-    // S'abonner aux changements d'adresse utilisateur
+    // Abonnement aux changements d'adresse utilisateur
     this.userAdressService.userAdress$.subscribe((adress) => {
-      console.log('Adresse utilisateur mise à jour :', adress);
-      this.userAdress = adress;
+      if (this.isLoggedIn) {  // Vérifie que l'utilisateur est connecté avant de mettre à jour
+        console.log('Adresse utilisateur mise à jour :', adress);
+        this.userAdress = adress;
+      }
     });
 
+    // Abonnement aux changements d'avatar
     this.imageService.avatarUrl$.subscribe((url) => {
-      this.avatarUrl = url;
+      if (this.isLoggedIn) {  // Vérifie que l'utilisateur est connecté avant de mettre à jour
+        this.avatarUrl = url;
+      }
     });
-    this.imageService.getProfilePicture(); // Charger l'avatar au démarrage
-    this.listenToAdressChanges();
   }
+
 
   @Output() clicked = new EventEmitter<void>();
   isPopupVisible = false;
@@ -102,14 +108,16 @@ export class HeaderComponent implements OnInit {
   }
 
   openCreateAd() {
-    console.log("adresse: ", this.userAdress)
-    if (!this.userAdress || this.userAdress === null) {
-      console.log("dans la condition")
-      this.router.navigate(['/profil'])
-      this.toastr.warning("Vous devez renseigner votre adresse avant de pouvoir poster une annonce");
+    if (!this.isLoggedIn) {
+      this.toastr.warning("Vous devez être connecté pour poster une annonce");
+      return;
     }
-    else {
-      this.router.navigate(['/annonce'])
+
+    if (!this.userAdress) {
+      this.router.navigate(['/profil']);
+      this.toastr.warning("Vous devez renseigner votre adresse avant de pouvoir poster une annonce");
+    } else {
+      this.router.navigate(['/annonce']);
     }
   }
 

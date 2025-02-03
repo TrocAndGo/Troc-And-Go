@@ -79,6 +79,11 @@ public class ImageService {
         // Vérifier et obtenir le chemin du fichier
         Path filePath = getFilePath(user);
 
+        // Si le fichier n'existe pas, retourner une image vide
+        if (filePath == null) {
+            return new byte[0];
+        }
+
         // Lire et décrypter l'image
         byte[] encryptedImage = Files.readAllBytes(filePath);
         return encryptionUtil.decrypt(encryptedImage);
@@ -148,14 +153,17 @@ public class ImageService {
     }
 
     private Path getFilePath(Users user) {
+        // Si l'URL de l'image (ou le nom du fichier) est null ou vide, on retourne null
         if (user.getPicture() == null || user.getPicture().isEmpty()) {
-            throw new IllegalArgumentException("No profile picture found.");
+            return null;
         }
         String fileName = user.getPicture().replace("/uploads/profile-pictures/", "");
         Path filePath = uploadDirectory.resolve(fileName);
+        // Si le fichier n'existe pas, retourne également null
         if (!Files.exists(filePath)) {
-            throw new IllegalArgumentException("Profile picture not found.");
+            return null;
         }
         return filePath;
     }
+
 }
