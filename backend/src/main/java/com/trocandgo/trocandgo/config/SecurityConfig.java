@@ -66,9 +66,13 @@ public class SecurityConfig {
                         "/api/v1/**",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
-                        "/swagger-ui.html"
+                        "/swagger-ui.html",
+                        "/api/chat/**",
+                        "/ws-chat/**"
                     ).permitAll()
+                    //.requestMatchers("/ws/chat").authenticated() // Secure WebSocket endpoint
             )
+            //.headers(headers -> headers.frameOptions().disable())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

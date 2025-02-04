@@ -8,6 +8,7 @@ import { MyAdsComponent } from './features/my-ads/my-ads.component';
 import { ProfilComponent } from './features/profil/profil.component';
 import { SearchComponent } from './features/search/search.component';
 import { AuthGuardService } from './services/auth-guard.service';
+import { ChatComponent } from './features/chat/chat.component';
 
 export const routes: Routes = [
   { path: '',
@@ -45,6 +46,10 @@ export const routes: Routes = [
     component: FavoritesComponent,
     canActivate: [AuthGuardService],
     title: 'Troc and Go - Favoris'
+  },
+  { path: 'chat',
+    component: ChatComponent,
+    title: 'Chat'
   },
   { path: '**', redirectTo: '' },         // Redirection vers l'accueil pour les URLs invalides
 ];

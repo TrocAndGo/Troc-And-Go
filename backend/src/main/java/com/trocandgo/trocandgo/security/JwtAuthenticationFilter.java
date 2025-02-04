@@ -51,6 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Extraire le token
         final String jwtToken = authHeader.substring(7);
+        logger.info("Token reçu : " + jwtToken);
 
         try {
             // Déléguer la validation du token au service
@@ -92,9 +93,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     private boolean isPublicEndpoint(String path) {
         return path.equals("/api/v1/auth/login")
+                || path.equals("/api/chat/")
                 || path.equals("/api/v1/auth/signup")
                 || path.equals("/api/v1/services/image")
                 || path.equals("/api/v1/services/categories")
-                || path.equals("/api/v1/services/adresses");
+                || path.equals("/api/v1/services/adresses")
+                || path.equals("/ws-chat");
     }
 }

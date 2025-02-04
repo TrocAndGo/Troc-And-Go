@@ -93,6 +93,7 @@ public class JwtService {
             // Extraire le username et les rôles
             String username = decodedJwt.getSubject();
             List<String> roles = decodedJwt.getClaim("roles");
+            logger.info("Username: {}", username);
 
             return new UserInfo(username, roles);
 
