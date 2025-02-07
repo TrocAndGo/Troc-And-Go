@@ -32,21 +32,19 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {  // ✅ Empêche l'exécution côté serveur
-      this.getHomePageServices();
-      this.isLoggedIn = this.authService.isLoggedIn();
-      this.authService.loggedIn$.subscribe({
-        next: (newLoggedInValue) => {
-          if (!this.isLoggedIn && newLoggedInValue) {
-            this.getHomePageServices();
-          }
-          this.isLoggedIn = newLoggedInValue;
-        },
-        error: (err) => {
-          console.error('Erreur lors de la vérification de l’état de connexion :', err);
+    this.getHomePageServices();
+    this.isLoggedIn = this.authService.isLoggedIn();
+    this.authService.loggedIn$.subscribe({
+      next: (newLoggedInValue) => {
+        if (!this.isLoggedIn && newLoggedInValue) {
+          this.getHomePageServices();
         }
-      });
-    }
+        this.isLoggedIn = newLoggedInValue;
+      },
+      error: (err) => {
+        console.error('Erreur lors de la vérification de l’état de connexion :', err);
+      }
+    });
   }
 
 
@@ -80,6 +78,9 @@ export class HomeComponent implements OnInit {
   }
 
   downloadImage(result: SearchResult) {
+    if (!isPlatformBrowser(this.platformId)) // ✅ Empêche l'exécution côté serveur
+      return;
+
     if (!result.creatorProfilePicture || result.creatorProfilePicture.startsWith('data:image/')) {
       return; // ✅ Déjà chargée ou pas d'image
     }

@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -30,6 +30,7 @@ export class SearchComponent implements OnInit {
   coords: Coords | null = null;
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private route: ActivatedRoute,
     private router: Router,
     private searchService: SearchService,
@@ -108,13 +109,14 @@ export class SearchComponent implements OnInit {
       })
       .subscribe((results) => {
         this.results = results;
-
-        // Télécharge les images pour chaque résultat
-        this.results.content.forEach((result) => {
-          if (result.creatorProfilePicture) {
-            this.downloadImage(result);
-          }
-        });
+        if (isPlatformBrowser(this.platformId)) { // ✅ Empêche l'exécution côté serveur
+          // Télécharge les images pour chaque résultat
+          this.results.content.forEach((result) => {
+            if (result.creatorProfilePicture) {
+              this.downloadImage(result);
+            }
+          });
+        }
       });
   }
 
