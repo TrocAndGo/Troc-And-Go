@@ -1,10 +1,12 @@
 // src/app/services/chat.service.ts
-import { Injectable, inject } from '@angular/core';
-import SockJS from 'sockjs-client';
-import { Client, IMessage } from '@stomp/stompjs';
-import { LocalStorageService } from '../services/local-storage.service';
-import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Client, IMessage } from '@stomp/stompjs';
+import { Observable, Subject } from 'rxjs';
+import SockJS from 'sockjs-client';
+import { LocalStorageService } from '../services/local-storage.service';
+import { AuthService } from './auth.service';
+import { ProfileService } from './profile.service';
 
 // Définition de ChatMessage
 export interface ChatMessage {
@@ -21,17 +23,30 @@ export class ChatService {
   private stompClient!: Client;
   private storage = inject(LocalStorageService); // Injection du service de stockage local
   private http = inject(HttpClient); // Injection du client HTTP
+  private profile = inject(ProfileService);
+  private auth = inject(AuthService);
 
   private messageSubject: Subject<ChatMessage> = new Subject<ChatMessage>();
 
-  // URL de base pour les endpoints REST (à adapter si besoin)
-  private baseApiUrl = 'https://localhost:8443/api/v1/chat';
-
   constructor() {
-    this.initConnection();
+    this.auth.loggedIn$.subscribe(() => this.getProfileAndInitConnection());
+    this.getProfileAndInitConnection();
   }
 
-  private initConnection(): void {
+  private getProfileAndInitConnection(): void {
+    if (this.auth.isLoggedIn() == false) {
+      this.disconnect();
+      return;
+    }
+
+    this.profile.getUserProfile().subscribe((profile) =>{
+      this.initConnection(profile.username);
+    });
+  }
+
+  private initConnection(username: string): void {
+    if (this.stompClient?.connected) return;
+
     const authToken = this.storage.getItem('authToken'); // Récupération du token JWT
     const socketUrl = authToken
       ? `https://localhost:8443/ws-chat?token=${authToken}` // Ajout du token dans l'URL
@@ -45,7 +60,7 @@ export class ChatService {
       onConnect: () => {
         console.log('✅ WebSocket connected successfully!');
         // S'abonner à la destination personnelle pour recevoir les messages
-        this.stompClient.subscribe('/user/queue/messages', (message: IMessage) => {
+        this.stompClient.subscribe(`/user/${username}/queue/messages`, (message: IMessage) => {
           if (message.body) {
             const chatMessage: ChatMessage = JSON.parse(message.body);
             this.messageSubject.next(chatMessage);
@@ -75,7 +90,7 @@ export class ChatService {
 
   // Récupération de l'historique des messages entre deux utilisateurs via l'API REST
   getConversation(currentUser: string, targetUser: string): Observable<ChatMessage[]> {
-    const url = `${this.baseApiUrl}/conversation?user1=${currentUser}&user2=${targetUser}`;
+    const url = `/chat/conversation?user1=${currentUser}&user2=${targetUser}`;
     return this.http.get<ChatMessage[]>(url);
   }
 
@@ -93,8 +108,8 @@ export class ChatService {
 
   // Déconnexion du WebSocket
   disconnect(): void {
-  if (this.stompClient?.connected) {
-    this.stompClient.deactivate();
+    if (this.stompClient?.connected) {
+      this.stompClient.deactivate();
+    }
   }
-}
 }
