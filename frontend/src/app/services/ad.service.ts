@@ -12,11 +12,12 @@ export class AdService {
   constructor(private http: HttpClient) { }
 
   uploadAd(adRequest: AdUploadRequest): Observable<any> {
-    return this.http.post(`/services`, adRequest);
+    console.log('Données envoyées à l\'API:', adRequest);
+    return this.http.post(`/services/create`, adRequest);
   }
 
   getServices(): Observable<any> {
-    return this.http.get(`/services`);
+    return this.http.get(`/services/all`);
   }
 
   getMyServices(page: number = 0): Observable<PageableResponse<SearchResult>> {

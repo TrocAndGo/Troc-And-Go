@@ -2,7 +2,7 @@
 	<div *ngFor="let service of services" class="service-card">
 		<app-service-card
 		[id]="service.id"
-		[profilePicture]="service.creatorProfilePicture ?? 'icone.png'"
+		[profilePicture]="service.creatorProfilePicture ?? 'default_avatar.jpg'"
 		[user]="service.createdBy"
 		[localisation]="service.city"
 		[date]="service.creationDate"

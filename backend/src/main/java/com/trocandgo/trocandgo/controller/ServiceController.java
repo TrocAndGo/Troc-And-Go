@@ -54,7 +54,7 @@ public class ServiceController {
         return ResponseEntity.ok("Hello");
     }
 
-    @GetMapping("")
+    @GetMapping("/all")
     public Page<SearchResultEntryResponse> search(SearchRequest request,
             @SortDefault(sort = "creationDate", direction = Direction.DESC) @PageableDefault(size = 20) Pageable pageable) {
         var servicePage = serviceService.findServicesPaginated(request, pageable);
@@ -84,7 +84,7 @@ public class ServiceController {
 
 
 
-    @PostMapping("")
+    @PostMapping("/create")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Services> createService(@Valid @RequestBody CreateServiceRequest request) {
         var service = serviceService.createService(request);

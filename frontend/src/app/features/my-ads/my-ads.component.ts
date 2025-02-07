@@ -19,7 +19,7 @@ export class MyAdsComponent implements OnInit {
   services: SearchResult[] = [];
   page: Page | null = null;
   currentPage: number = 0;
-  profilePictureUrl: string = 'icone.jpg';
+  profilePictureUrl: string = 'default_avatar.jpg';
 
   constructor(private adService: AdService, private imageService: ImageManagementService, private toastr: ToastrService) {}
 
@@ -51,7 +51,7 @@ export class MyAdsComponent implements OnInit {
   }
 
   getProfilePicture() {
-    this.profilePictureUrl = this.imageService.avatarUrlSubject.getValue();
+    this.profilePictureUrl = this.imageService.currentAvatarUrl;
     this.imageService.avatarUrl$.subscribe((url) => {
       this.profilePictureUrl = url;
     });

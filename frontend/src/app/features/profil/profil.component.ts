@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -7,6 +7,7 @@ import { GeocodingService } from '../../services/geocoding.service';
 import { ImageManagementService } from '../../services/image-management.service';
 import { ProfileService } from '../../services/profile.service';
 import { ButtonComponent } from '../../shared/button/button.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profil',
@@ -15,8 +16,8 @@ import { ButtonComponent } from '../../shared/button/button.component';
   templateUrl: './profil.component.html',
   styleUrls: ['./profil.component.css']
 })
-export class ProfilComponent implements OnInit {
-  selectedFile: File | null = null;
+export class ProfilComponent implements OnInit, OnDestroy {
+  // Variables pour l'affichage du template
   imagePreview: string | null = null;
   avatarUrl: string | null = null;
   username: string = '';
@@ -24,29 +25,36 @@ export class ProfilComponent implements OnInit {
   address: string = '';
   city: string = '';
   zipCode: string = '';
+  phoneNumber: string = '';
+
+  // Variables supplémentaires pour stocker les données de géocodage
   region: string = '';
   department: string = '';
   latitude: number | null = null;
   longitude: number | null = null;
-  phoneNumber: string = '';
-  phonePattern = '^\\+?[0-9]{1,3}?[-.\\s]?\\(?(?:[0-9]{1,4})\\)?[-.\\s]?[0-9]{1,4}[-.\\s]?[0-9]{1,9}$';
-  password: string = '';
-  email: string = '';
-  passwordsMatch: boolean = true;
-  errorMessage: string | null = null;
-  isSubmitting = false;
-  addressPlaceholder: string = 'Entrez une adresse';
-  cityPlaceholder: string = 'Entrez une ville';
-  isAddressValid: boolean = false;
-  isFormModified: boolean = false;
-  isAddressModified: boolean = false; // Nouvelle variable pour savoir si l'adresse a été modifiée
-  initialFullAddress: string = '';
-  initialPhoneNumber: string = '';
-  // États pour gérer les modifications
-  isAddressValidated: boolean = false; // Indique si l'adresse est validée par l'API
-  // Pour la gestion de l'image de profil
+
+  // Variables pour la gestion des fichiers
+  selectedFile: File | null = null;
   selectedFileName: string | null = null;
   isPhotoValidated: boolean = false;
+
+  // Variables pour la validation du formulaire
+  phonePattern = '^(0[1-7])[0-9]{8}$';
+  isSubmitting = false;
+  isFormModified: boolean = false;
+  isAddressModified: boolean = false;
+  initialFullAddress: string = '';
+  initialPhoneNumber: string = '';
+  isAddressValidated: boolean = false;
+
+  // Variables pour la modal du mot de passe
+  isPasswordModalOpen: boolean = false;
+  currentPassword: string = '';
+  newPassword: string = '';
+  confirmPassword: string = '';
+  errorMessageModal: string = '';
+
+  private subscriptions: Subscription = new Subscription();
 
   constructor(
     private imageService: ImageManagementService,
@@ -60,29 +68,33 @@ export class ProfilComponent implements OnInit {
     // Initialisation des valeurs initiales
     this.initialFullAddress = this.fullAddress;
     this.initialPhoneNumber = this.phoneNumber;
-    // Charger l'image de profil
-    this.imageService.getProfilePicture();
-    // Récupérer l'URL de l'avatar depuis le service
-    this.imageService.avatarUrl$.subscribe((url) => {
-      this.avatarUrl = url;
-    });
+
+    // Abonnement pour récupérer l'avatar de l'utilisateur
+    this.subscriptions.add(
+      this.imageService.avatarUrl$.subscribe((url) => {
+        this.avatarUrl = url;
+      })
+    );
+
     // Récupérer le profil utilisateur depuis le backend
-    this.profileService.getUserProfile().subscribe({
-      next: (data) => {
-        this.username = data.username || '';
-        this.fullAddress = data.fullAddress || '';
-        this.address = data.address || '';
-        this.city = data.city || '';
-        this.zipCode = data.zipCode || '';
-        this.phoneNumber = data.phoneNumber || '';
-        this.initialFullAddress = this.fullAddress;
-        this.initialPhoneNumber = this.phoneNumber;
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération du profil utilisateur:', err);
-        this.toastr.error('Erreur lors de la récupération du profil utilisateur.')
-      },
-    });
+    this.subscriptions.add(
+      this.profileService.getUserProfile().subscribe({
+        next: (data) => {
+          this.username = data.username || '';
+          this.fullAddress = data.fullAddress || '';
+          this.address = data.address || '';
+          this.city = data.city || '';
+          this.zipCode = data.zipCode || '';
+          this.phoneNumber = data.phoneNumber || '';
+          this.initialFullAddress = this.fullAddress;
+          this.initialPhoneNumber = this.phoneNumber;
+        },
+        error: (err) => {
+          console.error('Erreur lors de la récupération du profil utilisateur:', err);
+          this.toastr.error('Erreur lors de la récupération du profil utilisateur.')
+        },
+      })
+    );
   }
 
   onFileSelected(event: Event): void {
@@ -92,6 +104,17 @@ export class ProfilComponent implements OnInit {
       this.selectedFile = file; // Stocker le fichier sélectionné
       this.selectedFileName = file.name; // Stocker le nom du fichier
       this.isPhotoValidated = false; // Réinitialise l'état de validation
+
+      // Vérificationde l'image avant traitement
+      const allowedTypes = ['image/jpeg', 'image/png'];
+      if (!allowedTypes.includes(file.type)) {
+        this.toastr.error('Veuillez sélectionner un fichier image au format JPG, JPEG ou PNG.');
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) { // 2 Mo
+        this.toastr.error('Le fichier est trop volumineux (max 2 Mo).');
+        return;
+      }
       // Prévisualisation de l'image
       const reader = new FileReader();
       reader.onload = () => {
@@ -108,19 +131,22 @@ export class ProfilComponent implements OnInit {
       this.isPhotoValidated = false; // Réinitialise l'état de validation
     }
   }
+
   onSubmitImg(): void {
     if (this.selectedFile) {
-      this.imageService.uploadImage(this.selectedFile).subscribe({
-        next: (response) => {
-          console.log('Image uploaded successfully:', response);
-          this.toastr.success('Votre photo de profil a été mise à jour avec succès !');
-          this.isPhotoValidated = true; // La photo a été validée
-        },
-        error: (error) => {
-          console.error('Failed to upload image:', error);
-          this.toastr.error('Une erreur est survenue lors de la mise à jour de votre photo de profil.');
-        },
-      });
+      this.subscriptions.add(
+        this.imageService.uploadImage(this.selectedFile).subscribe({
+          next: (response) => {
+            console.log('Image uploaded successfully:', response);
+            this.toastr.success('Votre photo de profil a été mise à jour avec succès !');
+            this.isPhotoValidated = true;
+          },
+          error: (error) => {
+            console.error('Failed to upload image:', error);
+            this.toastr.error('Une erreur est survenue lors de la mise à jour de votre photo de profil.');
+          },
+        })
+      );
     } else {
       console.error('No file selected.');
       this.toastr.error('Aucun fichier sélectionné.');
@@ -188,7 +214,6 @@ export class ProfilComponent implements OnInit {
     const profileData: any = {};
     // Vérification et ajout du numéro de téléphone si modifié
     if (this.phoneNumber !== this.initialPhoneNumber) {
-      console.log('je suis ici.');
       profileData.phoneNumber = this.phoneNumber;
     }
     // Vérification et ajout de l'adresse si modifiée et validée
@@ -208,31 +233,25 @@ export class ProfilComponent implements OnInit {
     }
     this.isSubmitting = true; // Désactiver temporairement le bouton pendant l'envoi
     // Envoi les données au backend
-    this.profileService.updateUserProfileWithGeocode(profileData).subscribe({
-      next: () => {
-        this.toastr.success('Profil mis à jour avec succès !');
-        // Réinitialiser l'état du formulaire après un envoi réussi
-        this.initialPhoneNumber = this.phoneNumber;
-        this.initialFullAddress = this.fullAddress;
-        this.isAddressValidated = false; // Réinitialiser la validation d'adresse
-        this.isFormModified = false; // Griser le bouton
-        this.isSubmitting = false; // Réactiver le formulaire si besoin
-        this.router.navigate(['/home']);
-      },
-      error: (err) => {
-        console.error('Erreur lors de la mise à jour du profil :', err);
-        this.toastr.error('Une erreur est survenue lors de la mise à jour.');
-        this.isSubmitting = false;
-      },
-    });
+    this.subscriptions.add(
+      this.profileService.updateUserProfileWithGeocode(profileData).subscribe({
+        next: () => {
+          this.toastr.success('Profil mis à jour avec succès !');
+          this.initialPhoneNumber = this.phoneNumber;
+          this.initialFullAddress = this.fullAddress;
+          this.isAddressValidated = false;
+          this.isFormModified = false;
+          this.isSubmitting = false;
+          this.router.navigate(['/home']);
+        },
+        error: (err) => {
+          console.error('Erreur lors de la mise à jour du profil :', err);
+          this.toastr.error('Une erreur est survenue lors de la mise à jour.');
+          this.isSubmitting = false;
+        },
+      })
+    );
   }
-
-  // État de la modal du mot de passe
-  isPasswordModalOpen: boolean = false;
-  currentPassword: string = '';
-  newPassword: string = '';
-  confirmPassword: string = '';
-  errorMessageModal: string = '';
 
   openPasswordModal() {
     this.isPasswordModalOpen = true;
@@ -268,24 +287,30 @@ export class ProfilComponent implements OnInit {
     }
 
     // Envoi au backend
-    this.profileService.updatePassword(this.currentPassword, this.newPassword).subscribe({
-      next: () => {
-        this.closePasswordModal(); // Ferme la popup après succès
-        this.toastr.success("Mot de passe modifié avec succès !");
-      },
-      error: (err) => {
-        switch (err.error.message) {
-          case "Current password is incorrect.":
-            this.errorMessageModal = "Mot de passe actuel incorrect.";
-            break;
-          case null:
-            this.errorMessageModal = "Erreur lors du changement de mot de passe.";
-            break;
-          default:
-            this.errorMessageModal = err.error.message;
+    this.subscriptions.add(
+      this.profileService.updatePassword(this.currentPassword, this.newPassword).subscribe({
+        next: () => {
+          this.closePasswordModal();
+          this.toastr.success("Mot de passe modifié avec succès !");
+        },
+        error: (err) => {
+          switch (err.error.message) {
+            case "Current password is incorrect.":
+              this.errorMessageModal = "Mot de passe actuel incorrect.";
+              break;
+            case null:
+              this.errorMessageModal = "Erreur lors du changement de mot de passe.";
+              break;
+            default:
+              this.errorMessageModal = err.error.message;
+          }
         }
-      }
-    });
+      })
+    );
+  }
 
+  ngOnDestroy(): void {
+    // Si le composant est détruit, on se désabonne des abonnements pour éviter les fuites de mémoire
+    this.subscriptions.unsubscribe();
   }
 }

@@ -1,47 +1,56 @@
 <div class="card" (click)="onClick()">
-	<div class="card-header">
-	<img [src]="profilePicture" (click)="onClick()">
-	<div class="text-container">
-		<p class="user"> {{ user }} </p>
-		<p> {{ localisation }} </p>
-		<p>Posté le : {{ formattedDate }}</p>
-		<span></span>
-	</div>
-	<ng-container *ngIf="isLoggedIn; else notLoggedInTemplate">
-		<ng-container *ngIf="!owner; else ownerTemplate">
-			<div *ngIf="!isFavorite" class="icon-container">
-				<p class="heart" (click)="addToFavorites(id)">&#10084;</p>
-			</div>
-			<div *ngIf="isFavorite" class="icon-container">
-				<p class="grey-heart" (click)="removeFromFavorites(id)">&#10084;</p>
-			</div>
-		</ng-container>
-		<ng-template #ownerTemplate>
-			<div class="icon-container">
-				<p class="delete" (click)="deleteService(id)">❌</p>
-			</div>
-		</ng-template>
-	</ng-container>
+  <div class="card-header">
+    <img [src]="profilePicture" (click)="onClick()">
+    <div class="text-container">
+      <p class="user">{{ user }}</p>
+      <p>{{ localisation }}</p>
+      <p>Posté le : {{ formattedDate }}</p>
+    </div>
 
+    <ng-container *ngIf="isLoggedIn; else notLoggedInTemplate">
+      <ng-container *ngIf="!owner; else ownerTemplate">
+        <div *ngIf="!isFavorite" class="icon-container">
+          <p class="heart" (click)="addToFavorites(id)">&#10084;</p>
+        </div>
+        <div *ngIf="isFavorite" class="icon-container">
+          <p class="grey-heart" (click)="removeFromFavorites(id)">&#10084;</p>
+        </div>
+      </ng-container>
 
-	<ng-template #notLoggedInTemplate>
-		<div>
-			<p class="empty">&nbsp;</p>
-		</div>
-	</ng-template>
-</div>
-<div class="card-body">
-	<h2>{{ title }}</h2>
-	<p class="categorie"><strong>Catégorie:</strong> {{ categorie }}</p>
-	<p class="propose"><strong>Je propose:</strong> {{ propose }}</p>
-</div>
-<button type="button" [disabled]="!isLoggedIn" (click)="toggleCoordinates()">Voir les coordonnées</button>
-<div *ngIf="!isLoggedIn" class="warning">
-	<p>Vous devez être connecté pour voir les coordonnées.</p>
-</div>
-<!-- <div class="coordonnees" *ngIf="isCoordinatesVisible">
-	<p> {{ mail }} </p>
-	<p> {{ phoneNumber }} </p>
-</div> -->
+      <ng-template #ownerTemplate>
+        <div class="icon-container">
+          <p class="delete" (click)="confirmDelete(id)">❌</p> <!-- Ouvre le modal -->
+        </div>
+      </ng-template>
+    </ng-container>
 
+    <ng-template #notLoggedInTemplate>
+      <div>
+        <p class="empty">&nbsp;</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="card-body">
+    <h2>{{ title }}</h2>
+    <p class="categorie"><strong>Catégorie:</strong> {{ categorie }}</p>
+    <p class="propose"><strong>Je propose:</strong> {{ propose }}</p>
+  </div>
+
+  <button type="button" [disabled]="!isLoggedIn" (click)="toggleCoordinates()">Voir les coordonnées</button>
+  <div *ngIf="!isLoggedIn" class="warning">
+    <p>Vous devez être connecté pour voir les coordonnées.</p>
+  </div>
+</div>
+
+<!-- Modal de confirmation -->
+<div class="modal-overlay" *ngIf="isDeleteModalVisible">
+  <div class="modal">
+    <h3>Confirmation de suppression</h3>
+    <p>Êtes-vous sûr de vouloir supprimer ce service ?</p>
+    <div class="modal-buttons">
+      <button (click)="deleteService()" class="confirm">Confirmer</button>
+      <button (click)="cancelDelete()" class="cancel">Annuler</button>
+    </div>
+  </div>
 </div>

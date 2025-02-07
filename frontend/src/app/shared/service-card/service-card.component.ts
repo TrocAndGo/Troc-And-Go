@@ -40,8 +40,13 @@ export class ServiceCardComponent {
     return dateObj.toLocaleDateString(); // Exemple : "17/12/1995"
   }
 
+  // for login status
   isLoggedIn = false;
   isCoordinatesVisible = false;
+
+  // for delete modal
+  isDeleteModalVisible: boolean = false;
+  serviceIdToDelete: string | null = null;
 
   toggleCoordinates() {
     this.isCoordinatesVisible = !this.isCoordinatesVisible;
@@ -103,18 +108,30 @@ export class ServiceCardComponent {
     });
   }
 
-  deleteService(serviceId: string): void {
-    if(!confirm('Are you sure you want to delete this service?')) return;
+  confirmDelete(serviceId: string): void {
+    this.serviceIdToDelete = serviceId; // Stocker l'ID du service à supprimer
+    this.isDeleteModalVisible = true;   // Afficher le modal
+  }
 
-    this.adService.deleteService(serviceId).subscribe({
+  cancelDelete(): void {
+    this.isDeleteModalVisible = false;  // Fermer le modal sans supprimer
+    this.serviceIdToDelete = null;      // Réinitialiser l'ID
+  }
+
+  deleteService(): void {
+    if (!this.serviceIdToDelete) return; // Sécurité au cas où aucun ID n'est défini
+
+    this.adService.deleteService(this.serviceIdToDelete).subscribe({
       next: (_) => {
         this.toastr.success('Service supprimé avec succès.');
         this.deleted.emit();
+        this.isDeleteModalVisible = false; // Fermer le modal après suppression
       },
       error: (error) => {
-        console.error('Error deleting service:', error.message);
+        console.error('Erreur lors de la suppression du service:', error.message);
         this.toastr.error('Une erreur est survenue.');
       }
     });
   }
+
 }
