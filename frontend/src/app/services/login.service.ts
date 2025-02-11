@@ -22,7 +22,7 @@ export class LoginService {
     }).pipe(
       tap((response: LoginResponse) => {
         localStorage.setItem('authToken', response.token);
-        this.authService.setLoggedIn(true);
+        this.authService.setLoggedIn(true); // Déclenche la connexion WebSocket
         this.imageService.getProfilePicture();
         this.userAdressService.loadUserAdress();
 

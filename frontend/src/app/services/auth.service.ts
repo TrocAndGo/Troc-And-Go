@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ImageManagementService } from './image-management.service';
 import { LocalStorageService } from './local-storage.service';
@@ -11,13 +11,17 @@ export class AuthService {
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   public loggedIn$ = this.loggedInSubject.asObservable();
 
-  constructor(private imageService: ImageManagementService, private http: HttpClient, private storage: LocalStorageService) {
+  constructor(
+    private imageService: ImageManagementService,
+    private http: HttpClient,
+    private storage: LocalStorageService
+  ) {
     if (this.isTokenExpired() == false) {
       this.setLoggedIn(true);
     }
   }
 
-  // Met à jour l'état de connexion
+  // Met à jour l'état de connexion et gère le WebSocket
   setLoggedIn(isLoggedIn: boolean): void {
     this.loggedInSubject.next(isLoggedIn);
   }
@@ -30,12 +34,12 @@ export class AuthService {
   logout(): void {
     this.http.post(`/auth/logout`, null).subscribe(() => {
       console.log('Logged out');
-    });
 
     // Réinitialisation de l'état de connexion
-    this.setLoggedIn(false); // Met à jour l'état de connexion
+    this.setLoggedIn(false);
     this.storage.removeItem('authToken'); // Supprime le token ou autre méthode
     this.imageService.resetProfilePicture();
+    });
   }
 
   private isTokenExpired(): boolean {
