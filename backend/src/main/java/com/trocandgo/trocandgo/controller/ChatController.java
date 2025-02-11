@@ -1,13 +1,17 @@
 package com.trocandgo.trocandgo.controller;
 
 import com.trocandgo.trocandgo.entity.Message;
+import com.trocandgo.trocandgo.entity.Users;
 import com.trocandgo.trocandgo.entity.Conversation;
 import com.trocandgo.trocandgo.repository.ConversationRepository;
 import com.trocandgo.trocandgo.repository.MessageRepository;
+import com.trocandgo.trocandgo.service.AuthService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -27,8 +31,12 @@ public class ChatController {
     @Autowired
     private ConversationRepository conversationRepository; // Repository pour les conversations
 
+    @Autowired
+    private AuthService authService;
+
     // Endpoint pour récupérer l'historique des messages entre deux utilisateurs
     @GetMapping("/conversation")
+    //@PreAuthorize("hasRole('USER')")
     public List<Message> getConversation(@RequestParam String user1, @RequestParam String user2) {
         // Recherche de la conversation entre les deux utilisateurs
         Optional<Conversation> conversation = conversationRepository.findConversationBetweenUsers(user1, user2);
@@ -42,8 +50,19 @@ public class ChatController {
         return List.of();
     }
 
+    @GetMapping("/conversations")
+    //@PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<String>> getUserConversations() {
+        Users currentUser = authService.getLoggedInUser(); // Récupération de l'utilisateur connecté
+
+        List<String> conversationUsers = conversationRepository.findUserConversations(currentUser.getName());
+
+        return ResponseEntity.ok(conversationUsers);
+    }
+
     // Méthode qui gère l'envoi de message via WebSocket
     @MessageMapping("/sendMessage")
+    //@PreAuthorize("hasRole('USER')")
     public void sendMessage(Message message) {
         // Sauvegarder le message dans la base de données
         message.setTimestamp(LocalDateTime.now());
