@@ -67,7 +67,6 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
-                        "/api/chat/**",
                         "/ws-chat/**"
                     ).permitAll()
                     //.requestMatchers("/ws/chat").authenticated() // Secure WebSocket endpoint

@@ -15,8 +15,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/user");
-        config.setApplicationDestinationPrefixes("/app");
+        config.enableSimpleBroker("/user"); // Active le broker pour envoyer des messages aux utilisateurs
+        config.setApplicationDestinationPrefixes("/app"); // Préfixe pour les messages envoyés à l'application
     }
 
     @Override
@@ -24,8 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // Ajoute ton intercepteur à l'endpoint WebSocket
         registry.addEndpoint("/ws-chat")
             .setAllowedOriginPatterns("https://localhost:4200")
-            .setAllowedOrigins("https://localhost:4200")
             .addInterceptors(new JwtWebSocketInterceptor()) // Ajout de l'intercepteur pour JWT
-            .withSockJS();
+            .withSockJS(); // Active SockJS pour la compatibilité
     }
 }
