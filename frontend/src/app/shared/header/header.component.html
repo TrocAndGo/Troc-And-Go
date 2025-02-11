@@ -6,7 +6,6 @@
 		<a routerLink="about">A propos</a>
 		<a routerLink="contact">Contact</a>
 		<a routerLink="recherche">Recherche</a>
-		<a routerLink="/chat">Chat</a>
 	</div>
 
 	<div *ngIf="!isLoggedIn">
@@ -42,6 +41,7 @@
 				  <li><a routerLink="profil">Profil</a></li>
 				  <li><a routerLink="my-ads">Mes annonces</a></li>
 				  <li><a routerLink="favorites">Mes favoris</a></li>
+				  <li><a routerLink="conversations">Mes conversations</a></li>
 				  <li><a href="#" (click)="logout()">Se déconnecter</a></li>
 				</ul>
 			</div>

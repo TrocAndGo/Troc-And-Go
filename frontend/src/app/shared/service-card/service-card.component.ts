@@ -5,6 +5,8 @@ import { AdService } from '../../services/ad.service';
 import { AuthService } from '../../services/auth.service';
 import { FavoritesService } from '../../services/favorites.service';
 import { ButtonComponent } from '../button/button.component';
+import { Router } from '@angular/router';
+import { ChatStateService } from '../../services/chat-state.service';
 
 export type Coords = {
   user: string;
@@ -53,11 +55,18 @@ export class ServiceCardComponent {
     this.onShowCoords.emit({user: this.user, mail: this.mail, phoneNumber: this.phoneNumber});
   }
 
+  goToChat(): void {
+    this.chatState.setTargetUser(this.user);  // Stocker le username dans le service
+    this.router.navigate(['/chat']);          // Aller vers la page du chat (sans paramètres)
+  }
+
   constructor(
     public authService: AuthService,
     private favoritesService: FavoritesService,
     private adService: AdService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router,
+    private chatState: ChatStateService
   ) {}
 
   ngOnInit() {

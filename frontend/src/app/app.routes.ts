@@ -9,6 +9,7 @@ import { ProfilComponent } from './features/profil/profil.component';
 import { SearchComponent } from './features/search/search.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { ChatComponent } from './features/chat/chat.component';
+import { ConversationsComponent } from './features/conversations/conversations.component';
 
 export const routes: Routes = [
   { path: '',
@@ -49,7 +50,13 @@ export const routes: Routes = [
   },
   { path: 'chat',
     component: ChatComponent,
+    canActivate: [AuthGuardService],
     title: 'Chat'
+  },
+  { path: 'conversations',
+    component: ConversationsComponent,
+    canActivate: [AuthGuardService],
+    title: 'Conversations'
   },
   { path: '**', redirectTo: '' },         // Redirection vers l'accueil pour les URLs invalides
 ];

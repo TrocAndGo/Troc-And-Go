@@ -41,6 +41,9 @@
   <div *ngIf="!isLoggedIn" class="warning">
     <p>Vous devez être connecté pour voir les coordonnées.</p>
   </div>
+  <div *ngIf="isLoggedIn">
+    <button type="button" (click)="goToChat()">Discuter</button>
+  </div>
 </div>
 
 <!-- Modal de confirmation -->
