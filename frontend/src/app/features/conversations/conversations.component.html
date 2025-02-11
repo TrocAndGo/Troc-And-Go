@@ -1,0 +1,8 @@
+<div class="conversation-list">
+  <h2>Mes Conversations</h2>
+  <ul>
+    <li *ngFor="let user of conversations" (click)="openChat(user)">
+      {{ user }}
+    </li>
+  </ul>
+</div>
