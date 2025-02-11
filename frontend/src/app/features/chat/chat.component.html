@@ -1,16 +1,12 @@
 <div class="chat-container">
   <div class="chat-header">
     <h2>Chat avec {{ targetUser || '...' }}</h2>
-    <div class="user-input">
-      <input type="text" [(ngModel)]="targetUser" placeholder="Entrez le destinataire">
-      <button (click)="loadConversation()">Charger la conversation</button>
-    </div>
   </div>
 
-  <div class="messages">
+  <div class="messages" #messagesContainer>
     <div *ngFor="let msg of messages" class="message"
          [ngClass]="{'sent': msg.sender === currentUser, 'received': msg.sender !== currentUser}">
-      <div class="message-content">
+      <div class="message-bubble">
         <p>{{ msg.content }}</p>
         <span class="timestamp">{{ msg.timestamp | date:'shortTime' }}</span>
       </div>
@@ -21,6 +17,6 @@
     <input type="text" [(ngModel)]="messageContent"
            placeholder="Tapez votre message ici"
            (keyup.enter)="sendMessage()">
-    <button (click)="sendMessage()">Envoyer</button>
+    <button color="primary" (click)="sendMessage()">Envoyer</button>
   </div>
 </div>

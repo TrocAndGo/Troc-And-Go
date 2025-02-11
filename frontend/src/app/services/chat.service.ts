@@ -2,7 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Client, IMessage } from '@stomp/stompjs';
-import { Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, EMPTY, Observable, Subject, Subscription, switchMap } from 'rxjs';
 import SockJS from 'sockjs-client';
 import { LocalStorageService } from '../services/local-storage.service';
 import { AuthService } from './auth.service';
@@ -20,20 +20,40 @@ export interface ChatMessage {
   providedIn: 'root'
 })
 export class ChatService {
-  private stompClient!: Client;
+  private stompClient: Client | null = null;
   private storage = inject(LocalStorageService); // Injection du service de stockage local
   private http = inject(HttpClient); // Injection du client HTTP
   private profile = inject(ProfileService);
   private auth = inject(AuthService);
 
   private messageSubject: Subject<ChatMessage> = new Subject<ChatMessage>();
+  private subscriptions = new Subscription();
 
   constructor() {
-    this.auth.loggedIn$.subscribe(() => this.getProfileAndInitConnection());
-    this.getProfileAndInitConnection();
+    // INITIALISER uniquement quand l'état de connexion change
+    this.subscriptions.add(
+      this.auth.loggedIn$.pipe(
+        distinctUntilChanged(),
+        switchMap(loggedIn => {
+          if (loggedIn) {
+            console.log("🔄 Utilisateur connecté, récupération du profil...");
+            return this.profile.getUserProfile();
+          } else {
+            console.log("🔴 Utilisateur déconnecté, fermeture du WebSocket.");
+            this.disconnect();
+            return EMPTY;
+          }
+        })
+      ).subscribe(profile => {
+        if (profile && profile.username) {
+          console.log("✅ Connexion WebSocket pour :", profile.username);
+          this.initConnection(profile.username);
+        }
+      })
+    );
   }
-
-  private getProfileAndInitConnection(): void {
+/*
+  public getProfileAndInitConnection(): void {
     if (this.auth.isLoggedIn() == false) {
       this.disconnect();
       return;
@@ -43,7 +63,7 @@ export class ChatService {
       this.initConnection(profile.username);
     });
   }
-
+*/
   private initConnection(username: string): void {
     if (this.stompClient?.connected) return;
 
@@ -57,10 +77,11 @@ export class ChatService {
     this.stompClient = new Client({
       webSocketFactory: () => socket,
       debug: (str) => console.log(str), // Pour le débogage
+      reconnectDelay: 5000,
       onConnect: () => {
         console.log('✅ WebSocket connected successfully!');
         // S'abonner à la destination personnelle pour recevoir les messages
-        this.stompClient.subscribe(`/user/${username}/queue/messages`, (message: IMessage) => {
+        this.stompClient?.subscribe(`/user/${username}/queue/messages`, (message: IMessage) => {
           if (message.body) {
             const chatMessage: ChatMessage = JSON.parse(message.body);
             this.messageSubject.next(chatMessage);
@@ -108,8 +129,16 @@ export class ChatService {
 
   // Déconnexion du WebSocket
   disconnect(): void {
-    if (this.stompClient?.connected) {
+    if (this.stompClient) {
+      console.log('🔴 Déconnexion du WebSocket...');
       this.stompClient.deactivate();
+      this.stompClient = null;
+      console.log('✅ WebSocket déconnecté avec succès !');
     }
+  }
+
+  ngOnDestroy() {
+    //this.subscriptions.unsubscribe();
+    //this.disconnect();
   }
 }
